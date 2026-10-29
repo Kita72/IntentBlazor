@@ -1,0 +1,230 @@
+{
+  "document": {
+    "schemaVersion": "0.1",
+    "id": "staff-followups",
+    "revision": 1,
+    "rootId": "root",
+    "requires": {
+      "builtin": "0.1"
+    },
+    "dataSets": [
+      "jobs",
+      "staff"
+    ],
+    "state": {
+      "selectedJob": {
+        "kind": "recordReference",
+        "initialValue": null,
+        "nullable": true,
+        "dataSetId": "jobs"
+      },
+      "assignee": {
+        "kind": "recordReference",
+        "initialValue": null,
+        "nullable": true,
+        "dataSetId": "staff"
+      },
+      "notes": {
+        "kind": "text",
+        "initialValue": ""
+      }
+    },
+    "nodes": [
+      {
+        "id": "root",
+        "kind": "layout",
+        "children": [
+          "jobs",
+          "draft"
+        ]
+      },
+      {
+        "id": "jobs",
+        "kind": "table",
+        "title": "Jobs waiting on materials",
+        "dataSetId": "jobs",
+        "fields": [
+          {
+            "field": "customer",
+            "label": "Customer"
+          },
+          {
+            "field": "status",
+            "label": "Status"
+          },
+          {
+            "field": "priority",
+            "label": "Priority"
+          }
+        ],
+        "selectionState": "selectedJob",
+        "interactionId": "chooseJob"
+      },
+      {
+        "id": "draft",
+        "kind": "form",
+        "title": "Follow-up draft",
+        "whenState": "selectedJob",
+        "children": [
+          "customer",
+          "assigneeInput",
+          "notesInput",
+          "draftOwner",
+          "clearDraft",
+          "notice"
+        ]
+      },
+      {
+        "id": "customer",
+        "kind": "text",
+        "title": "Customer",
+        "value": {
+          "source": "selectedField",
+          "stateKey": "selectedJob",
+          "dataSetId": "jobs",
+          "field": "customer"
+        }
+      },
+      {
+        "id": "assigneeInput",
+        "kind": "select",
+        "title": "Follow-up owner",
+        "dataSetId": "staff",
+        "labelField": "name",
+        "stateKey": "assignee"
+      },
+      {
+        "id": "notesInput",
+        "kind": "input",
+        "title": "Follow-up notes",
+        "stateKey": "notes"
+      },
+      {
+        "id": "draftOwner",
+        "kind": "text",
+        "title": "Draft owner preview",
+        "value": {
+          "source": "selectedField",
+          "stateKey": "assignee",
+          "dataSetId": "staff",
+          "field": "name"
+        }
+      },
+      {
+        "id": "clearDraft",
+        "kind": "button",
+        "title": "Clear staff draft",
+        "interactionId": "clearStaffDraft"
+      },
+      {
+        "id": "notice",
+        "kind": "text",
+        "value": {
+          "source": "literal",
+          "literal": "Local draft only. Application saves and staff authorization arrive in later phases."
+        }
+      }
+    ],
+    "interactions": [
+      {
+        "id": "chooseJob",
+        "event": "select",
+        "assignments": [
+          {
+            "stateKey": "selectedJob",
+            "value": {
+              "source": "eventValue"
+            }
+          },
+          {
+            "stateKey": "assignee",
+            "value": {
+              "source": "eventField",
+              "dataSetId": "jobs",
+              "field": "assignee"
+            }
+          },
+          {
+            "stateKey": "notes",
+            "value": {
+              "source": "eventField",
+              "dataSetId": "jobs",
+              "field": "notes"
+            }
+          }
+        ]
+      },
+      {
+        "id": "clearStaffDraft",
+        "event": "activate",
+        "clearDrafts": true
+      }
+    ]
+  },
+  "data": [
+    {
+      "id": "jobs",
+      "keyField": "id",
+      "fields": {
+        "id": {
+          "kind": "text"
+        },
+        "customer": {
+          "kind": "text"
+        },
+        "status": {
+          "kind": "text"
+        },
+        "assignee": {
+          "kind": "text"
+        },
+        "notes": {
+          "kind": "text"
+        },
+        "priority": {
+          "kind": "number"
+        }
+      },
+      "rows": [
+        {
+          "id": "job-101",
+          "customer": "Cinderworks",
+          "status": "Waiting on materials",
+          "assignee": "staff-1",
+          "notes": "Confirm delivery window.",
+          "priority": 2
+        },
+        {
+          "id": "job-102",
+          "customer": "Northstar",
+          "status": "Waiting on materials",
+          "assignee": "staff-2",
+          "notes": "Check stock at the supplier.",
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "id": "staff",
+      "keyField": "id",
+      "fields": {
+        "id": {
+          "kind": "text"
+        },
+        "name": {
+          "kind": "text"
+        }
+      },
+      "rows": [
+        {
+          "id": "staff-1",
+          "name": "Alex"
+        },
+        {
+          "id": "staff-2",
+          "name": "Morgan"
+        }
+      ]
+    }
+  ]
+}

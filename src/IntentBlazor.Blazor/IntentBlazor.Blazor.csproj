@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-    <Description>Blazor interaction components and renderers for IntentBlazor. Phase 0 foundation.</Description>
+    <Description>AiInput, AiOutput, and deterministic Blazor renderers for IntentBlazor.</Description>
   </PropertyGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />

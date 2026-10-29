@@ -18,6 +18,12 @@
       "intentblazor.core": {
         "type": "Project"
       },
+      "intentblazor.examples": {
+        "type": "Project",
+        "dependencies": {
+          "IntentBlazor.Runtime": "[0.1.0-alpha.0, )"
+        }
+      },
       "intentblazor.runtime": {
         "type": "Project",
         "dependencies": {

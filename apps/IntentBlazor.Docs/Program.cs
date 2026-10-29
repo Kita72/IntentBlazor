@@ -1,6 +1,11 @@
 using IntentBlazor.Docs.Components;
+using IntentBlazor.Examples;
+using IntentBlazor.Runtime;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddIntentBlazor();
+builder.Services.AddSingleton<ExampleCatalog>();
+builder.Services.AddScoped<IInputProcessor, ExampleInputProcessor>();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()

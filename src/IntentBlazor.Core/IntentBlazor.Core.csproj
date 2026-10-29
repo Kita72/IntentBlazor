@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-    <Description>Provider-independent contracts for IntentBlazor. Phase 0 foundation.</Description>
+    <Description>Versioned output contracts and validation for IntentBlazor.</Description>
   </PropertyGroup>
 </Project>

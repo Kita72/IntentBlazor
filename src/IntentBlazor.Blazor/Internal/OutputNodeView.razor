@@ -1,0 +1,82 @@
+@namespace IntentBlazor.Blazor.Internal
+@using IntentBlazor.Core
+@using IntentBlazor.Runtime
+
+@if (Session.IsVisible(Node))
+{
+    @switch (Node.Kind)
+    {
+        case NodeKind.Layout:
+            <div class="@(Node.Columns ? "ib-columns" : "ib-stack")" data-node="@Node.Id">
+                @foreach (string child in Node.Children)
+                {
+                    <OutputNodeView Session="@Session" NodeId="@child" @key="child" />
+                }
+            </div>
+            break;
+        case NodeKind.Card:
+        case NodeKind.Form:
+            <fieldset class="ib-panel" data-node="@Node.Id">
+                <legend>@Node.Title</legend>
+                @foreach (string child in Node.Children)
+                {
+                    <OutputNodeView Session="@Session" NodeId="@child" @key="child" />
+                }
+            </fieldset>
+            break;
+        case NodeKind.Text:
+            <div data-node="@Node.Id">
+                @if (!string.IsNullOrEmpty(Node.Title)) { <h3>@Node.Title</h3> }
+                <p>@JsonValues.Display(Session.Read(Node.Value!))</p>
+            </div>
+            break;
+        case NodeKind.List:
+            <ListView Session="@Session" Node="@Node" />
+            break;
+        case NodeKind.Table:
+            <TableView Session="@Session" Node="@Node" />
+            break;
+        case NodeKind.Input:
+        case NodeKind.Select:
+            <FieldView Session="@Session" Node="@Node" />
+            break;
+        case NodeKind.Button:
+            long buttonRevision = Session.Revision;
+            <button type="button" data-node="@Node.Id"
+                    @onclick="() => Session.Dispatch(new(Node.Id, UiEventKind.Activate, buttonRevision))">@Node.Title</button>
+            break;
+        case NodeKind.Image:
+            string source = JsonValues.Display(Session.Read(Node.Value!));
+            @if (ImageSourcePolicy.IsAllowed(source))
+            {
+                <figure data-node="@Node.Id"><img src="@source" alt="@Node.Title" /><figcaption>@Node.Title</figcaption></figure>
+            }
+            else
+            {
+                <p data-node="@Node.Id">Image unavailable. Select an image with an application-local source.</p>
+            }
+            break;
+        case NodeKind.Rating:
+            var rating = Session.Read(Node.Value!);
+            <div data-node="@Node.Id">
+                <span>@Node.Title: </span>
+                @if (rating.ValueKind == System.Text.Json.JsonValueKind.Number &&
+                    rating.TryGetDecimal(out decimal number) && number >= 0 && number <= Node.RatingMaximum)
+                {
+                    <meter min="0" max="@Node.RatingMaximum" value="@number" aria-label="@Node.Title">@number</meter>
+                    <span>@number / @Node.RatingMaximum</span>
+                }
+                else
+                {
+                    <span>No rating available</span>
+                }
+            </div>
+            break;
+    }
+}
+
+@code {
+    [Parameter, EditorRequired] public AiSession Session { get; set; } = default!;
+    [Parameter, EditorRequired] public string NodeId { get; set; } = "";
+    private OutputNode Node => Session.Document!.Nodes.Single(node => node.Id == NodeId);
+}

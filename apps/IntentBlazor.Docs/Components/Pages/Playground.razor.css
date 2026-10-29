@@ -1,0 +1,3 @@
+.playground-title { font-size: clamp(2rem, 5vw, 3.5rem); }
+.document-editor { width: 100%; min-height: 320px; padding: 1rem; font: .85rem ui-monospace, Consolas, monospace; border: 1px solid #79939d; border-radius: 8px; }
+.document-editor:focus-visible { outline: 3px solid #bd6b12; outline-offset: 3px; }

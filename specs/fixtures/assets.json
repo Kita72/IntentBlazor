@@ -1,0 +1,163 @@
+{
+  "document": {
+    "schemaVersion": "0.1",
+    "id": "asset-gallery",
+    "revision": 1,
+    "rootId": "root",
+    "requires": {
+      "builtin": "0.1"
+    },
+    "dataSets": [
+      "assets"
+    ],
+    "state": {
+      "selectedAsset": {
+        "kind": "recordReference",
+        "initialValue": null,
+        "nullable": true,
+        "dataSetId": "assets"
+      },
+      "workingLabel": {
+        "kind": "text",
+        "initialValue": ""
+      }
+    },
+    "nodes": [
+      {
+        "id": "root",
+        "kind": "layout",
+        "columns": true,
+        "children": [
+          "gallery",
+          "assetDetails"
+        ]
+      },
+      {
+        "id": "gallery",
+        "kind": "list",
+        "title": "Original sample sprites",
+        "dataSetId": "assets",
+        "labelField": "name",
+        "selectionState": "selectedAsset",
+        "interactionId": "chooseAsset"
+      },
+      {
+        "id": "assetDetails",
+        "kind": "card",
+        "title": "Asset inspection",
+        "whenState": "selectedAsset",
+        "children": [
+          "preview",
+          "dimensions",
+          "labelInput",
+          "labelPreview",
+          "clearAssetDraft"
+        ]
+      },
+      {
+        "id": "preview",
+        "kind": "image",
+        "title": "Selected sprite",
+        "value": {
+          "source": "selectedField",
+          "stateKey": "selectedAsset",
+          "dataSetId": "assets",
+          "field": "image"
+        }
+      },
+      {
+        "id": "dimensions",
+        "kind": "text",
+        "title": "Dimensions",
+        "value": {
+          "source": "selectedField",
+          "stateKey": "selectedAsset",
+          "dataSetId": "assets",
+          "field": "dimensions"
+        }
+      },
+      {
+        "id": "labelInput",
+        "kind": "input",
+        "title": "Working label",
+        "stateKey": "workingLabel"
+      },
+      {
+        "id": "labelPreview",
+        "kind": "text",
+        "title": "Working label preview",
+        "value": {
+          "source": "state",
+          "stateKey": "workingLabel"
+        }
+      },
+      {
+        "id": "clearAssetDraft",
+        "kind": "button",
+        "title": "Clear asset draft",
+        "interactionId": "clearAssetDraft"
+      }
+    ],
+    "interactions": [
+      {
+        "id": "chooseAsset",
+        "event": "select",
+        "assignments": [
+          {
+            "stateKey": "selectedAsset",
+            "value": {
+              "source": "eventValue"
+            }
+          },
+          {
+            "stateKey": "workingLabel",
+            "value": {
+              "source": "eventField",
+              "dataSetId": "assets",
+              "field": "name"
+            }
+          }
+        ]
+      },
+      {
+        "id": "clearAssetDraft",
+        "event": "activate",
+        "clearDrafts": true
+      }
+    ]
+  },
+  "data": [
+    {
+      "id": "assets",
+      "keyField": "id",
+      "fields": {
+        "id": {
+          "kind": "text"
+        },
+        "name": {
+          "kind": "text"
+        },
+        "dimensions": {
+          "kind": "text"
+        },
+        "image": {
+          "kind": "text"
+        }
+      },
+      "rows": [
+        {
+          "id": "asset-1",
+          "name": "Crate sprite",
+          "dimensions": "16 × 16 pixels",
+          "image": "/samples/crate.svg"
+        },
+        {
+          "id": "asset-2",
+          "name": "Lantern sprite",
+          "dimensions": "16 × 16 pixels",
+          "image": "/samples/lantern.svg"
+        }
+      ]
+    }
+  ]
+}

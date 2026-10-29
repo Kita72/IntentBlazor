@@ -1,0 +1,161 @@
+{
+  "document": {
+    "schemaVersion": "0.1",
+    "id": "news-reader",
+    "revision": 1,
+    "rootId": "root",
+    "requires": {
+      "builtin": "0.1"
+    },
+    "dataSets": [
+      "articles"
+    ],
+    "state": {
+      "selectedArticle": {
+        "kind": "recordReference",
+        "initialValue": null,
+        "nullable": true,
+        "dataSetId": "articles"
+      }
+    },
+    "nodes": [
+      {
+        "id": "root",
+        "kind": "layout",
+        "columns": true,
+        "children": [
+          "headlines",
+          "article"
+        ]
+      },
+      {
+        "id": "headlines",
+        "kind": "list",
+        "title": "Gaming updates",
+        "dataSetId": "articles",
+        "labelField": "title",
+        "selectionState": "selectedArticle",
+        "interactionId": "openArticle"
+      },
+      {
+        "id": "article",
+        "kind": "card",
+        "title": "Article and tips",
+        "whenState": "selectedArticle",
+        "children": [
+          "headline",
+          "body",
+          "source",
+          "rating"
+        ]
+      },
+      {
+        "id": "headline",
+        "kind": "text",
+        "title": "Selected update",
+        "value": {
+          "source": "selectedField",
+          "stateKey": "selectedArticle",
+          "dataSetId": "articles",
+          "field": "title"
+        }
+      },
+      {
+        "id": "body",
+        "kind": "text",
+        "value": {
+          "source": "selectedField",
+          "stateKey": "selectedArticle",
+          "dataSetId": "articles",
+          "field": "body"
+        }
+      },
+      {
+        "id": "source",
+        "kind": "text",
+        "title": "Source",
+        "value": {
+          "source": "selectedField",
+          "stateKey": "selectedArticle",
+          "dataSetId": "articles",
+          "field": "source"
+        }
+      },
+      {
+        "id": "rating",
+        "kind": "rating",
+        "title": "Community rating",
+        "value": {
+          "source": "selectedField",
+          "stateKey": "selectedArticle",
+          "dataSetId": "articles",
+          "field": "rating"
+        },
+        "ratingMaximum": 5
+      }
+    ],
+    "interactions": [
+      {
+        "id": "openArticle",
+        "event": "select",
+        "assignments": [
+          {
+            "stateKey": "selectedArticle",
+            "value": {
+              "source": "eventValue"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "data": [
+    {
+      "id": "articles",
+      "keyField": "id",
+      "fields": {
+        "id": {
+          "kind": "text"
+        },
+        "title": {
+          "kind": "text"
+        },
+        "game": {
+          "kind": "text"
+        },
+        "published": {
+          "kind": "text"
+        },
+        "body": {
+          "kind": "text"
+        },
+        "source": {
+          "kind": "text"
+        },
+        "rating": {
+          "kind": "number"
+        }
+      },
+      "rows": [
+        {
+          "id": "news-1",
+          "title": "Example RPG patch 1.2",
+          "game": "Example RPG",
+          "published": "2026-10-28",
+          "body": "Fictional fixture: shields now block more damage. Try a defensive build in the training arena.",
+          "source": "Authored example — no live news service",
+          "rating": 4.5
+        },
+        {
+          "id": "news-2",
+          "title": "Skyward Tactics beginner tips",
+          "game": "Skyward Tactics",
+          "published": "2026-10-27",
+          "body": "Fictional fixture: use high ground and keep a reserve unit for the final turn.",
+          "source": "Authored example — no live news service",
+          "rating": 4.2
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+.ib-output { padding: 1rem; border: 1px solid #c5d4da; border-radius: 10px; background: #fff; color: #152338; }
+.ib-errors { color: #8c2020; padding: .8rem 2rem; background: #fff0ee; }
+.ib-draft { padding: .5rem; background: #fff3cc; }
+.ib-output ::deep .ib-stack { display: grid; gap: 1rem; }
+.ib-output ::deep .ib-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.ib-output ::deep .ib-panel { min-width: 0; margin: 0; padding: 1rem; border: 1px solid #c5d4da; border-radius: 6px; }
+.ib-output ::deep legend { font-weight: 700; padding-inline: .3rem; }
+.ib-output ::deep h3 { font-size: 1rem; line-height: 1.4; margin: 0 0 .6rem; }
+.ib-output ::deep p { overflow-wrap: anywhere; white-space: pre-wrap; }
+.ib-output ::deep button { padding: .4rem .6rem; border: 1px solid #79939d; border-radius: 5px; color: #15353d; background: #f4f8f9; font: inherit; cursor: pointer; }
+.ib-output ::deep button[aria-pressed=true] { border-color: #075f55; background: #d9eee7; }
+.ib-output ::deep button:focus-visible, .ib-output ::deep input:focus-visible, .ib-output ::deep select:focus-visible { outline: 3px solid #bd6b12; outline-offset: 2px; }
+.ib-output ::deep .ib-list { display: grid; gap: .5rem; padding: 0; list-style: none; }
+.ib-output ::deep .ib-list button { width: 100%; text-align: left; }
+.ib-output ::deep .ib-table-scroll { overflow-x: auto; }
+.ib-output ::deep table { width: 100%; border-collapse: collapse; }
+.ib-output ::deep caption { text-align: left; font-weight: 700; }
+.ib-output ::deep th, .ib-output ::deep td { padding: .5rem; text-align: left; border-bottom: 1px solid #d9e2e9; }
+.ib-output ::deep .ib-field { display: grid; gap: .3rem; margin-bottom: 1rem; }
+.ib-output ::deep input, .ib-output ::deep select { box-sizing: border-box; max-width: 100%; width: 100%; padding: .5rem; font: inherit; border: 1px solid #79939d; border-radius: 4px; }
+.ib-output ::deep figure { margin: 0; }
+.ib-output ::deep img { display: block; max-width: 100%; max-height: 320px; image-rendering: pixelated; }
+@media (max-width: 700px) { .ib-output ::deep .ib-columns { grid-template-columns: 1fr; } }

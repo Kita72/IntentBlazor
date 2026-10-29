@@ -1,0 +1,60 @@
+@namespace IntentBlazor.Blazor.Internal
+@using IntentBlazor.Core
+@using IntentBlazor.Runtime
+
+@{ long revision = Session.Revision; }
+<div class="ib-table-scroll" data-node="@Node.Id">
+    <table>
+        <caption>@Node.Title</caption>
+        <thead>
+            <tr>
+                @foreach (var field in Node.Fields)
+                {
+                    <th scope="col" aria-sort="@SortDirection(field.Field)">
+                        <button type="button" @onclick="() => Sort(field.Field, revision)">Sort by @field.Label</button>
+                    </th>
+                }
+                @if (Node.InteractionId is not null) { <th scope="col">Details</th> }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var row in Session.Rows(Node))
+            {
+                string key = Session.RecordKey(Node, row);
+                <tr @key="key" data-row-key="@key">
+                    @foreach (var field in Node.Fields)
+                    {
+                        <td>@JsonValues.Display(row[field.Field])</td>
+                    }
+                    @if (Node.InteractionId is not null)
+                    {
+                        <td><button type="button" aria-pressed="@IsSelected(key)"
+                                    @onclick="() => Session.Dispatch(new(Node.Id, UiEventKind.Select, revision) { Value = JsonValues.From(key) })">
+                            Select @JsonValues.Display(row[Node.Fields[0].Field])
+                        </button></td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (Session.Rows(Node).IsEmpty) { <p>No records available.</p> }
+</div>
+
+@code {
+    [Parameter, EditorRequired] public AiSession Session { get; set; } = default!;
+    [Parameter, EditorRequired] public OutputNode Node { get; set; } = default!;
+
+    private bool IsSelected(string key) => Node.SelectionState is not null &&
+        JsonValues.Display(Session.Snapshot.Values[Node.SelectionState]) == key;
+
+    private string SortDirection(string field) =>
+        Session.Snapshot.Sorting.TryGetValue(Node.Id, out var sort) && sort.Field == field
+            ? sort.Descending ? "descending" : "ascending" : "none";
+
+    private void Sort(string field, long revision)
+    {
+        bool descending = Session.Snapshot.Sorting.TryGetValue(Node.Id, out var sort) &&
+            sort.Field == field && !sort.Descending;
+        Session.Dispatch(new(Node.Id, UiEventKind.Sort, revision) { SortField = field, Descending = descending });
+    }
+}

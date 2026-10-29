@@ -1,0 +1,31 @@
+@namespace IntentBlazor.Blazor
+@inherits SessionComponent
+@using IntentBlazor.Blazor.Internal
+
+<section class="ib-output" aria-label="Dynamic output" data-revision="@Current.Revision">
+    @if (Current.IsBusy)
+    {
+        <p role="status">Preparing output…</p>
+    }
+    @if (!Current.Errors.IsEmpty)
+    {
+        <ul class="ib-errors" role="alert">
+            @foreach (var error in Current.Errors)
+            {
+                <li @key="error">@error.Message <small>(@error.Code)</small></li>
+            }
+        </ul>
+    }
+    @if (Current.Document is { } document)
+    {
+        @if (Current.HasDraft)
+        {
+            <p class="ib-draft" role="status">Unsaved local draft. No application data has been saved.</p>
+        }
+        <OutputNodeView Session="@Current" NodeId="@document.RootId" @key="document.Id" />
+    }
+    else if (!Current.IsBusy)
+    {
+        <p class="ib-empty">No output yet. Enter a request or open an authored document.</p>
+    }
+</section>

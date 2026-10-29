@@ -1,0 +1,49 @@
+@namespace IntentBlazor.Blazor
+@inherits SessionComponent
+@using Microsoft.AspNetCore.Components.Forms
+
+<div class="ib-input">
+<EditForm Model="@_request" OnValidSubmit="SubmitAsync" FormName="@_formName">
+    <DataAnnotationsValidator />
+    <label for="@_fieldId">@Label</label>
+    <InputTextArea id="@_fieldId" @bind-Value="_request.Text" placeholder="@Placeholder"
+                   maxlength="2048" disabled="@(!_interactiveReady || Current.IsBusy)" />
+    <ValidationMessage For="@(() => _request.Text)" />
+    <div class="ib-input-actions">
+        <button type="submit" disabled="@(!_interactiveReady || Current.IsBusy)">@(!_interactiveReady ? "Connecting…" : Current.IsBusy ? "Preparing…" : "Submit")</button>
+        @if (Current.IsBusy)
+        {
+            <button type="button" @onclick="Current.Cancel">Cancel request</button>
+        }
+    </div>
+</EditForm>
+</div>
+
+@code {
+    [Parameter] public string Label { get; set; } = "Request";
+    [Parameter] public string Placeholder { get; set; } = "Describe the task…";
+    private readonly string _formName = $"intent-{Guid.NewGuid():N}";
+    private readonly string _fieldId = $"intent-input-{Guid.NewGuid():N}";
+    private readonly InputRequest _request = new();
+    private bool _interactiveReady;
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (!firstRender) return;
+        _interactiveReady = true;
+        StateHasChanged();
+    }
+
+    private async Task SubmitAsync()
+    {
+        var result = await Current.SubmitAsync(_request.Text);
+        if (result.Success) _request.Text = "";
+    }
+
+    private sealed class InputRequest
+    {
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.StringLength(2048)]
+        public string Text { get; set; } = "";
+    }
+}
