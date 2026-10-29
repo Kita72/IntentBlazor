@@ -9,7 +9,7 @@
 <pre><code>git clone https://github.com/Kita72/IntentBlazor.git
 cd IntentBlazor
 pwsh -File scripts/Verify.ps1
-dotnet run --project apps/IntentBlazor.Docs --no-launch-profile --urls http://localhost:5180</code></pre>
+dotnet run --project apps/IntentBlazor.Docs --no-launch-profile -- --environment Development --urls http://localhost:5180</code></pre>
 <p>Install the SDK specified in global.json and PowerShell 7. Open localhost:5180 after starting the docs application.</p>
 <section class="card-grid">
     <article class="card"><h2>Start small</h2><p>Improve documentation, clarify an error case,

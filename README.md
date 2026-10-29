@@ -18,7 +18,7 @@ Install the .NET SDK selected by [global.json](global.json), Git, and PowerShell
 git clone https://github.com/Kita72/IntentBlazor.git
 cd IntentBlazor
 pwsh -File scripts/Verify.ps1
-dotnet run --project apps/IntentBlazor.Docs --no-launch-profile --urls http://localhost:5180
+dotnet run --project apps/IntentBlazor.Docs --no-launch-profile -- --environment Development --urls http://localhost:5180
 ~~~
 
 Open http://localhost:5180 for the local documentation site. The verification script restores locked dependencies, builds, checks formatting and documentation links, and produces local package artifacts. Empty library scaffolds are not published or advertised as a usable preview.
@@ -44,7 +44,7 @@ Start with [CONTRIBUTING.md](CONTRIBUTING.md), the [roadmap](ROADMAP.md), and [a
 
 Use [Discussions](https://github.com/Kita72/IntentBlazor/discussions) for questions and proposals, and [issues](https://github.com/Kita72/IntentBlazor/issues) for defects and accepted work.
 
-See the [implementation plan](docs/implementation-plan.md), [governance](GOVERNANCE.md), [code of conduct](CODE_OF_CONDUCT.md), and [security policy](SECURITY.md).
+See the [implementation plan](docs/implementation-plan.md), [Phase 0 completion record](docs/phase-0-completion.md), [governance](GOVERNANCE.md), [code of conduct](CODE_OF_CONDUCT.md), and [security policy](SECURITY.md).
 
 ## License
 

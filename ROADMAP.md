@@ -4,7 +4,7 @@ The target is a developer preview demonstrating the same input, output-document,
 
 | Phase | Milestone | Status |
 | --- | --- | --- |
-| 0 | Open-source foundation, buildable projects, docs shell, contributor workflow | In progress |
+| 0 | Open-source foundation, buildable projects, docs shell, contributor workflow | Complete |
 | 1 | Versioned documents and deterministic renderer | Planned |
 | 2 | First verified local and frontier model interaction | Planned |
 | 3 | Stateful updates, actions, persistence, and conflict recovery | Planned |

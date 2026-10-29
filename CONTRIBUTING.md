@@ -8,7 +8,7 @@ Install Git, PowerShell 7, and a .NET 10.0.4xx SDK satisfying [global.json](glob
 
 ~~~powershell
 pwsh -File scripts/Verify.ps1
-dotnet run --project apps/IntentBlazor.Docs --no-launch-profile --urls http://localhost:5180
+dotnet run --project apps/IntentBlazor.Docs --no-launch-profile -- --environment Development --urls http://localhost:5180
 ~~~
 
 Ordinary builds and fixture-based work must not require a model account, paid credentials, or private data. Record live-model evaluations separately with provider, model identifier, configuration, scenario, and observed outcome.
