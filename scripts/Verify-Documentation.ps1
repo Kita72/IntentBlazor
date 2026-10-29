@@ -5,7 +5,13 @@ param()
 $ErrorActionPreference = 'Stop'
 $repositoryRoot = [IO.Path]::GetFullPath((Split-Path -Parent $PSScriptRoot))
 $markdownFiles = @(Get-ChildItem -LiteralPath $repositoryRoot -Recurse -Filter '*.md' -File |
-    Where-Object { $_.FullName -notmatch '[\\/](bin|obj|artifacts|\.git)[\\/]' })
+    Where-Object {
+        $repositoryPath = [IO.Path]::GetRelativePath($repositoryRoot, $_.FullName)
+        $repositoryPath -notmatch '(^|[\\/])(bin|obj|artifacts|\.git)[\\/]'
+    })
+if ($markdownFiles.Count -eq 0) {
+    throw 'No Markdown files were found; documentation verification cannot succeed without checking files.'
+}
 $failures = [Collections.Generic.List[string]]::new()
 $linkPattern = '\[[^\]]+\]\((?<target>[^\s)]+)(?:\s+"[^"]*")?\)'
 
