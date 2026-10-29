@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/apps/">
+    <Project Path="apps/IntentBlazor.Docs/IntentBlazor.Docs.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/IntentBlazor.Blazor/IntentBlazor.Blazor.csproj" />
+    <Project Path="src/IntentBlazor.Core/IntentBlazor.Core.csproj" />
+    <Project Path="src/IntentBlazor.Runtime/IntentBlazor.Runtime.csproj" />
+    <Project Path="src/IntentBlazor.Storage.Sqlite/IntentBlazor.Storage.Sqlite.csproj" />
+  </Folder>
+</Solution>

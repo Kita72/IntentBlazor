@@ -1,0 +1,17 @@
+name: Provider compatibility
+description: Report a specific model or adapter result.
+labels: ["provider"]
+body:
+  - type: input
+    id: profile
+    attributes:
+      label: Provider and exact model identifier
+    validations:
+      required: true
+  - type: textarea
+    id: result
+    attributes:
+      label: Scenario, configuration, and actual result
+      description: Distinguish connectivity from working tools or structured output. Do not include secrets.
+    validations:
+      required: true

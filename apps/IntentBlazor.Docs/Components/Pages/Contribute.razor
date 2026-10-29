@@ -1,0 +1,24 @@
+@page "/contribute"
+
+<PageTitle>Contribute — IntentBlazor</PageTitle>
+<p class="eyebrow">OPEN SOURCE</p>
+<h1>Help shape<br />the framework.</h1>
+<p class="lead">Bring a small improvement, a representative app scenario, or a focused design proposal.
+    Ordinary contributor builds need no model account or API key.</p>
+<h2>Run the foundation locally</h2>
+<pre><code>git clone https://github.com/Kita72/IntentBlazor.git
+cd IntentBlazor
+pwsh -File scripts/Verify.ps1
+dotnet run --project apps/IntentBlazor.Docs --no-launch-profile --urls http://localhost:5180</code></pre>
+<p>Install the SDK specified in global.json and PowerShell 7. Open localhost:5180 after starting the docs application.</p>
+<section class="card-grid">
+    <article class="card"><h2>Start small</h2><p>Improve documentation, clarify an error case,
+        or describe a representative output document.</p></article>
+    <article class="card"><h2>Discuss contracts</h2><p>Propose schema and public API changes before implementation.
+        Keep domain features in extensions and application services.</p></article>
+    <article class="card"><h2>Verify behaviour</h2><p>Use synthetic data and meaningful checks.
+        Record actual outcomes separately from planned capabilities.</p></article>
+</section>
+<p><a href="https://github.com/Kita72/IntentBlazor/blob/main/CONTRIBUTING.md">Contribution guide</a> ·
+    <a href="https://github.com/Kita72/IntentBlazor/discussions">Discussions</a> ·
+    <a href="https://github.com/Kita72/IntentBlazor/issues">Issues</a></p>

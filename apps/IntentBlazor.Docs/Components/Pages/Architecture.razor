@@ -1,0 +1,21 @@
+@page "/architecture"
+
+<PageTitle>Architecture — IntentBlazor</PageTitle>
+<p class="eyebrow">DESIGN FOUNDATION</p>
+<h1>Two components.<br />One shared workspace.</h1>
+<p class="lead">The developer exposes capabilities. The AI proposes a presentation.
+    The runtime validates it and connects the interface to real data and actions.</p>
+<div class="card-grid">
+    <article class="card"><h2>Core contracts</h2><p>Versioned output documents describe data references,
+        state, view nodes, bindings, and interactions.</p></article>
+    <article class="card"><h2>Execution runtime</h2><p>Scoped sessions coordinate model context, authorized tools,
+        validated updates, and actual operation results.</p></article>
+    <article class="card"><h2>Blazor presentation</h2><p>The output renderer combines familiar controls and specialist
+        surfaces while preserving selections and unfinished edits.</p></article>
+</div>
+<section>
+    <h2>Application authority stays with the developer</h2>
+    <p>Generated content cannot grant access or invent a successful save. Application services enforce permissions,
+        validation, concurrency, and persistence. Direct selections and edits remain responsive without model calls.</p>
+    <p><a href="https://github.com/Kita72/IntentBlazor/tree/main/docs/architecture">Read the architecture decisions on GitHub</a>.</p>
+</section>

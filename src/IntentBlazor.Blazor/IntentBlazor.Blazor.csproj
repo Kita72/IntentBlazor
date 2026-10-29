@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Description>Blazor interaction components and renderers for IntentBlazor. Phase 0 foundation.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <ProjectReference Include="../IntentBlazor.Core/IntentBlazor.Core.csproj" />
+    <ProjectReference Include="../IntentBlazor.Runtime/IntentBlazor.Runtime.csproj" />
+  </ItemGroup>
+</Project>

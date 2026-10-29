@@ -1,0 +1,17 @@
+name: Feature proposal
+description: Propose a framework or documentation improvement.
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Developer or user problem
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behaviour and acceptance criteria
+      description: Explain how this fits the two-component model and public extension contracts.
+    validations:
+      required: true

@@ -1,0 +1,22 @@
+@inherits LayoutComponentBase
+
+<div class="site-shell">
+    <header class="site-header">
+        <a class="brand" href="/">IntentBlazor<span>AI application framework</span></a>
+        <nav aria-label="Main navigation">
+            <NavLink href="/" Match="NavLinkMatch.All">Overview</NavLink>
+            <NavLink href="/architecture">Architecture</NavLink>
+            <NavLink href="/roadmap">Roadmap</NavLink>
+            <NavLink href="/contribute">Contribute</NavLink>
+            <a href="https://github.com/Kita72/IntentBlazor">GitHub</a>
+        </nav>
+    </header>
+    <main id="main-content">
+        @Body
+    </main>
+    <footer>MIT licensed · Built with .NET and Blazor · Phase 0 foundation</footer>
+</div>
+
+<div id="blazor-error-ui" data-nosnippet>
+    The page encountered an error. <a href="." class="reload">Reload</a>
+</div>

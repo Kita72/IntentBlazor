@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Description>Optional SQLite session storage for IntentBlazor. Phase 0 foundation.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../IntentBlazor.Core/IntentBlazor.Core.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,16 @@
+name: Documentation improvement
+description: Report a missing or confusing guide.
+labels: ["documentation"]
+body:
+  - type: input
+    id: location
+    attributes:
+      label: Page or source path
+    validations:
+      required: true
+  - type: textarea
+    id: change
+    attributes:
+      label: What should be clearer
+    validations:
+      required: true
