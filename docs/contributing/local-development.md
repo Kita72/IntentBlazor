@@ -2,7 +2,7 @@
 
 Run the verification script from [CONTRIBUTING.md](../../CONTRIBUTING.md). It supports PowerShell 7 on Windows and Linux.
 
-Use the no-launch-profile HTTP command in the README for a local smoke check. That avoids requiring development certificate installation. Production hosting keeps HTTPS redirection enabled.
+Use the no-launch-profile HTTP command in the README for a local smoke check. It explicitly selects Development so static web assets resolve when running from source, and avoids requiring development certificate installation. Production hosting keeps HTTPS redirection enabled.
 
 No generated binary or package belongs in source control. Local output is under ignored bin, obj, and artifacts directories.
 
