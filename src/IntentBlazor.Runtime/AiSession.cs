@@ -44,6 +44,7 @@ public sealed class AiSession(DocumentValidator validator, IInputProcessor proce
     public long Revision { get; private set; }
     public bool IsBusy => Volatile.Read(ref _busy) != 0;
     public bool HasDraft => !_dirty.IsEmpty;
+    public InputProgress? Progress { get; private set; }
     public ImmutableArray<DocumentError> Errors { get; private set; } = [];
     public ImmutableArray<InputTurn> History { get; private set; } = [];
     public WorkspaceSnapshot Snapshot => new(Document, Revision, _values, _sorting, _dirty);
@@ -191,13 +192,16 @@ public sealed class AiSession(DocumentValidator validator, IInputProcessor proce
         using CancellationTokenSource source = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         lock (_cancellationGate) _cancellation = source;
         Errors = [];
+        Progress = null;
         Changed?.Invoke();
         OperationResult result;
         string status;
         try
         {
             source.Token.ThrowIfCancellationRequested();
-            OutputContent next = await processor.ProcessAsync(input.Trim(), Snapshot, source.Token);
+            OutputContent next = processor is IStreamingInputProcessor streaming
+                ? await streaming.ProcessAsync(input.Trim(), Snapshot, new SessionProgress(this), source.Token)
+                : await processor.ProcessAsync(input.Trim(), Snapshot, source.Token);
             source.Token.ThrowIfCancellationRequested();
             result = Open(next, expectedRevision: expectedRevision);
             status = result.Success ? "completed" : "rejected";
@@ -291,6 +295,16 @@ public sealed class AiSession(DocumentValidator validator, IInputProcessor proce
             if (right.ValueKind == JsonValueKind.Null) return 1;
             if (left.ValueKind == JsonValueKind.Number) return left.GetDecimal().CompareTo(right.GetDecimal());
             return StringComparer.OrdinalIgnoreCase.Compare(JsonValues.Display(left), JsonValues.Display(right));
+        }
+    }
+
+    private sealed class SessionProgress(AiSession session) : IProgress<InputProgress>
+    {
+        public void Report(InputProgress value)
+        {
+            if (session._disposed) return;
+            session.Progress = value;
+            session.Changed?.Invoke();
         }
     }
 }

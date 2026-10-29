@@ -7,7 +7,6 @@
 @using IntentBlazor.Runtime
 @using IntentBlazor.Blazor
 @using IntentBlazor.Examples
-@inject AiSession Workspace
 @inject ExampleCatalog Catalog
 
 <PageTitle>Document playground — IntentBlazor</PageTitle>
@@ -23,8 +22,8 @@
 <p>Choose a fixture, or type <code>news</code>, <code>staff</code>, or <code>assets</code> below.
     Clear an edited draft before replacing its workspace.</p>
 
-<AiInput Placeholder="Fixture commands: news, staff, assets" />
-<AiOutput />
+<AiInput Session="@Workspace" Placeholder="Fixture commands: news, staff, assets" />
+<AiOutput Session="@Workspace" />
 
 <section>
     <h2>Document explorer</h2>
@@ -49,6 +48,7 @@
 </section>
 
 @code {
+    private AiSession Workspace = default!;
     private string _json = "";
     private OutputDocument? _shownDocument;
     private ImmutableArray<OutputDataSet> _hostData = [];
@@ -64,6 +64,7 @@
 
     protected override void OnInitialized()
     {
+        Workspace = new(new DocumentValidator(), new ExampleInputProcessor(Catalog));
         Workspace.Changed += OnChanged;
         OpenFixture("news");
     }
@@ -106,6 +107,7 @@
     {
         _disposed = true;
         Workspace.Changed -= OnChanged;
+        Workspace.Dispose();
         return ValueTask.CompletedTask;
     }
 }

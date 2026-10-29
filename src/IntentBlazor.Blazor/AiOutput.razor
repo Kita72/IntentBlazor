@@ -6,6 +6,10 @@
     @if (Current.IsBusy)
     {
         <p role="status">Preparing output…</p>
+        @if (Current.Progress is { } progress)
+        {
+            <p role="status">@progress.Stage · @progress.ModelCalls model calls · @progress.ToolCalls data calls · @progress.Characters characters received</p>
+        }
     }
     @if (!Current.Errors.IsEmpty)
     {

@@ -2,13 +2,14 @@
 
 An open-source AI-centric Blazor framework being developed around two living components: **AiInput** receives user intent and content; **AiOutput** becomes the interactive workspace for the task.
 
-**Status: Phase 1 implementation.** AiInput, AiOutput, versioned output contracts, validation, and a deterministic renderer work with three authored examples in the documentation playground. Model adapters, application actions, and durable persistence are planned work. There are no published packages yet; the public API is experimental.
+**Status: Phase 2 adapters implemented; live verification deferred.** AiInput and AiOutput share versioned documents, validation, deterministic rendering, and an optional model pipeline. Ollama, LM Studio, OpenAI, and an experimental Codex CLI adapter have deterministic tests. No real model profile is certified yet. Application actions and durable persistence remain planned. There are no published packages; the public API is experimental.
 
 ## What we are building
 
 Developers will connect a model, expose C# capabilities through attributes or explicit registration, and place the two interaction components in their app. The runtime will coordinate data, UI composition, direct interaction, and session continuity.
 
-The initial hosting target is a Blazor Web App with Interactive Server. Local models through Ollama and LM Studio and selected frontier providers are planned; compatibility will be reported only after verification.
+The initial hosting target is a Blazor Web App with Interactive Server. Adapter availability and verified model compatibility are tracked separately.
+The [model connection guide](docs/phase-2-model-connections.md) covers current registrations, C# data tools, limits, and the Codex adapter. The [provider matrix](docs/provider-evaluation.md) separates implemented adapters from live-model evidence.
 
 ## Run the playground
 
@@ -31,6 +32,7 @@ The verification script restores locked dependencies, builds, checks formatting,
 | --- | --- |
 | src/IntentBlazor.Core | Output contracts, strict JSON parsing, and semantic validation. |
 | src/IntentBlazor.Runtime | Scoped in-memory sessions, local events, drafts, and an input processor seam. |
+| src/IntentBlazor.AI | Optional model connections, data tools, bounded generation, and safe progress/usage metadata. |
 | src/IntentBlazor.Blazor | Razor class library for the two components and internal renderers. |
 | src/IntentBlazor.Storage.Sqlite | Reserved for the optional persistence adapter; not implemented. |
 | apps/IntentBlazor.Docs | Documentation and an interactive document playground. |

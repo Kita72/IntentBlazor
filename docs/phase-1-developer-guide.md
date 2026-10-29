@@ -1,5 +1,7 @@
 # Phase 1 developer guide
 
+This guide records the deterministic Phase 1 surface. For the optional model package now implemented, use the [Phase 2 connection guide](phase-2-model-connections.md); live verification remains deferred.
+
 Phase 1 implements the common output document and deterministic renderer. Its public API is experimental and packages have not been published. The tested host is a .NET 10 Blazor Web App using Interactive Server. Provider integration is Phase 2; file attachments, persistence, application saves, and custom renderer registration are not available yet.
 
 ## Try the three workspaces
@@ -75,7 +77,7 @@ Replace the app's home page with:
 <AiOutput />
 ~~~
 
-This processor echoes the request as encoded text. It proves the integration seam without a model. Your processor can inject C# services through the app's normal dependency injection and return authorized host data plus a presentation document. The future attribute and explicit tool-registration APIs are still planned; `IInputProcessor` is not an implemented AI tool system.
+This processor echoes the request as encoded text. It proves the integration seam without a model. Your processor can inject C# services through the app's normal dependency injection and return authorized host data plus a presentation document. For attribute and explicit data-tool registration, use the optional [Phase 2 AI package](phase-2-model-connections.md); this echo processor remains a minimal custom input example.
 
 `AddIntentBlazor()` alone supplies a safe rejecting default processor, so an app can render authored output before connecting input processing. Both UI components automatically use the same scoped `AiSession`; no component references, event relays, or page-level state binding are required. Keep them within the same interactive server circuit. The documentation shell stays static SSR with page-level interactivity on the playground.
 

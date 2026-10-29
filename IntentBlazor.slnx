@@ -5,7 +5,11 @@
   <Folder Name="/examples/">
     <Project Path="examples/IntentBlazor.Examples/IntentBlazor.Examples.csproj" />
   </Folder>
+  <Folder Name="/examples/GamingNews/">
+    <Project Path="examples/GamingNews/IntentBlazor.GamingNews.csproj" />
+  </Folder>
   <Folder Name="/src/">
+    <Project Path="src/IntentBlazor.AI/IntentBlazor.AI.csproj" />
     <Project Path="src/IntentBlazor.Blazor/IntentBlazor.Blazor.csproj" />
     <Project Path="src/IntentBlazor.Core/IntentBlazor.Core.csproj" />
     <Project Path="src/IntentBlazor.Runtime/IntentBlazor.Runtime.csproj" />

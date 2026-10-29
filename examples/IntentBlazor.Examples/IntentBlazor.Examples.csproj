@@ -4,6 +4,7 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="../../src/IntentBlazor.AI/IntentBlazor.AI.csproj" />
     <ProjectReference Include="../../src/IntentBlazor.Runtime/IntentBlazor.Runtime.csproj" />
     <EmbeddedResource Include="../../specs/fixtures/*.json" LogicalName="IntentBlazor.Fixtures.%(Filename)%(Extension)" />
   </ItemGroup>

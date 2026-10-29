@@ -1,0 +1,41 @@
+@page "/models"
+@rendermode InteractiveServer
+@using IntentBlazor.Blazor
+@using IntentBlazor.Examples
+@inject ExampleModelState Connection
+
+<PageTitle>Model connections — IntentBlazor</PageTitle>
+<p class="eyebrow">PHASE 2 · OPT-IN MODEL CONNECTIONS</p>
+<h1>Connect a model.<br />Keep the two components.</h1>
+<p>The Ollama, LM Studio, and OpenAI adapters use the same generation pipeline. Codex CLI is an experimental
+    workstation connection with preloaded data. Provider behavior has deterministic adapter tests;
+    live model and account verification is deferred.</p>
+@if (Connection.Enabled)
+{
+    <p class="status"><strong>Configured model mode:</strong> @Connection.Provider · @Connection.Model.
+        Submitting a request contacts this host-configured connection. The news service contains two synthetic articles.</p>
+    <p>Try: Show the sample gaming articles in an interactive list, with a selected article card, source, and rating.</p>
+    <AiInput />
+    <AiOutput />
+}
+else
+{
+    <p class="status"><strong>Model mode is disabled.</strong> No model calls are made by this page.
+        The <a href="/playground">fixture playground</a> works without a model or credentials.</p>
+}
+<section>
+    <h2>Configure on the trusted application host</h2>
+    <p>Select Ai:Provider and Ai:Model in server configuration. Local endpoints default to localhost:11434/v1/ for
+        Ollama and localhost:1234/v1/ for LM Studio. An optional Ai:Endpoint overrides the local server address.
+        Localhost refers to the Blazor server, not the visitor's browser.</p>
+    <p>OpenAI credentials are resolved on the server. Codex requires a separately installed and signed-in CLI;
+        Windows installations may need Ai:CodexExecutable pointing to its native executable.</p>
+    <p>Model generation is enabled only in Development for this anonymous documentation host.
+        Production deployments retain deterministic fixture mode.</p>
+    <h2>What happens after Submit</h2>
+    <p>Registered read-only data methods supply authorized datasets. Agent Framework handles HTTP-model tool calls.
+        Codex preloads parameterless data methods. Generated presentation JSON is bounded, parsed, and validated before
+        the workspace changes. Invalid documents get a bounded correction attempt. Cancellation, timeout, stale responses,
+        and failures retain the working output. Partial JSON is never rendered as an interactive view.</p>
+    <p><a href="https://github.com/Kita72/IntentBlazor/blob/phase-2-model-connections/docs/phase-2-model-connections.md">Read the provider setup and public API guide</a>.</p>
+</section>

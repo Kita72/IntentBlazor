@@ -4,6 +4,10 @@
 
 ### Added
 
+- Phase 2 optional IntentBlazor.AI package with Ollama, LM Studio, OpenAI, and experimental Codex CLI connections.
+- Scoped C# data-tool attributes and explicit registration, Agent Framework orchestration, strict presentation envelopes, correction limits, cancellation, progress, and usage metadata.
+- Optional model documentation page and an independently runnable Gaming News starter; both retain credential-free fixture defaults.
+- Provider matrix documenting deferred live verification and the Codex adapter's narrower capabilities.
 - IntentBlazor project identity and MIT license.
 - Five-project .NET 10 solution with a Blazor documentation shell.
 - Contributor, governance, conduct, security, architecture, and roadmap documents.
@@ -14,4 +18,4 @@
 - Three authored fixture workspaces, original MIT sample sprites, and an interactive documentation playground with document/state inspection.
 - Contract, runtime, and Blazor rendering tests plus the Phase 1 developer guide.
 
-No public framework package has been released. Live model adapters, application actions, durable sessions, and standalone example applications remain planned work.
+No public framework package has been released. Live model verification is deferred. Application actions, durable sessions, and the complete three standalone example workflows remain planned work.

@@ -3,9 +3,9 @@ using IntentBlazor.Examples;
 using IntentBlazor.Runtime;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddIntentBlazor();
-builder.Services.AddSingleton<ExampleCatalog>();
-builder.Services.AddScoped<IInputProcessor, ExampleInputProcessor>();
+ExampleModelState model = builder.Services.AddExampleModel(builder.Configuration);
+if (model.Enabled && !builder.Environment.IsDevelopment())
+    throw new InvalidOperationException("The anonymous docs model demo can only be enabled in Development. Keep deployed docs in fixture mode.");
 
 // Add services to the container.
 builder.Services.AddRazorComponents()

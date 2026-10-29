@@ -1,0 +1,29 @@
+@page "/"
+@rendermode InteractiveServer
+@inject ExampleModelState Connection
+@inject AiSession Workspace
+@inject ExampleCatalog Catalog
+
+<PageTitle>IntentBlazor Gaming News</PageTitle>
+<main>
+    <h1>Gaming News and Tips</h1>
+    @if (Connection.Enabled)
+    {
+        <p>Model mode: @Connection.Provider · @Connection.Model. Requests contact the configured model.
+            The data service supplies synthetic articles, not live news.</p>
+        <p>Ask for an interactive list of the sample articles with a selected article card, source, and rating.</p>
+    }
+    else
+    {
+        <p>Deterministic fixture mode. No model connection or live news feed. Submit news to reopen the sample workspace.</p>
+    }
+    <AiInput />
+    <AiOutput />
+</main>
+
+@code {
+    protected override void OnInitialized()
+    {
+        if (!Connection.Enabled) Workspace.Open(Catalog.Get("news"));
+    }
+}
