@@ -1,0 +1,6 @@
+.ib-image-editor { border: 1px solid #c8d2d2; border-radius: .5rem; padding: 1rem; }
+.ib-image-tools { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+.ib-image-viewport { overflow: auto; max-height: 30rem; background: repeating-conic-gradient(#e5e9e9 0% 25%, #fff 0% 50%) 50% / 16px 16px; }
+.ib-image-viewport img { image-rendering: pixelated; transform-origin: top left; }
+.zoom-2 img { zoom: 2; }
+.zoom-4 img { zoom: 4; }

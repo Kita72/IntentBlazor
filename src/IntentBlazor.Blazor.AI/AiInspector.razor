@@ -1,0 +1,20 @@
+@namespace IntentBlazor.Blazor.AI
+@inherits SessionComponent
+@inject IEnumerable<ModelSetupState> SetupStates
+@inject IEnumerable<ModelInputProcessor> Processors
+@if (_allowed)
+{
+    <details class="ib-ai-inspector"><summary>AI workspace inspector</summary>
+        <p>Validated presentation, state, timings, usage, and tool result metadata. No raw tool payloads or hidden reasoning are collected here.</p>
+        <pre>@WorkspaceJson.Write(new { Current.Snapshot, Run = Processors.SingleOrDefault()?.LastRun, Current.PersistenceError, Current.Errors,
+            LastAction = Current.LastAction?.Status })</pre>
+    </details>
+}
+@code {
+    private bool _allowed;
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+        _allowed = SetupStates.SingleOrDefault() is { } setup && (await setup.ReadAsync()).Policy.CanInspect && await Current.ValidateOwnerAsync();
+    }
+}

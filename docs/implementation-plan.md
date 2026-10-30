@@ -221,6 +221,8 @@ Exit gate: a user edits a form, asks a follow-up, reconnects, and recovers the d
 
 Expand expressiveness without making the consuming page more complicated.
 
+Implementation status: implemented through optional content, image-editor, and AI setup packages, schema 0.3 contracts, deterministic tests, and the Development-only content demo. See [the Phase 4 guide](phase-4-content-and-setup.md) and [decision 0007](architecture/0007-content-extensions-and-setup.md). Markdown is a safe block subset; PDF extraction is text-only; image model context currently contains metadata, not pixels. Live-model verification remains deferred independently.
+
 Deliverables:
 
 - Add the initial content adapters and artifact store contracts, with configured size limits, ownership, provenance, and cleanup.

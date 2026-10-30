@@ -9,6 +9,9 @@
     <Project Path="examples/GamingNews/IntentBlazor.GamingNews.csproj" />
   </Folder>
   <Folder Name="/src/">
+    <Project Path="src/IntentBlazor.Content/IntentBlazor.Content.csproj" />
+    <Project Path="src/IntentBlazor.Blazor.AI/IntentBlazor.Blazor.AI.csproj" />
+    <Project Path="src/IntentBlazor.Packs.ImageEditor/IntentBlazor.Packs.ImageEditor.csproj" />
     <Project Path="src/IntentBlazor.AI/IntentBlazor.AI.csproj" />
     <Project Path="src/IntentBlazor.Blazor/IntentBlazor.Blazor.csproj" />
     <Project Path="src/IntentBlazor.Core/IntentBlazor.Core.csproj" />

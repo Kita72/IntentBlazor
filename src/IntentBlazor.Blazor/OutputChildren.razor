@@ -1,0 +1,11 @@
+@namespace IntentBlazor.Blazor
+@using IntentBlazor.Runtime
+@using IntentBlazor.Blazor.Internal
+@foreach (string id in NodeIds)
+{
+    <OutputNodeView Session="@Session" NodeId="@id" @key="id" />
+}
+@code {
+    [Parameter, EditorRequired] public AiSession Session { get; set; } = default!;
+    [Parameter, EditorRequired] public IReadOnlyList<string> NodeIds { get; set; } = [];
+}

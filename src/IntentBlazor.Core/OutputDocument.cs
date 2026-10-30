@@ -17,7 +17,7 @@ public sealed record OutputDocument
     public ImmutableArray<OutputInteraction> Interactions { get; init; } = [];
 }
 
-public enum NodeKind { Layout, Card, Text, List, Table, Rating, Input, Select, Button, Image, Form }
+public enum NodeKind { Layout, Card, Text, List, Table, Rating, Input, Select, Button, Image, Form, Markdown, Chart, Gallery, Artifact, Extension }
 public enum StateKind { Text, Number, Boolean, RecordReference }
 public enum BindingSource { Literal, State, SelectedField, EventValue, EventField }
 public enum UiEventKind { Select, Change, Activate, Sort }
@@ -65,7 +65,14 @@ public sealed record OutputNode
     public string? StateKey { get; init; }
     public ImmutableArray<TableColumn> Fields { get; init; } = [];
     public int RatingMaximum { get; init; } = 5;
+    public string? ImageField { get; init; }
+    public ChartDefinition? Chart { get; init; }
+    public ExtensionNode? Extension { get; init; }
 }
+
+public enum ChartKind { Bar, Line }
+public sealed record ChartDefinition(ChartKind Kind, string LabelField, string ValueField);
+public sealed record ExtensionNode(string Pack, string Version, string Renderer, JsonElement Configuration, string Fallback);
 
 public sealed record TableColumn(string Field, string Label);
 
@@ -118,7 +125,7 @@ public sealed record OperationResult(bool Success, ImmutableArray<DocumentError>
 public static class JsonValues
 {
     public static JsonElement Null { get; } = JsonSerializer.SerializeToElement<object?>(null);
-    public static JsonElement From<T>(T value) => JsonSerializer.SerializeToElement(value);
+    public static JsonElement From<T>(T value) => JsonSerializer.SerializeToElement(value, OutputJson.Options);
     public static string Display(JsonElement value) => value.ValueKind switch
     {
         JsonValueKind.Null or JsonValueKind.Undefined => "",

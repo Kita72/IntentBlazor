@@ -1,0 +1,68 @@
+@namespace IntentBlazor.Blazor.Internal
+@using IntentBlazor.Runtime
+@using Microsoft.AspNetCore.Components.Forms
+@inject IEnumerable<IWorkspaceContent> ContentServices
+@if (ContentServices.SingleOrDefault() is { } content)
+{
+    <div class="ib-attachments">
+        <label>Attach content
+            <InputFile OnChange="Import" multiple accept="@string.Join(',', content.Capabilities.Select(item => item.Extension))"
+                       disabled="@(Disabled || _uploading || Session.WorkspaceKey is null)" />
+        </label>
+        <small>Up to @content.Limits.MaximumFiles files, @(content.Limits.MaximumBytes / 1024) KiB each. Original files are retained.</small>
+        @if (Session.WorkspaceKey is null) { <p>Connect a private workspace to attach content.</p> }
+        @if (_message is not null) { <p role="status">@_message</p> }
+        <ul>
+            @foreach (var reference in Session.Artifacts)
+            {
+                string name = _names.TryGetValue(reference, out string? label) ? label : "Attached file";
+                <li @key="reference.Id">@name · @reference.MediaType
+                    <button type="button" aria-label="@($"Remove {name}")" disabled="@(Disabled || _uploading)" @onclick="() => Remove(reference)">Remove attachment</button>
+                </li>
+            }
+        </ul>
+    </div>
+}
+@code {
+    [Parameter, EditorRequired] public AiSession Session { get; set; } = default!;
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public EventCallback<bool> BusyChanged { get; set; }
+    private bool _uploading;
+    private string? _message;
+    private string? _sessionId;
+    private readonly Dictionary<ArtifactReference, string> _names = [];
+    protected override async Task OnParametersSetAsync()
+    {
+        if (_sessionId != Session.Id) { _sessionId = Session.Id; _names.Clear(); }
+        if (ContentServices.SingleOrDefault() is not { } content) return;
+        foreach (ArtifactReference reference in Session.Artifacts)
+            if (!_names.ContainsKey(reference))
+            {
+                try { if (await content.DescribeAsync(reference) is { } artifact) _names[reference] = artifact.Name; }
+                catch (Exception error) when (error is not OutOfMemoryException) { _message = "An attachment is unavailable for the current identity."; }
+            }
+    }
+    private async Task Import(InputFileChangeEventArgs change)
+    {
+        if (Disabled || _uploading || Session.IsBusy || Session.WorkspaceKey is null || ContentServices.SingleOrDefault() is not { } content) return;
+        _uploading = true; await BusyChanged.InvokeAsync(true);
+        string key = Session.WorkspaceKey;
+        try
+        {
+            var files = change.GetMultipleFiles(content.Limits.MaximumFiles);
+            if (Session.Artifacts.Length + files.Count > content.Limits.MaximumFiles) { _message = "Remove an attachment before adding more files."; return; }
+            foreach (var file in files)
+            {
+                await using Stream stream = file.OpenReadStream(content.Limits.MaximumBytes);
+                ContentArtifact artifact = await content.ImportAsync(new(file.Name, file.ContentType, file.Size), stream);
+                if (!await Session.ValidateOwnerAsync() || Session.WorkspaceKey != key) { _message = "The workspace changed during upload. The imported original remains in private storage."; return; }
+                var result = Session.SetArtifacts(Session.Artifacts.Add(artifact.Reference));
+                if (!result.Success) { _message = result.Errors[0].Message; return; }
+                _message = $"Attached {artifact.Name}. It is content, not permission to run application actions.";
+            }
+        }
+        catch (Exception error) when (error is not OutOfMemoryException) { _message = "The upload was rejected. Check its format, size, and your current access."; }
+        finally { _uploading = false; await BusyChanged.InvokeAsync(false); }
+    }
+    private void Remove(ArtifactReference reference) => Session.SetArtifacts(Session.Artifacts.Remove(reference));
+}

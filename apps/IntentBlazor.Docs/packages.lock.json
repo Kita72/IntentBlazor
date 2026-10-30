@@ -63,6 +63,16 @@
           "Google.Protobuf": "3.30.2"
         }
       },
+      "SkiaSharp.NativeAssets.macOS": {
+        "type": "Transitive",
+        "resolved": "4.154.0",
+        "contentHash": "GgYL4ML3HT4CW33oXMHdp7BSRU87bPUfWBXdYgNduGlt4GAbAM/3eXcjjUdilS0H1r2R5iBhwvExCfSYGwFKlw=="
+      },
+      "SkiaSharp.NativeAssets.Win32": {
+        "type": "Transitive",
+        "resolved": "4.154.0",
+        "contentHash": "GXgoY77GCXdPcveNAmy8o3gVit8sp6YtnI88h5camLPfihjulwJUajZXKhgVuZ8RhuwSTgfyt/00Dx8HRUSeAA=="
+      },
       "SQLitePCLRaw.bundle_e_sqlite3": {
         "type": "Transitive",
         "resolved": "2.1.13",
@@ -125,6 +135,22 @@
           "IntentBlazor.Runtime": "[0.1.0-alpha.0, )"
         }
       },
+      "intentblazor.blazor.ai": {
+        "type": "Project",
+        "dependencies": {
+          "IntentBlazor.AI": "[0.1.0-alpha.0, )",
+          "IntentBlazor.Blazor": "[0.1.0-alpha.0, )"
+        }
+      },
+      "intentblazor.content": {
+        "type": "Project",
+        "dependencies": {
+          "IntentBlazor.Runtime": "[0.1.0-alpha.0, )",
+          "PdfPig": "[0.1.16, )",
+          "SkiaSharp": "[4.154.0, )",
+          "SkiaSharp.NativeAssets.Linux.NoDependencies": "[4.154.0, )"
+        }
+      },
       "intentblazor.core": {
         "type": "Project"
       },
@@ -134,6 +160,13 @@
           "IntentBlazor.AI": "[0.1.0-alpha.0, )",
           "IntentBlazor.Runtime": "[0.1.0-alpha.0, )",
           "IntentBlazor.Storage.Sqlite": "[0.1.0-alpha.0, )"
+        }
+      },
+      "intentblazor.packs.imageeditor": {
+        "type": "Project",
+        "dependencies": {
+          "IntentBlazor.Blazor": "[0.1.0-alpha.0, )",
+          "IntentBlazor.Content": "[0.1.0-alpha.0, )"
         }
       },
       "intentblazor.runtime": {
@@ -203,6 +236,28 @@
         "dependencies": {
           "System.ClientModel": "1.15.0"
         }
+      },
+      "PdfPig": {
+        "type": "CentralTransitive",
+        "requested": "[0.1.16, )",
+        "resolved": "0.1.16",
+        "contentHash": "qQcbsNMYVY+K5ELptax2S8thNMk0+rSQq3H/KdYj3LLcko8yTCz8y5KIvsKxIyAuTN0ZYNnfsZkM+0EvxTwHVA=="
+      },
+      "SkiaSharp": {
+        "type": "CentralTransitive",
+        "requested": "[4.154.0, )",
+        "resolved": "4.154.0",
+        "contentHash": "R3BuszJ3tUFmni37nZIRawXL0yx+XHyx7xi1716/0TybuEQFhnBx48Ig3rFpeVFQVytpGpJZZ+NLW9d9UPG7EA==",
+        "dependencies": {
+          "SkiaSharp.NativeAssets.Win32": "4.154.0",
+          "SkiaSharp.NativeAssets.macOS": "4.154.0"
+        }
+      },
+      "SkiaSharp.NativeAssets.Linux.NoDependencies": {
+        "type": "CentralTransitive",
+        "requested": "[4.154.0, )",
+        "resolved": "4.154.0",
+        "contentHash": "U6HQ/n+wQ09WyXQB6PK1l46BIrHqTN/dImV84pti3mLxnlOdcSASPQzJwzuZmEgiCbriLtu5fP0t9cdzpFPHsw=="
       }
     }
   }

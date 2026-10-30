@@ -36,10 +36,11 @@ public sealed record DataToolRegistration(Type ServiceType, MethodInfo Method, s
     }
 }
 
-internal sealed class DataFunction(AIFunction inner, Action<OutputDataSet> accept, Action count) : DelegatingAIFunction(inner)
+internal sealed class DataFunction(AIFunction inner, Action<OutputDataSet> accept, Action count, Action<ModelToolObservation>? observe = null) : DelegatingAIFunction(inner)
 {
     protected override async ValueTask<object?> InvokeCoreAsync(AIFunctionArguments arguments, CancellationToken cancellationToken)
     {
+        var elapsed = System.Diagnostics.Stopwatch.StartNew();
         count();
         try
         {
@@ -53,11 +54,12 @@ internal sealed class DataFunction(AIFunction inner, Action<OutputDataSet> accep
             object? result = await InnerFunction.InvokeAsync(arguments, cancellationToken);
             if (result is not OutputDataSet data) throw new InvalidOperationException("A data tool returned no dataset.");
             accept(data);
+            observe?.Invoke(new(Name, "completed", data.Id, data.Rows.Length, elapsed.Elapsed));
             return JsonSerializer.SerializeToElement(data, ModelJson.Options);
         }
-        catch (OperationCanceledException) { throw; }
+        catch (OperationCanceledException) { observe?.Invoke(new(Name, "cancelled", null, null, elapsed.Elapsed)); throw; }
         catch (Exception error) when (error is not OutOfMemoryException)
-        { throw new InvalidOperationException("The application data tool failed or returned invalid data."); }
+        { observe?.Invoke(new(Name, "failed", null, null, elapsed.Elapsed)); throw new InvalidOperationException("The application data tool failed or returned invalid data."); }
     }
 }
 

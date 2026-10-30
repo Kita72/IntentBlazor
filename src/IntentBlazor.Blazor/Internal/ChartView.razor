@@ -1,0 +1,40 @@
+@namespace IntentBlazor.Blazor.Internal
+@using System.Globalization
+@using IntentBlazor.Core
+@using IntentBlazor.Runtime
+@{
+    var chart = Node.Chart!;
+    var rows = Session.Data.Single(set => set.Id == Node.DataSetId).Rows;
+    decimal min = Math.Min(0, rows.Select(row => row[chart.ValueField].GetDecimal()).DefaultIfEmpty(0).Min());
+    decimal max = Math.Max(0, rows.Select(row => row[chart.ValueField].GetDecimal()).DefaultIfEmpty(0).Max());
+    decimal range = max == min ? 1 : max - min;
+    decimal baseline = 160 - (0 - min) / range * 150;
+    string points = string.Join(' ', rows.Select((row, i) => $"{F(20 + (i + 0.5m) * 560 / Math.Max(1, rows.Length))},{F(160 - (row[chart.ValueField].GetDecimal() - min) / range * 150)}"));
+}
+<figure data-node="@Node.Id" class="ib-chart">
+    <figcaption>@Node.Title</figcaption>
+    <svg viewBox="0 0 600 180" role="img" aria-label="@Node.Title">
+        @if (chart.Kind == ChartKind.Line)
+        {
+            <polyline points="@points" fill="none" stroke="currentColor" stroke-width="3" />
+        }
+        else
+        {
+            @for (int i = 0; i < rows.Length; i++)
+            {
+                decimal y = 160 - (rows[i][chart.ValueField].GetDecimal() - min) / range * 150;
+                <rect x="@F(20 + i * 560m / rows.Length)" y="@F(Math.Min(y, baseline))" width="@F(Math.Max(1, 560m / rows.Length - 4))" height="@F(Math.Abs(y - baseline))" fill="currentColor">
+                    <title>@JsonValues.Display(rows[i][chart.LabelField]): @JsonValues.Display(rows[i][chart.ValueField])</title>
+                </rect>
+            }
+        }
+    </svg>
+    <details><summary>Chart data</summary><table><thead><tr><th>@chart.LabelField</th><th>@chart.ValueField</th></tr></thead><tbody>
+        @foreach (var row in rows) { <tr><td>@JsonValues.Display(row[chart.LabelField])</td><td>@JsonValues.Display(row[chart.ValueField])</td></tr> }
+    </tbody></table></details>
+</figure>
+@code {
+    [Parameter, EditorRequired] public AiSession Session { get; set; } = default!;
+    [Parameter, EditorRequired] public OutputNode Node { get; set; } = default!;
+    private static string F(decimal value) => value.ToString("0.##", CultureInfo.InvariantCulture);
+}

@@ -1,15 +1,15 @@
 # Output document specification
 
-Status: implemented experimental **schema 0.1** and [schema 0.2 actions](v0.2-actions.md), toolkit **builtin 0.1**. This page describes the local 0.1 subset. The canonical contracts are [OutputDocument.cs](../../src/IntentBlazor.Core/OutputDocument.cs), [OutputJson.cs](../../src/IntentBlazor.Core/OutputJson.cs), and [DocumentValidator.cs](../../src/IntentBlazor.Core/DocumentValidator.cs). C# types plus the strict parser and semantic validator define these versions; a separate JSON Schema is not supplied. Earlier JSON sketches in the implementation plan are conceptual.
+Status: implemented experimental **schema 0.1**, [schema 0.2 actions](v0.2-actions.md), and [schema 0.3 content/extensions](v0.3-content-and-extensions.md), toolkit **builtin 0.1**. This page describes the local 0.1 subset. The canonical contracts are [OutputDocument.cs](../../src/IntentBlazor.Core/OutputDocument.cs), [OutputJson.cs](../../src/IntentBlazor.Core/OutputJson.cs), and [DocumentValidator.cs](../../src/IntentBlazor.Core/DocumentValidator.cs). C# types plus the strict parser and semantic validator define these versions; a separate JSON Schema is not supplied. Earlier JSON sketches in the implementation plan are conceptual.
 
 `OutputContent` pairs an `OutputDocument` with host-provided `Data`. Only the document is a presentation proposal. Dataset schemas and rows are supplied by the host after its own authorization; a model must never be allowed to create or authorize its own datasets. Fixtures bundle the pair for deterministic playback.
 
 | Document member | Meaning |
 | --- | --- |
-| schemaVersion | Exact supported schema: 0.1 for local interactions, 0.2 for registered actions. |
+| schemaVersion | Exact supported schema: 0.1 for local interactions, 0.2 for registered actions, 0.3 for content and extensions. |
 | id / revision | Stable document identity and positive authored revision. |
 | rootId / nodes | A single rooted tree with stable node IDs. |
-| requires | Exact required renderer capabilities; builtin 0.1 is currently the only toolkit. |
+| requires | Exact required renderer capabilities; builtin 0.1 and host-registered extension packs. |
 | dataSets | IDs of datasets available from the host; no row data in the presentation document. |
 | state | Named typed slots: text, number, boolean, or a record reference to one dataset. |
 | interactions | Named local effects attached to a node, with a select or activate event. |
@@ -37,4 +37,4 @@ JSON uses case-sensitive camelCase property names and string enums. Unknown memb
 | Scalar text / input request | 4096 / 2048 characters |
 | In-memory input outcome history | Latest 20 turns |
 
-All three [authored fixtures](../fixtures/README.md) retain schema 0.1. See the [developer guide](../../docs/phase-1-developer-guide.md), [authority decision](../../docs/architecture/0003-output-and-authority.md), and [Phase 1 decision](../../docs/architecture/0004-deterministic-output-v01.md). Phase 3 adds [registered actions](v0.2-actions.md), durable checkpoints, conversation context, and versioned artifact metadata references. Dataset paging, JSON Patch, file storage/content adapters, renderer extensions, and provider capability negotiation remain future work.
+All three [authored fixtures](../fixtures/README.md) retain schema 0.1. See the [developer guide](../../docs/phase-1-developer-guide.md), [authority decision](../../docs/architecture/0003-output-and-authority.md), and [Phase 1 decision](../../docs/architecture/0004-deterministic-output-v01.md). Phase 3 adds [registered actions](v0.2-actions.md), durable checkpoints, conversation context, and versioned artifact metadata references. Phase 4 adds [content and extensions](v0.3-content-and-extensions.md), optional file storage/adapters, and explicit presentation probes. Dataset paging, JSON Patch, and comprehensive provider capability certification remain future work.

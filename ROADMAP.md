@@ -8,7 +8,7 @@ The target is a developer preview demonstrating the same input, output-document,
 | 1 | Versioned documents and deterministic renderer | Implemented; experimental API |
 | 2 | First verified local and frontier model interaction | Adapters implemented; live gate deferred |
 | 3 | Stateful updates, actions, persistence, and conflict recovery | Implemented; deterministic recovery demonstrated |
-| 4 | Content adapters, extensions, and embeddable AI setup | Planned |
+| 4 | Content adapters, extensions, and embeddable AI setup | Implemented; experimental packages and deterministic demo |
 | 5 | Gaming News, Staff Business, and Asset Workbench apps | Planned |
 | 6 | Complete docs, document explorer, and demos | Planned |
 | 7 | Package verification and public developer preview | Planned |
@@ -20,5 +20,7 @@ Phase 1 evidence: [developer guide](docs/phase-1-developer-guide.md), [contract 
 First contributor opportunities: review the experimental output contract, author representative documents, improve setup instructions, and expand keyboard interaction guidance. Coordinate through an issue before adding public types.
 
 Phase 3 evidence: [workspace and action guide](docs/phase-3-workspaces.md), [schema 0.2 action contract](specs/output-document/v0.2-actions.md), and [durable workspace decision](docs/architecture/0006-durable-workspaces.md). The Development-only recovery demo uses real SQLite files and shared-record version checks. Four phases remain after Phase 3: **4 content/extensions/setup**, **5 the complete three apps**, **6 the complete docs and demo site**, and **7 developer preview**. The deferred Phase 2 live-model acceptance gate must also pass before the preview.
+
+Phase 4 evidence: [completion record](docs/phase-4-completion.md), [content/setup guide](docs/phase-4-content-and-setup.md), [schema 0.3](specs/output-document/v0.3-content-and-extensions.md), [decision 0007](docs/architecture/0007-content-extensions-and-setup.md), and [automated checks](tests/README.md). Three phases remain after Phase 4: **5 complete example apps**, **6 complete docs/demos**, and **7 developer preview**. Live-model verification remains a separate deferred gate.
 
 Later directions include additional renderers, content formats, providers, storage adapters, and supported hosting models. Arbitrary generated scripts and real-time collaborative editing require separate designs.

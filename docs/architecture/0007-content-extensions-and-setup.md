@@ -1,0 +1,13 @@
+# Content, renderer extensions, and embeddable setup
+
+Status: implemented, experimental Phase 4 contracts. The two interaction components remain AiInput and AiOutput. Optional supporting tools do not replace them.
+
+Content is a separate optional package. The runtime exposes a small upload/metadata seam; parsers, file storage and authenticated delivery live in the content package. Store immutable owner-scoped artifacts with content hashes, provenance and parent references. Imported content never grants tool authority. Host-controlled byte, file, pixel, PDF-page and extracted-text limits apply before exposing results. Downloads reauthorize the current HTTP identity. Hosts own retained-reference lists and explicit cleanup; removing an attachment does not erase its original.
+
+Schema 0.3 adds Markdown, charts, galleries, artifact references, and extension nodes. Existing schemas remain valid. Required capability versions fail closed; an unavailable optional extension renders its encoded fallback without interactive children. Register typed configuration/event contracts and Blazor renderer types in host code. The model supplies registered identifiers and configuration only, never a .NET type or executable code. Local extension events remain revision-checked typed state reductions; application writes use the existing action boundary.
+
+The image editing pack provides a real bounded PNG resize operation that creates a derived immutable artifact with a recoverable parent. Its renderer owns local zoom and preview state; meaningful comparison choices use validated extension events. Input fields and registered action buttons compose as ordinary children.
+
+AI setup uses host-approved connection presets and scoped effective generation options. Endpoints, credential delegates, and provider access remain host-owned. A host authorization policy decides which profiles/settings, connection probes, and diagnostics a user can access. No setup secret is persisted in output documents. Probes require explicit activation and report connectivity separately from tool/presentation capability. Run inspection exposes bounded metadata and validated presentation, with no hidden reasoning or raw sensitive tool payloads.
+
+Acceptance: content/parser/storage boundaries and unauthorized cases have deterministic tests; a custom renderer can be registered without editing core; the image preview and exported PNG come from the actual resize; settings affect the next generation and unsupported options are visible; the public package consumer and docs demos retain the two-component experience. Real-provider verification remains deferred independently.

@@ -30,6 +30,21 @@
                 <p>@JsonValues.Display(Session.Read(Node.Value!))</p>
             </div>
             break;
+        case NodeKind.Markdown:
+            <div data-node="@Node.Id"><h3>@Node.Title</h3><MarkdownContent Text="@JsonValues.Display(Session.Read(Node.Value!))" /></div>
+            break;
+        case NodeKind.Chart:
+            <ChartView Session="@Session" Node="@Node" />
+            break;
+        case NodeKind.Gallery:
+            <GalleryView Session="@Session" Node="@Node" />
+            break;
+        case NodeKind.Artifact:
+            <ArtifactView Session="@Session" Node="@Node" />
+            break;
+        case NodeKind.Extension:
+            <ExtensionView Session="@Session" Node="@Node" />
+            break;
         case NodeKind.List:
             <ListView Session="@Session" Node="@Node" />
             break;

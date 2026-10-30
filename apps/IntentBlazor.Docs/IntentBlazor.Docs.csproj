@@ -5,6 +5,8 @@
     <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="../../src/IntentBlazor.Blazor.AI/IntentBlazor.Blazor.AI.csproj" />
+    <ProjectReference Include="../../src/IntentBlazor.Packs.ImageEditor/IntentBlazor.Packs.ImageEditor.csproj" />
     <ProjectReference Include="../../examples/IntentBlazor.Examples/IntentBlazor.Examples.csproj" />
     <ProjectReference Include="../../src/IntentBlazor.Blazor/IntentBlazor.Blazor.csproj" />
   </ItemGroup>

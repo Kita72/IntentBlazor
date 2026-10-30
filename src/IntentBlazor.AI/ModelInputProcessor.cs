@@ -22,7 +22,14 @@ public sealed class ModelInputProcessor(IChatClient client, ModelProfile profile
     public async ValueTask<OutputContent> ProcessAsync(string input, WorkspaceSnapshot workspace,
         IProgress<InputProgress> progress, CancellationToken cancellationToken)
     {
-        ModelOptions options = configured.Value;
+        LastRun = null;
+        ModelOptions options = configured.Value.Copy();
+        ModelProfile activeProfile = profile; IChatClient activeClient = client;
+        if (services.GetService<ModelSetupState>() is { } setup)
+        {
+            EffectiveModelConnection selected = await setup.CaptureAsync(cancellationToken);
+            options = selected.Options; activeProfile = selected.Profile; activeClient = selected.Client;
+        }
         options.Validate();
         using CancellationTokenSource timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         timeout.CancelAfter(options.Timeout);
@@ -32,8 +39,7 @@ public sealed class ModelInputProcessor(IChatClient client, ModelProfile profile
         string status = "failed";
         try
         {
-            if (!profile.SupportsTemperature && options.Temperature is not null)
-                throw new InputRejectedException("The selected connection does not support temperature settings.");
+            if (ModelSetupState.Unsupported(activeProfile, options) is { } unsupported) throw new InputRejectedException(unsupported);
             foreach (IOutputDataSource source in sources)
                 foreach (OutputDataSet set in await source.LoadAsync(workspace, token)) Accept(set);
 
@@ -58,8 +64,8 @@ public sealed class ModelInputProcessor(IChatClient client, ModelProfile profile
                     }
                     state.ToolCalls++;
                     state.Report("Loading application data");
-                });
-                if (profile.NativeTools) tools.Add(function);
+                }, observation => state.Observations.Add(observation));
+                if (activeProfile.NativeTools) tools.Add(function);
                 else
                 {
                     if (registration.Method.GetParameters().Any(p => p.ParameterType != typeof(CancellationToken)))
@@ -68,16 +74,36 @@ public sealed class ModelInputProcessor(IChatClient client, ModelProfile profile
                 }
             }
 
-            List<ChatMessage> messages = [new(ChatRole.System, ToolkitInstructions.Create(validator.Actions.Values)),
+            List<object> attachments = [];
+            int attachmentBudget = 16000;
+            if (services.GetService<IWorkspaceContent>() is { } contentService)
+                foreach (ArtifactReference reference in workspace.Artifacts)
+                {
+                    ContentArtifact artifact = await contentService.DescribeAsync(reference, token) ?? throw new InputRejectedException("An attached artifact is no longer authorized or available.");
+                    string text = artifact.Text ?? "";
+                    string excerpt = text[..Math.Min(text.Length, attachmentBudget)]; attachmentBudget -= excerpt.Length;
+                    attachments.Add(new
+                    {
+                        artifact.Reference,
+                        artifact.Name,
+                        artifact.Provenance,
+                        artifact.Width,
+                        artifact.Height,
+                        text = excerpt,
+                        truncated = artifact.TextTruncated || excerpt.Length < text.Length
+                    });
+                    if (artifact.StructuredData is { } structured) Accept(structured);
+                }
+            List<ChatMessage> messages = [new(ChatRole.System, ToolkitInstructions.Create(validator.Actions.Values, validator.Extensions.Values)),
                 new(ChatRole.User, JsonSerializer.Serialize(new
                 {
                     request = input,
                     workspace = new { workspace.Document, workspace.Revision, workspace.Values, workspace.Sorting, workspace.DirtyStates, workspace.Conversation, workspace.Artifacts },
-                    hostData = state.Data.Values.ToArray()
+                    hostData = state.Data.Values.ToArray(), attachments
                 }, ModelJson.Options))];
 
             // Agent Framework owns function orchestration; no application tool loop.
-            BudgetChatClient budget = new(client, state, tools.OfType<AIFunction>().Select(tool => tool.Name).ToHashSet(StringComparer.Ordinal));
+            BudgetChatClient budget = new(activeClient, state, tools.OfType<AIFunction>().Select(tool => tool.Name).ToHashSet(StringComparer.Ordinal));
             FunctionInvokingChatClient invocation = new(budget)
             {
                 MaximumIterationsPerRequest = options.MaximumModelCalls,
@@ -87,14 +113,11 @@ public sealed class ModelInputProcessor(IChatClient client, ModelProfile profile
             ChatClientAgent agent = new(invocation, new ChatClientAgentOptions { UseProvidedChatClientAsIs = true });
             ChatClientAgentRunOptions run = new()
             {
-                ChatOptions = new()
-                {
-                    ModelId = profile.Model,
-                    Temperature = options.Temperature,
-                    MaxOutputTokens = profile.SupportsOutputTokenLimit ? options.MaximumOutputTokens : null,
-                    AllowMultipleToolCalls = false,
-                    Tools = tools,
-                    ResponseFormat = options.UseJsonSchema
+                ChatOptions = ModelSetupState.CreateChatOptions(activeProfile, options)
+            };
+            run.ChatOptions.AllowMultipleToolCalls = false;
+            run.ChatOptions.Tools = tools;
+            run.ChatOptions.ResponseFormat = options.UseJsonSchema
                         ? ChatResponseFormat.ForJsonSchema(JsonSerializer.SerializeToElement(new
                         {
                             type = "object",
@@ -102,9 +125,7 @@ public sealed class ModelInputProcessor(IChatClient client, ModelProfile profile
                             required = new[] { "documentJson" },
                             additionalProperties = false
                         }), "intent_output")
-                        : ChatResponseFormat.Json
-                }
-            };
+                        : ChatResponseFormat.Json;
 
             for (int attempt = 0; attempt <= options.MaximumCorrections; attempt++)
             {
@@ -133,7 +154,7 @@ public sealed class ModelInputProcessor(IChatClient client, ModelProfile profile
                     }
                     Correct(string.Join(", ", result.Errors.Select(error => $"{error.Code} at {error.Path}: {error.Message}")));
                 }
-                catch (JsonException) { Correct("Return exactly {documentJson:string}, containing a valid schema 0.1 presentation document."); }
+                catch (JsonException) { Correct("Return exactly {documentJson:string}, containing a valid supported presentation document."); }
             }
             status = "invalid-output";
             throw new InputRejectedException("The model could not produce a valid output document within the correction limit.");
@@ -154,8 +175,9 @@ public sealed class ModelInputProcessor(IChatClient client, ModelProfile profile
         catch (OperationCanceledException) { status = "cancelled"; throw; }
         finally
         {
-            LastRun = new(status, profile.Provider, profile.Model, state.ModelCalls, state.ToolCalls, state.Corrections,
-                state.Characters, state.InputTokens, state.OutputTokens, elapsed.Elapsed, state.TotalTokens);
+            LastRun = new(status, activeProfile.Provider, activeProfile.Model, state.ModelCalls, state.ToolCalls, state.Corrections,
+                state.Characters, state.InputTokens, state.OutputTokens, elapsed.Elapsed, state.TotalTokens)
+            { Tools = [.. state.Observations] };
         }
 
         void Accept(OutputDataSet set)
@@ -187,6 +209,7 @@ public sealed class ModelInputProcessor(IChatClient client, ModelProfile profile
 
 internal sealed class RunState(ModelOptions options, IProgress<InputProgress> progress)
 {
+    public List<ModelToolObservation> Observations { get; } = [];
     public ModelOptions Options { get; } = options;
     public Dictionary<string, OutputDataSet> Data { get; } = new(StringComparer.Ordinal);
     public StringBuilder Text { get; } = new();

@@ -1,0 +1,37 @@
+@namespace IntentBlazor.Packs.ImageEditor
+@inherits IntentBlazor.Blazor.IntentExtensionComponent<ImageEditorConfiguration>
+@using IntentBlazor.Core
+@using IntentBlazor.Runtime
+@using IntentBlazor.Blazor
+@inject IWorkspaceContent Content
+<section class="ib-image-editor" data-node="@Node.Id" aria-label="@Node.Title">
+    <h3>@Node.Title</h3>
+    <div class="ib-image-tools">
+        <button type="button" disabled="@Session.IsBusy" @onclick="() => Compare(true)">Show original</button>
+        <button type="button" disabled="@Session.IsBusy" @onclick="() => Compare(false)">Show preview</button>
+        <label>Zoom <select @bind="_zoom"><option value="1">1×</option><option value="2">2×</option><option value="4">4×</option></select></label>
+    </div>
+    @if (_artifact is { } artifact)
+    {
+        <p>@(_showOriginal ? "Original" : "Preview"): @artifact.Name · @artifact.Width × @artifact.Height</p>
+        <div class="ib-image-viewport zoom-@_zoom"><img src="@Content.Url(artifact.Reference)" alt="@artifact.Name" /></div>
+        <p><a href="@Content.Url(artifact.Reference, download: true)" download>Download displayed image</a></p>
+    }
+    else { <p>Select an available PNG or JPEG image.</p> }
+    <OutputChildren Session="@Session" NodeIds="@Node.Children" />
+</section>
+@code {
+    private string _zoom = "1";
+    private bool _showOriginal;
+    private ContentArtifact? _artifact;
+    protected override async Task OnParametersSetAsync()
+    {
+        _showOriginal = Session.Snapshot.Values[Configuration.ComparisonState].GetBoolean();
+        string id = JsonValues.Display(Session.Snapshot.Values[_showOriginal ? Configuration.OriginalState : Configuration.PreviewState]);
+        ArtifactReference? reference = Session.Artifacts.FirstOrDefault(item => item.Id == id);
+        long revision = Session.Revision;
+        ContentArtifact? artifact = reference is null ? null : await Content.DescribeAsync(reference);
+        if (revision == Session.Revision) _artifact = artifact;
+    }
+    private void Compare(bool original) => Session.DispatchExtension(Node.Id, Session.Revision, new ImageEditorEvent(original));
+}

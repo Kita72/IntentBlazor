@@ -1,0 +1,12 @@
+@namespace IntentBlazor.Blazor.AI
+<section aria-label="Connection capability probe">
+    <p>A probe sends a small request to the applied host connection. It checks connectivity and presentation output; it does not execute application tools.</p>
+    <button type="button" disabled="@Disabled" @onclick="() => Test.InvokeAsync()">@(Testing ? "Checking…" : "Test applied connection and output")</button>
+    @if (Result is { } result) { <p role="status">@result.Message · @result.Elapsed.TotalMilliseconds.ToString("0") ms</p> }
+</section>
+@code {
+    [Parameter] public ModelProbeResult? Result { get; set; }
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public bool Testing { get; set; }
+    [Parameter] public EventCallback Test { get; set; }
+}

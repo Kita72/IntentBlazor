@@ -6,6 +6,6 @@ Pages are static SSR by default. Only add @rendermode InteractiveServer where a 
 
 Use Components/Pages for routes and focused shared components for reusable regions. Keep state explicit. Components run on the server when interactive; use IJSRuntime for browser APIs and do not depend on HttpContext during circuit interactions.
 
-The public docs are anonymous. Authentication for examples is separate future work. Do not claim planned runtime features are implemented or add fake AI responses. Demos must label deterministic fixture mode.
+The public docs are anonymous. Development-only recovery/content examples use protected synthetic cookie identities; production account integration belongs to consuming apps. Do not claim planned runtime features are implemented or add fake AI responses. Demos must label deterministic fixture mode.
 
 Keep source links and contributor instructions accurate. Follow the root AGENTS.md and verification script.

@@ -1,0 +1,30 @@
+@namespace IntentBlazor.Blazor.Internal
+@using IntentBlazor.Core
+@using IntentBlazor.Runtime
+@inject IEnumerable<IWorkspaceContent> ContentServices
+@if (_artifact is { } artifact && ContentServices.SingleOrDefault() is { } content)
+{
+    <article data-node="@Node.Id" class="ib-artifact">
+        <h3>@Node.Title</h3><p>@artifact.Name · @artifact.Bytes bytes · @artifact.Provenance</p>
+        @if (artifact.Width is not null) { <p>@artifact.Width × @artifact.Height pixels</p> }
+        @if (artifact.Reference.MediaType is "image/png" or "image/jpeg") { <img src="@content.Url(artifact.Reference)" alt="@artifact.Name" /> }
+        else if (artifact.Reference.MediaType == "text/markdown") { <MarkdownContent Text="@(artifact.Text ?? "")" /> }
+        else if (artifact.Text is not null) { <pre>@artifact.Text</pre> }
+        @if (artifact.TextTruncated) { <p>The extracted preview is truncated. The original file is retained.</p> }
+        <a href="@content.Url(artifact.Reference, download: true)" download>Download @artifact.Name</a>
+    </article>
+}
+else { <p data-node="@Node.Id">@Node.Title: content is unavailable for the current owner.</p> }
+@code {
+    [Parameter, EditorRequired] public AiSession Session { get; set; } = default!;
+    [Parameter, EditorRequired] public OutputNode Node { get; set; } = default!;
+    private ContentArtifact? _artifact;
+    protected override async Task OnParametersSetAsync()
+    {
+        string id = JsonValues.Display(Session.Read(Node.Value!));
+        var reference = Session.Artifacts.FirstOrDefault(item => item.Id == id);
+        long revision = Session.Revision;
+        ContentArtifact? artifact = reference is null || ContentServices.SingleOrDefault() is not { } service ? null : await service.DescribeAsync(reference);
+        if (Session.Revision == revision) _artifact = artifact;
+    }
+}

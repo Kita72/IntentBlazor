@@ -19,5 +19,12 @@
 .ib-output ::deep .ib-field { display: grid; gap: .3rem; margin-bottom: 1rem; }
 .ib-output ::deep input, .ib-output ::deep select { box-sizing: border-box; max-width: 100%; width: 100%; padding: .5rem; font: inherit; border: 1px solid #79939d; border-radius: 4px; }
 .ib-output ::deep figure { margin: 0; }
+.ib-output ::deep .ib-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .75rem; }
+.ib-output ::deep .ib-gallery h3 { grid-column: 1 / -1; }
+.ib-output ::deep .ib-gallery figure { padding: .75rem; border: 1px solid #c5d4da; border-radius: .4rem; overflow-wrap: anywhere; }
+.ib-output ::deep .ib-gallery img { max-height: 140px; margin-block: .5rem; }
+.ib-output ::deep .ib-chart { max-width: 100%; color: #087b70; }
+.ib-output ::deep .ib-chart svg { display: block; width: 100%; max-height: 250px; }
+.ib-output ::deep pre { white-space: pre-wrap; overflow-wrap: anywhere; }
 .ib-output ::deep img { display: block; max-width: 100%; max-height: 320px; image-rendering: pixelated; }
 @media (max-width: 700px) { .ib-output ::deep .ib-columns { grid-template-columns: 1fr; } }

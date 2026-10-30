@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Description>Typed image preview, comparison, and resize pack for IntentBlazor.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <ProjectReference Include="../IntentBlazor.Blazor/IntentBlazor.Blazor.csproj" />
+    <ProjectReference Include="../IntentBlazor.Content/IntentBlazor.Content.csproj" />
+  </ItemGroup>
+</Project>

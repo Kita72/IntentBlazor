@@ -1,0 +1,20 @@
+@namespace IntentBlazor.Blazor.AI
+<label>Host-approved connection
+    <select value="@Selected" @onchange="Changed" disabled="@(Disabled || Connections.Count == 0)">
+        @if (Connections.Count == 0) { <option value="">No configured connection</option> }
+        @foreach (var connection in Connections) { <option value="@connection.Id" @key="connection.Id">@connection.Provider · @connection.Model</option> }
+    </select>
+</label>
+@if (Connections.FirstOrDefault(item => item.Id == Selected) is { } profile)
+{
+    <p>Endpoint origin: @(profile.Endpoint ?? "Host-managed adapter"). Credentials remain on the server.</p>
+    <p>Adapter capabilities: temperature @(profile.Temperature ? "available" : "unsupported"); output-token control @(profile.OutputLimit ? "available" : "unsupported");
+        reasoning effort @(profile.ReasoningEffort ? "enabled by host" : "unavailable"). These declarations do not verify the selected model.</p>
+}
+@code {
+    [Parameter] public IReadOnlyList<AiConnectionView> Connections { get; set; } = [];
+    [Parameter] public string Selected { get; set; } = "default";
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public EventCallback<string> SelectedChanged { get; set; }
+    private Task Changed(ChangeEventArgs change) => SelectedChanged.InvokeAsync(change.Value?.ToString() ?? "default");
+}

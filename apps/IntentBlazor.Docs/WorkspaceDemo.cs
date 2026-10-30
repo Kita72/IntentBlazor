@@ -1,7 +1,10 @@
 using System.Security.Claims;
+using IntentBlazor.AI;
 using IntentBlazor.Blazor;
+using IntentBlazor.Content;
 using IntentBlazor.Core;
 using IntentBlazor.Examples;
+using IntentBlazor.Packs.ImageEditor;
 using IntentBlazor.Runtime;
 using IntentBlazor.Storage.Sqlite;
 using Microsoft.AspNetCore.Authentication;
@@ -52,6 +55,11 @@ public static class WorkspaceDemo
         builder.Services.AddScoped<IWorkspaceAccess>(sp => sp.GetRequiredService<StaffWorkspaces>());
         builder.Services.AddIntentAction<StaffFollowupAction>(StaffFollowupAction.Definition);
         builder.Services.AddScoped<RecoveryDemo>();
+        builder.Services.AddIntentContent(Path.Combine(root, "artifacts"));
+        builder.Services.AddIntentImageEditor();
+        builder.Services.AddScoped<IWorkspaceAccess, DemoWorkspaceAccess>();
+        builder.Services.AddScoped<ContentWorkspaceDemo>();
+        builder.Services.AddIntentAiSetup<DemoAiAccess>();
     }
 
     public static void MapWorkspaceDemo(this WebApplication app)
@@ -59,6 +67,7 @@ public static class WorkspaceDemo
         if (!app.Environment.IsDevelopment()) return;
         app.UseAuthentication();
         app.UseAuthorization();
+        app.MapIntentContent();
         app.MapGet("/workspaces/demo-signin", async (HttpContext context) =>
         {
             // Each browser gets a protected, synthetic demo identity. This is not a production account system.
@@ -68,7 +77,7 @@ public static class WorkspaceDemo
                     [new Claim(ClaimTypes.NameIdentifier, "demo-" + Guid.NewGuid().ToString("N")), new Claim(ClaimTypes.Name, "Synthetic demo staff")], Scheme));
                 await context.SignInAsync(Scheme, principal);
             }
-            context.Response.Redirect("/workspaces");
+            context.Response.Redirect(context.Request.Query["returnUrl"] == "/content" ? "/content" : "/workspaces");
         });
     }
 }

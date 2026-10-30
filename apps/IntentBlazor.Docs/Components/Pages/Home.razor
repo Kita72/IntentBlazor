@@ -6,18 +6,19 @@
 <h1>User intent.<br />A living interface.</h1>
 <p class="lead">An AI-centric Blazor framework built around two interaction components.
     Connect your model, expose your C# capabilities, and let the workspace take shape around the task.</p>
-<p class="status"><strong>Phase 3 workspaces implemented.</strong> Try deterministic output in the playground,
-    or reconnect a draft and exercise a conflicting save in the recovery demo. Live model verification remains deferred.</p>
+<p class="status"><strong>Phase 4 content and extension tools implemented.</strong> Attach files, inspect dynamic previews,
+    and create an actual resized image in the content demo. Live model verification remains deferred.</p>
 <div class="actions">
     <a class="button" href="/playground">Try the playground</a>
     <a class="button secondary" href="/workspaces">Try draft recovery</a>
+    <a class="button secondary" href="/content">Try content and extensions</a>
 </div>
 
 <section class="card-grid" aria-label="Framework direction">
     <article class="card">
         <p class="eyebrow">INPUT</p>
         <h2>Express the task</h2>
-        <p>AiInput sends text and current workspace context to a registered input processor. Rich content support is planned.</p>
+        <p>AiInput sends text and workspace context to a registered processor. The optional content package adds bounded file attachments.</p>
     </article>
     <article class="card">
         <p class="eyebrow">OUTPUT</p>
@@ -27,7 +28,7 @@
     <article class="card">
         <p class="eyebrow">DEVELOPER EXPERIENCE</p>
         <h2>Bring your application</h2>
-        <p>Attribute and explicit data tools expose your services. You own identity, permissions, business rules, and the surrounding app.</p>
+        <p>Expose C# data tools, register typed renderer packs, and embed optional AI setup/inspection. You own identity, permissions, and business rules.</p>
     </article>
 </section>
 

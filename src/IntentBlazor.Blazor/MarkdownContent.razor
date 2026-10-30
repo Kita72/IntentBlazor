@@ -1,0 +1,12 @@
+@namespace IntentBlazor.Blazor
+<div class="ib-markdown">
+    @foreach (string line in Text.Replace("\r", "").Split('\n'))
+    {
+        if (line.StartsWith("### ", StringComparison.Ordinal)) { <h4>@line[4..]</h4> }
+        else if (line.StartsWith("## ", StringComparison.Ordinal)) { <h3>@line[3..]</h3> }
+        else if (line.StartsWith("# ", StringComparison.Ordinal)) { <h2>@line[2..]</h2> }
+        else if (line.StartsWith("- ", StringComparison.Ordinal)) { <ul><li>@line[2..]</li></ul> }
+        else if (line.Length > 0) { <p>@line</p> }
+    }
+</div>
+@code { [Parameter, EditorRequired] public string Text { get; set; } = ""; }

@@ -42,7 +42,8 @@ public sealed partial class AiSession
             if (compatible) { values = values.SetItem(pair.Key, pair.Value); baseline = baseline.SetItem(pair.Key, _baseline[pair.Key]); }
         }
         foreach (string key in _dirty)
-            if (!copy.Document.Nodes.Any(node => node.StateKey == key && node.Kind is NodeKind.Input or NodeKind.Select && Visible(node)))
+            if (!copy.Document.Nodes.Any(node => Visible(node) && ((node.StateKey == key && node.Kind is NodeKind.Input or NodeKind.Select) ||
+                (node.Extension is { } extension && validator.TryExtension(extension, out IOutputExtensionContract? contract) && contract.EditableStates(extension.Configuration).Contains(key)))))
                 return Fail("dirty-state", "The update would hide an edited field. The current draft is retained.");
         _content = copy; _values = values; _baseline = baseline;
         _sorting = _sorting.Where(pair => copy.Document.Nodes.Any(node => node.Id == pair.Key && node.Kind == NodeKind.Table &&
@@ -99,7 +100,7 @@ public sealed partial class AiSession
             }
             if (stored.Version <= 0) return Fail("invalid-checkpoint", "The checkpoint version is invalid.");
             WorkspaceCheckpoint saved = WorkspaceJson.Read<WorkspaceCheckpoint>(stored.Json);
-            if (saved.FormatVersion != "1" || saved.Content.Document.SchemaVersion is not ("0.1" or "0.2"))
+            if (saved.FormatVersion != "1" || saved.Content.Document.SchemaVersion is not ("0.1" or "0.2" or "0.3"))
                 return Fail("incompatible-workspace", "This saved workspace requires an unsupported format or document schema. It has not been changed.");
             if (!ValidArtifacts(saved.Artifacts)) return Fail("invalid-checkpoint", "Saved artifact references are invalid.");
             WorkspaceAccess access = await workspaceServices.Access.ReauthorizeAsync(owner, saved.Content.Document.DataSets, saved.Artifacts, linked.Token);

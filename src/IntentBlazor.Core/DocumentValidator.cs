@@ -4,10 +4,12 @@ using System.Text.Json;
 
 namespace IntentBlazor.Core;
 
-public sealed class DocumentValidator(IEnumerable<ActionDefinition>? actions = null)
+public sealed partial class DocumentValidator(IEnumerable<ActionDefinition>? actions = null, IEnumerable<IOutputExtensionContract>? extensions = null)
 {
     public IReadOnlyDictionary<string, ActionDefinition> Actions { get; } =
         (actions ?? []).ToImmutableDictionary(action => action.Name, StringComparer.Ordinal);
+    public IReadOnlyDictionary<string, IOutputExtensionContract> Extensions { get; } =
+        (extensions ?? []).ToImmutableDictionary(item => ExtensionKey(item.Descriptor.Pack, item.Descriptor.Version, item.Descriptor.Renderer), StringComparer.Ordinal);
     public OperationResult Validate(OutputContent content)
     {
         try
@@ -47,11 +49,12 @@ public sealed class DocumentValidator(IEnumerable<ActionDefinition>? actions = n
     {
         Need(content is not null && content.Document is not null, "missing-document", "", "A document is required.");
         OutputDocument doc = content.Document;
-        Need(doc.SchemaVersion is "0.1" or "0.2", "schema-version", "schemaVersion", "Only schema 0.1 and 0.2 are supported.");
+        Need(doc.SchemaVersion is "0.1" or "0.2" or "0.3", "schema-version", "schemaVersion", "Supported schemas are 0.1, 0.2 and 0.3.");
         Need(Identifier(doc.Id) && doc.Revision > 0, "identity", "id", "A valid ID and positive revision are required.");
         Need(doc.Requires is not null && doc.Requires.Count > 0 &&
-            doc.Requires.All(pair => pair.Key == "builtin" && pair.Value == "0.1"),
-            "toolkit", "requires", "Only the builtin 0.1 toolkit is available.");
+            doc.Requires.All(pair => pair.Key == "builtin" ? pair.Value == "0.1" :
+                Extensions.Values.Any(contract => contract.Descriptor.Pack == pair.Key && contract.Descriptor.Version == pair.Value)),
+            "toolkit", "requires", "A required toolkit or extension version is unavailable.");
         Need(!doc.Nodes.IsDefault && doc.Nodes.Length is > 0 and <= 128, "node-limit", "nodes", "Use 1 to 128 nodes.");
         Need(doc.State is not null && doc.State.Count <= 64, "state-limit", "state", "Use at most 64 state slots.");
         Need(!doc.DataSets.IsDefault && doc.DataSets.Length <= 16 && !content.Data.IsDefault &&
@@ -109,7 +112,7 @@ public sealed class DocumentValidator(IEnumerable<ActionDefinition>? actions = n
         Dictionary<string, OutputInteraction> interactions = doc.Interactions.ToDictionary(item => item.Id, StringComparer.Ordinal);
         foreach (OutputInteraction interaction in interactions.Values)
         {
-            Need(interaction.Action is null || (doc.SchemaVersion == "0.2" && Actions.ContainsKey(interaction.Action)),
+            Need(interaction.Action is null || (doc.SchemaVersion is "0.2" or "0.3" && Actions.ContainsKey(interaction.Action)),
                 "unsupported-action", interaction.Id, "Actions require schema 0.2 and an explicitly registered definition.");
             Need(interaction.Event is UiEventKind.Select or UiEventKind.Activate && !interaction.Assignments.IsDefault &&
                 interaction.Assignments.Length <= 16, "interaction", interaction.Id, "Declare bounded local select or activate effects.");
@@ -131,7 +134,7 @@ public sealed class DocumentValidator(IEnumerable<ActionDefinition>? actions = n
         {
             Need(node.Title is not null && node.Title.Length <= 160 && !node.Children.IsDefault && !node.Fields.IsDefault,
                 "node-properties", node.Id, "Node labels and collections must be valid.");
-            bool container = node.Kind is NodeKind.Layout or NodeKind.Card or NodeKind.Form;
+            bool container = node.Kind is NodeKind.Layout or NodeKind.Card or NodeKind.Form or NodeKind.Extension;
             Need(container || node.Children.IsEmpty, "leaf-children", node.Id, "Only layout, card, and form nodes have children.");
             Need(node.Children.All(nodes.ContainsKey), "child-reference", node.Id, "A child node is unavailable.");
             if (node.WhenState is not null)
@@ -139,7 +142,8 @@ public sealed class DocumentValidator(IEnumerable<ActionDefinition>? actions = n
                     condition.Kind is StateKind.Boolean or StateKind.RecordReference,
                     "condition", node.Id, "Conditions use boolean state or record selection.");
 
-            if (node.Kind is NodeKind.Text or NodeKind.Rating or NodeKind.Image)
+            ValidateAdditionalNode(node, content);
+            if (node.Kind is NodeKind.Text or NodeKind.Rating or NodeKind.Image or NodeKind.Markdown or NodeKind.Artifact)
             {
                 Need(node.Value is not null, "binding", node.Id, "This node requires a value binding.");
                 StateKind? kind = ValidateBinding(node.Value, doc, data, null);
@@ -149,11 +153,11 @@ public sealed class DocumentValidator(IEnumerable<ActionDefinition>? actions = n
                 Need(node.Kind != NodeKind.Image || node.Value.Source == BindingSource.SelectedField,
                     "image-binding", node.Id, "Images must bind a selected field from host-provided data.");
             }
-            if (node.Kind is NodeKind.List or NodeKind.Table or NodeKind.Select)
+            if (node.Kind is NodeKind.List or NodeKind.Table or NodeKind.Select or NodeKind.Gallery)
             {
                 Need(node.DataSetId is not null && data.ContainsKey(node.DataSetId), "node-dataset", node.Id, "A declared dataset is required.");
                 OutputDataSet set = data[node.DataSetId];
-                if (node.Kind is NodeKind.List or NodeKind.Select)
+                if (node.Kind is NodeKind.List or NodeKind.Select or NodeKind.Gallery)
                     Need(node.LabelField is not null && set.Fields.TryGetValue(node.LabelField, out DataField? field) &&
                         field.Kind == StateKind.Text, "label-field", node.Id, "A text label field is required.");
                 if (node.Kind == NodeKind.Table)
@@ -184,7 +188,7 @@ public sealed class DocumentValidator(IEnumerable<ActionDefinition>? actions = n
                 Need(interactions.TryGetValue(node.InteractionId, out _), "interaction-reference", node.Id, "The interaction is unavailable.");
                 OutputInteraction interaction = interactions[node.InteractionId];
                 Need(node.Kind == NodeKind.Button ? interaction.Event == UiEventKind.Activate :
-                    node.Kind is NodeKind.List or NodeKind.Table && interaction.Event == UiEventKind.Select,
+                    node.Kind is NodeKind.List or NodeKind.Table or NodeKind.Gallery && interaction.Event == UiEventKind.Select,
                     "event-kind", node.Id, "The node and interaction event kinds do not agree.");
                 if (interaction.Action is { } name)
                 {
@@ -259,10 +263,10 @@ public sealed class DocumentValidator(IEnumerable<ActionDefinition>? actions = n
                     "binding-selection", "", "A selected field requires matching record-reference state.");
                 break;
             case BindingSource.EventValue:
-                Need(eventNode?.Kind is NodeKind.List or NodeKind.Table, "binding-event", "", "Event values are available only in selection effects.");
+                Need(eventNode?.Kind is NodeKind.List or NodeKind.Table or NodeKind.Gallery, "binding-event", "", "Event values are available only in selection effects.");
                 return StateKind.Text;
             case BindingSource.EventField:
-                Need(eventNode?.Kind is NodeKind.List or NodeKind.Table && eventNode.DataSetId == binding.DataSetId,
+                Need(eventNode?.Kind is NodeKind.List or NodeKind.Table or NodeKind.Gallery && eventNode.DataSetId == binding.DataSetId,
                     "binding-event", "", "Event fields must come from the selected dataset.");
                 break;
         }

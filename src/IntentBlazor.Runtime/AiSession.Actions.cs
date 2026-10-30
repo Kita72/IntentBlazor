@@ -67,6 +67,7 @@ public sealed partial class AiSession
                 return ActionOutcome(new(ActionStatus.Rejected, "An action argument violates its registered type or range."));
             ActionContext context = new(owner, _workspaceKey, request.RequestId, resource, version, arguments);
             WorkspaceAccess access = await workspaceServices.Access.ReauthorizeAsync(owner, Document.DataSets, Artifacts, source.Token);
+            context = context with { Data = access.Data, Artifacts = Artifacts };
             OutputDataSet? authorized = access.Data.IsDefault ? null : access.Data.FirstOrDefault(set => set.Id == definition.DataSetId);
             if (!access.Allowed || authorized is null || !authorized.Rows.Any(row => row[authorized.KeyField].GetString() == resource) ||
                 !await handler.AuthorizeAsync(context, source.Token) || await OwnerAsync(source.Token) != owner)
@@ -105,7 +106,9 @@ public sealed partial class AiSession
             {
                 OutputContent updated = _content with { Data = result.Data.IsEmpty ? _content.Data : result.Data };
                 var updatedData = updated.Data.ToDictionary(set => set.Id, StringComparer.Ordinal);
-                if (!validator.Validate(updated).Success || result.AcceptedStates.IsDefault || result.AcceptedStates.Distinct().Count() != result.AcceptedStates.Length ||
+                if (!validator.Validate(updated).Success || !ValidArtifacts(result.Artifacts) ||
+                    !ValidArtifacts(Artifacts.Where(item => !result.Artifacts.Any(added => added.Id == item.Id)).Concat(result.Artifacts).ToImmutableArray()) ||
+                    result.AcceptedStates.IsDefault || result.AcceptedStates.Distinct().Count() != result.AcceptedStates.Length ||
                     !result.Values.All(pair => Document!.State.TryGetValue(pair.Key, out StateDefinition? state) && DocumentValidator.Matches(state, pair.Value, updatedData)) ||
                     !result.AcceptedStates.All(_values.ContainsKey))
                     result = new(ActionStatus.Indeterminate, "The operation returned an incompatible UI update. The local draft is retained.");
@@ -126,6 +129,7 @@ public sealed partial class AiSession
             if (acceptedContent is not null && acceptedValues is not null && Revision == request.ExpectedRevision)
             {
                 _content = acceptedContent; _values = acceptedValues;
+                Artifacts = Artifacts.Where(item => !result.Artifacts.Any(added => added.Id == item.Id)).Concat(result.Artifacts).ToImmutableArray();
                 foreach (string key in result.AcceptedStates)
                 { _dirty = _dirty.Remove(key); _baseline = _baseline.SetItem(key, _values[key]); }
                 foreach (string key in result.Values.Keys.Where(key => !_dirty.Contains(key))) _baseline = _baseline.SetItem(key, _values[key]);

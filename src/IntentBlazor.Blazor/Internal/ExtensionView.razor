@@ -1,0 +1,21 @@
+@namespace IntentBlazor.Blazor.Internal
+@using IntentBlazor.Core
+@using IntentBlazor.Runtime
+@inject IEnumerable<OutputRendererRegistration> Renderers
+@{
+    ExtensionNode extension = Node.Extension!;
+    var renderer = Renderers.FirstOrDefault(item => item.Key == DocumentValidator.ExtensionKey(extension.Pack, extension.Version, extension.Renderer));
+}
+@if (renderer is null)
+{
+    <aside data-node="@Node.Id"><h3>@Node.Title</h3><p>@extension.Fallback</p></aside>
+}
+else
+{
+    <DynamicComponent Type="@renderer.ComponentType" Parameters="@Parameters" />
+}
+@code {
+    [Parameter, EditorRequired] public AiSession Session { get; set; } = default!;
+    [Parameter, EditorRequired] public OutputNode Node { get; set; } = default!;
+    private IDictionary<string, object> Parameters => new Dictionary<string, object> { ["Session"] = Session, ["Node"] = Node };
+}

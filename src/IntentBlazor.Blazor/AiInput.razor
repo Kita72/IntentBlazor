@@ -7,16 +7,17 @@
     <DataAnnotationsValidator />
     <label for="@_fieldId">@Label</label>
     <InputTextArea id="@_fieldId" @bind-Value="_request.Text" placeholder="@Placeholder"
-                   maxlength="2048" disabled="@(!_interactiveReady || Current.IsBusy)" />
+                   maxlength="2048" disabled="@(!_interactiveReady || Current.IsBusy || _uploading)" />
     <ValidationMessage For="@(() => _request.Text)" />
     <div class="ib-input-actions">
-        <button type="submit" disabled="@(!_interactiveReady || Current.IsBusy)">@(!_interactiveReady ? "Connecting…" : Current.IsBusy ? "Preparing…" : "Submit")</button>
+        <button type="submit" disabled="@(!_interactiveReady || Current.IsBusy || _uploading)">@(!_interactiveReady ? "Connecting…" : Current.IsBusy ? "Preparing…" : _uploading ? "Uploading…" : "Submit")</button>
         @if (Current.IsBusy)
         {
             <button type="button" @onclick="Current.Cancel">Cancel request</button>
         }
     </div>
 </EditForm>
+<IntentBlazor.Blazor.Internal.InputAttachments Session="@Current" Disabled="@(!_interactiveReady || Current.IsBusy)" BusyChanged="value => _uploading = value" />
 </div>
 
 @code {
@@ -26,6 +27,7 @@
     private readonly string _fieldId = $"intent-input-{Guid.NewGuid():N}";
     private readonly InputRequest _request = new();
     private bool _interactiveReady;
+    private bool _uploading;
 
     protected override void OnAfterRender(bool firstRender)
     {

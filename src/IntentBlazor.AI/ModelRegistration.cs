@@ -35,8 +35,15 @@ public sealed class IntentModelBuilder(IServiceCollection services)
     public IntentModelBuilder UseLMStudio(string model, Uri? endpoint = null, Func<IServiceProvider, string>? apiKey = null) =>
         UseCompatible("LM Studio", model, endpoint ?? new("http://localhost:1234/v1/"), apiKey ?? (_ => "lm-studio"));
 
-    public IntentModelBuilder UseOpenAI(string model, Func<IServiceProvider, string> apiKey) =>
-        UseCompatible("OpenAI", model, new("https://api.openai.com/v1/"), apiKey);
+    public IntentModelBuilder UseOpenAI(string model, Func<IServiceProvider, string> apiKey, bool supportsReasoningEffort = false) =>
+        UseCompatible("OpenAI", model, new("https://api.openai.com/v1/"), apiKey, supportsReasoningEffort);
+
+    public IntentModelBuilder AddOllamaPreset(string id, string model, Uri? endpoint = null) =>
+        UseCompatible("Ollama", model, endpoint ?? new("http://localhost:11434/v1/"), _ => "ollama", presetId: id);
+    public IntentModelBuilder AddLMStudioPreset(string id, string model, Uri? endpoint = null, Func<IServiceProvider, string>? apiKey = null) =>
+        UseCompatible("LM Studio", model, endpoint ?? new("http://localhost:1234/v1/"), apiKey ?? (_ => "lm-studio"), presetId: id);
+    public IntentModelBuilder AddOpenAIPreset(string id, string model, Func<IServiceProvider, string> apiKey, bool supportsReasoningEffort = false) =>
+        UseCompatible("OpenAI", model, new("https://api.openai.com/v1/"), apiKey, supportsReasoningEffort, id);
 
     public IntentModelBuilder UseChatClient(Func<IServiceProvider, IChatClient> factory, ModelProfile profile)
     {
@@ -55,7 +62,7 @@ public sealed class IntentModelBuilder(IServiceCollection services)
         Services.TryAddSingleton<ICodexProcessRunner, CodexProcessRunner>();
         return UseChatClient(sp => new CodexChatClient(options, sp.GetRequiredService<ICodexProcessRunner>()),
             new("Codex CLI (experimental)", options.Model, null, NativeTools: false,
-                SupportsOutputTokenLimit: false, SupportsTemperature: false, IncrementalText: false));
+                SupportsOutputTokenLimit: false, SupportsTemperature: false, IncrementalText: false, SupportsAdvancedSampling: false));
     }
 
     public IntentModelBuilder AddDataSource<T>() where T : class, IOutputDataSource
@@ -82,7 +89,7 @@ public sealed class IntentModelBuilder(IServiceCollection services)
         return this;
     }
 
-    private IntentModelBuilder UseCompatible(string provider, string model, Uri endpoint, Func<IServiceProvider, string> key)
+    private IntentModelBuilder UseCompatible(string provider, string model, Uri endpoint, Func<IServiceProvider, string> key, bool supportsReasoningEffort = false, string? presetId = null)
     {
         CheckModel(model);
         if (!endpoint.IsAbsoluteUri || endpoint.Scheme is not ("http" or "https") ||
@@ -93,7 +100,7 @@ public sealed class IntentModelBuilder(IServiceCollection services)
         IHttpClientBuilder httpBuilder = Services.AddHttpClient(httpName, http => http.Timeout = System.Threading.Timeout.InfiniteTimeSpan)
             .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { AllowAutoRedirect = false });
         if (provider != "OpenAI") httpBuilder.AddHttpMessageHandler(() => new LocalTokenLimitHandler());
-        return UseChatClient(sp => new DeferredChatClient(() =>
+        Func<IServiceProvider, IChatClient> factory = sp => new DeferredChatClient(() =>
         {
             string credential = key(sp);
             if (string.IsNullOrWhiteSpace(credential)) throw new InvalidOperationException("The selected model credential is not configured.");
@@ -104,7 +111,10 @@ public sealed class IntentModelBuilder(IServiceCollection services)
                 RetryPolicy = new ClientRetryPolicy(0)
             });
             return client.GetChatClient(model).AsIChatClient();
-        }), new(provider, model, endpoint));
+        });
+        ModelProfile profile = new(provider, model, endpoint, SupportsReasoningEffort: supportsReasoningEffort);
+        if (presetId is null) return UseChatClient(factory, profile);
+        Services.AddIntentModelPreset(new(presetId, profile, factory)); return this;
     }
 
     private static void CheckModel(string model)

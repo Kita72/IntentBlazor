@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Description>Embeddable AI connection setup and diagnostics for IntentBlazor.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <ProjectReference Include="../IntentBlazor.Blazor/IntentBlazor.Blazor.csproj" />
+    <ProjectReference Include="../IntentBlazor.AI/IntentBlazor.AI.csproj" />
+  </ItemGroup>
+</Project>

@@ -4,6 +4,12 @@
 
 ### Added
 
+- Phase 4 optional content, image-editor pack, and Blazor AI setup packages; AiInput/AiOutput retain their existing consumer surface.
+- Bounded UTF-8 text/Markdown, JSON/CSV, PNG/JPEG, and PDF adapters; owner-scoped immutable artifacts, authenticated delivery, provenance, parent-aware cleanup, and actual JSON/CSV/image downloads.
+- Experimental schema 0.3 Markdown/chart/gallery/artifact/extension nodes, public typed renderer/event registration, versioned capabilities, and safe optional fallbacks.
+- A real nearest-neighbor resize action, recoverable original image, local zoom, and persisted comparison state.
+- Host-approved model presets, policy-enforced scoped generation settings, explicit connectivity/presentation probes, and metadata-only run inspection.
+- A deterministic private content demo, format/extension/setup guidance, and third-party dependency notices.
 - Phase 3 owner-scoped checkpoints with replaceable in-memory and SQLite stores, exact drafts/baselines, selections, sorting, artifact references, and retained conversation records.
 - Revision-checked follow-up reconciliation that preserves edited fields and rejects proposals that remove or hide them.
 - Experimental schema 0.2 registered application actions, trusted button labels, server authorization, typed arguments, expected record versions, durable request claims, and structured outcomes.
@@ -23,4 +29,4 @@
 - Three authored fixture workspaces, original MIT sample sprites, and an interactive documentation playground with document/state inspection.
 - Contract, runtime, and Blazor rendering tests plus the Phase 1 developer guide.
 
-No public framework package has been released. Live model verification is deferred. Content adapters, specialist extensions, AI setup UI, complete standalone example workflows, and preview release work remain planned.
+No public framework package has been released. Live model verification is deferred. Complete standalone example workflows, documentation-site release, and developer-preview release work remain planned in Phases 5–7.

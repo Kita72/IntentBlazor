@@ -7,7 +7,7 @@ namespace IntentBlazor.Core;
 public static class OutputJson
 {
     public const int MaximumBytes = 262144;
-    private static readonly JsonSerializerOptions Options = CreateOptions();
+    public static JsonSerializerOptions Options { get; } = CreateOptions();
 
     public static string SerializeDocument(OutputDocument document) => Serialize(document);
     public static string SerializeContent(OutputContent content) => Serialize(content);

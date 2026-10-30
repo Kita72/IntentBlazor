@@ -1,0 +1,32 @@
+@namespace IntentBlazor.Blazor.AI
+<fieldset disabled="@Disabled">
+    <legend>Generation controls</legend>
+    <label>Temperature <input type="number" step="0.1" min="0" max="2" @bind="_draft.Temperature" @bind:after="Notify" disabled="@(Connection?.Temperature != true)" /></label>
+    <label>Maximum output tokens <input type="number" min="128" max="@MaximumTokens" @bind="_draft.MaximumOutputTokens" @bind:after="Notify" disabled="@(Connection?.OutputLimit != true)" /></label>
+    <label>Context character budget <input type="number" min="1024" max="@MaximumContext" @bind="_draft.MaximumContextCharacters" @bind:after="Notify" /></label>
+    <label><input type="checkbox" @bind="_draft.UseJsonSchema" @bind:after="Notify" /> Request JSON schema output</label>
+    <details>
+        <summary>Advanced adapter options</summary>
+        @if (!AllowAdvanced) { <p>Advanced options are controlled by the administrator.</p> }
+        <fieldset disabled="@(!AllowAdvanced)">
+            <label>Top P <input type="number" step="0.05" min="0" max="1" @bind="_draft.TopP" @bind:after="Notify" disabled="@(Connection?.AdvancedSampling != true)" /></label>
+            <label>Frequency penalty <input type="number" step="0.1" min="-2" max="2" @bind="_draft.FrequencyPenalty" @bind:after="Notify" disabled="@(Connection?.AdvancedSampling != true)" /></label>
+            <label>Presence penalty <input type="number" step="0.1" min="-2" max="2" @bind="_draft.PresencePenalty" @bind:after="Notify" disabled="@(Connection?.AdvancedSampling != true)" /></label>
+            <label>Seed <input type="number" @bind="_draft.Seed" @bind:after="Notify" disabled="@(Connection?.AdvancedSampling != true)" /></label>
+            <label>Reasoning effort <select @bind="Reasoning" @bind:after="Notify" disabled="@(Connection?.ReasoningEffort != true)"><option value="">Provider default</option><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></label>
+        </fieldset>
+    </details>
+</fieldset>
+@code {
+    [Parameter, EditorRequired] public ModelOptions Value { get; set; } = new();
+    [Parameter] public EventCallback<ModelOptions> ValueChanged { get; set; }
+    [Parameter] public AiConnectionView? Connection { get; set; }
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public bool AllowAdvanced { get; set; }
+    [Parameter] public int MaximumTokens { get; set; } = 8000;
+    [Parameter] public int MaximumContext { get; set; } = 60000;
+    private ModelOptions _draft = new();
+    private string Reasoning { get => _draft.ReasoningEffort ?? ""; set => _draft.ReasoningEffort = value.Length == 0 ? null : value; }
+    protected override void OnParametersSet() => _draft = Value.Copy();
+    private Task Notify() => ValueChanged.InvokeAsync(_draft.Copy());
+}

@@ -1,0 +1,65 @@
+@namespace IntentBlazor.Blazor.AI
+@inject IEnumerable<ModelSetupState> SetupStates
+<section class="ib-ai-setup" aria-label="AI setup">
+    <h2>AI connection and generation settings</h2>
+    @if (_snapshot is null) { <p>AI setup is not configured by this host.</p> }
+    else if (!_snapshot.Policy.CanView) { <p>AI setup is unavailable under the current host policy.</p> }
+    else
+    {
+        <p>@_snapshot.Notice</p>
+        <EditForm Model="@_edit" OnValidSubmit="Apply" FormName="@_formName">
+            <DataAnnotationsValidator />
+            <ConnectionSelector Connections="@_snapshot.Connections" Selected="@_selected" SelectedChanged="Select"
+                Disabled="@(!_snapshot.Policy.CanEdit || _busy)" />
+            <GenerationSettings Value="@_edit" ValueChanged="value => _edit = value" Connection="@Selected"
+                Disabled="@(!_snapshot.Policy.CanEdit || _busy)" AllowAdvanced="@_snapshot.Policy.AllowAdvanced"
+                MaximumTokens="@_snapshot.Policy.MaximumOutputTokens" MaximumContext="@_snapshot.Policy.MaximumContextCharacters" />
+            <button type="submit" disabled="@(!_snapshot.Policy.CanEdit || _busy || Selected is null)">Apply AI settings</button>
+        </EditForm>
+        <ConnectionProbe Result="@_probe" Disabled="@(!_snapshot.Policy.CanProbe || _busy || Selected is null)" Testing="@_busy" Test="Probe" />
+        <details><summary>Effective server settings</summary><pre>@WorkspaceJson.Write(_snapshot.Effective)</pre></details>
+        @if (_message is not null) { <p role="status">@_message</p> }
+    }
+</section>
+@code {
+    private readonly string _formName = "ai-setup-" + Guid.NewGuid().ToString("N");
+    private AiSetupSnapshot? _snapshot;
+    private ModelOptions _edit = new();
+    private string _selected = "default";
+    private string? _message;
+    private bool _busy;
+    private ModelProbeResult? _probe;
+    private ModelSetupState? Setup => SetupStates.SingleOrDefault();
+    private AiConnectionView? Selected => _snapshot?.Connections.FirstOrDefault(item => item.Id == _selected);
+    protected override async Task OnInitializedAsync() => await Refresh();
+    private async Task Refresh()
+    {
+        if (Setup is null) return;
+        _snapshot = await Setup.ReadAsync(); _edit = _snapshot.Effective.Copy(); _selected = _snapshot.SelectedConnection ?? "default";
+    }
+    private void Select(string selected)
+    {
+        _selected = selected;
+        if (Selected?.Temperature == false) _edit.Temperature = null;
+        if (Selected?.AdvancedSampling == false) { _edit.TopP = null; _edit.Seed = null; _edit.PresencePenalty = null; _edit.FrequencyPenalty = null; }
+        if (Selected?.ReasoningEffort == false) _edit.ReasoningEffort = null;
+    }
+    private async Task Apply()
+    {
+        if (Setup is null || _snapshot is null || _busy) return;
+        _busy = true;
+        try
+        {
+            var result = await Setup.ApplyAsync(_selected, _edit, _snapshot.Revision);
+            _message = result.Success ? "AI settings applied to the next request in this scope." : result.Errors[0].Message;
+            if (result.Success) await Refresh();
+        }
+        finally { _busy = false; }
+    }
+    private async Task Probe()
+    {
+        if (Setup is null || _busy) return; _busy = true;
+        try { _probe = await Setup.ProbeAsync(); }
+        finally { _busy = false; }
+    }
+}

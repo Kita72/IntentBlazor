@@ -11,9 +11,14 @@ public sealed record ActionResult(ActionStatus Status, string Message)
     public ImmutableDictionary<string, JsonElement> Values { get; init; } = ImmutableDictionary<string, JsonElement>.Empty;
     public ImmutableArray<string> AcceptedStates { get; init; } = [];
     public ImmutableArray<OutputDataSet> Data { get; init; } = [];
+    public ImmutableArray<ArtifactReference> Artifacts { get; init; } = [];
 }
 public sealed record ActionContext(string OwnerId, string WorkspaceKey, string IdempotencyKey,
-    string ResourceId, string ExpectedVersion, ImmutableDictionary<string, JsonElement> Arguments);
+    string ResourceId, string ExpectedVersion, ImmutableDictionary<string, JsonElement> Arguments)
+{
+    public ImmutableArray<OutputDataSet> Data { get; init; } = [];
+    public ImmutableArray<ArtifactReference> Artifacts { get; init; } = [];
+}
 public sealed record ActionRequest(string NodeId, long ExpectedRevision, string RequestId);
 public interface IWorkspaceActionHandler
 {

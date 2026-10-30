@@ -1,0 +1,23 @@
+@namespace IntentBlazor.Blazor.Internal
+@using IntentBlazor.Core
+@using IntentBlazor.Runtime
+@{ long revision = Session.Revision; }
+<section class="ib-gallery" data-node="@Node.Id" aria-label="@Node.Title">
+    <h3>@Node.Title</h3>
+    @foreach (var row in Session.Rows(Node))
+    {
+        string key = Session.RecordKey(Node, row), label = JsonValues.Display(row[Node.LabelField!]), image = JsonValues.Display(row[Node.ImageField!]);
+        <figure @key="key">
+            @if (ImageSourcePolicy.IsAllowed(image)) { <img src="@image" alt="@label" loading="lazy" /> }
+            <figcaption>@label</figcaption>
+            @if (Node.InteractionId is not null)
+            {
+                <button type="button" disabled="@Session.IsActionRunning" @onclick="() => Session.Dispatch(new(Node.Id, UiEventKind.Select, revision) { Value = JsonValues.From(key) })">Select @label</button>
+            }
+        </figure>
+    }
+</section>
+@code {
+    [Parameter, EditorRequired] public AiSession Session { get; set; } = default!;
+    [Parameter, EditorRequired] public OutputNode Node { get; set; } = default!;
+}
