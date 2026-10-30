@@ -4,6 +4,11 @@
 
 ### Added
 
+- Phase 5 standalone Gaming News, Staff Business, and Asset Workbench apps with the default AiInput/AiOutput pair and optional existing model adapters.
+- Synthetic Development-only protected-cookie identities, antiforgery-protected sign-in/out, private named workspace controls, and optional AI setup/inspection shared as non-packable example source.
+- News preferences, safe linked source/date/version attribution, bounded host-configured JSON feeds, private bookmarks, and immutable saved comparison snapshots.
+- Example-owned EF Core SQLite jobs, assignment permissions, explicit conflict review/rebase, shared operation history, and transactional idempotency receipts separate from framework checkpoints.
+- An app-owned asset version-picker extension with live dimension groups, retained-original selection, actual sample imports, and working PNG exports through the existing pack.
 - Phase 4 optional content, image-editor pack, and Blazor AI setup packages; AiInput/AiOutput retain their existing consumer surface.
 - Bounded UTF-8 text/Markdown, JSON/CSV, PNG/JPEG, and PDF adapters; owner-scoped immutable artifacts, authenticated delivery, provenance, parent-aware cleanup, and actual JSON/CSV/image downloads.
 - Experimental schema 0.3 Markdown/chart/gallery/artifact/extension nodes, public typed renderer/event registration, versioned capabilities, and safe optional fallbacks.
@@ -29,4 +34,8 @@
 - Three authored fixture workspaces, original MIT sample sprites, and an interactive documentation playground with document/state inspection.
 - Contract, runtime, and Blazor rendering tests plus the Phase 1 developer guide.
 
-No public framework package has been released. Live model verification is deferred. Complete standalone example workflows, documentation-site release, and developer-preview release work remain planned in Phases 5–7.
+### Fixed
+
+- Draft status no longer claims that no application data was saved when a successful action leaves other fields dirty.
+
+No public framework package has been released. Live model verification is deferred. Complete documentation-site and developer-preview release work remain planned in Phases 6–7.

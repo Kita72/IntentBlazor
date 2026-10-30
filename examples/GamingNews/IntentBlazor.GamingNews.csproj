@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
-  <PropertyGroup><TargetFramework>net10.0</TargetFramework><IsPackable>false</IsPackable></PropertyGroup>
+  <PropertyGroup><TargetFramework>net10.0</TargetFramework><IsPackable>false</IsPackable><UserSecretsId>IntentBlazor.Examples.GamingNews</UserSecretsId></PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../../src/IntentBlazor.Blazor/IntentBlazor.Blazor.csproj" />
-    <ProjectReference Include="../IntentBlazor.Examples/IntentBlazor.Examples.csproj" />
+    <ProjectReference Include="..\IntentBlazor.ExampleHost\IntentBlazor.ExampleHost.csproj" />
   </ItemGroup>
 </Project>

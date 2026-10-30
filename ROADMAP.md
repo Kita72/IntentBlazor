@@ -9,7 +9,7 @@ The target is a developer preview demonstrating the same input, output-document,
 | 2 | First verified local and frontier model interaction | Adapters implemented; live gate deferred |
 | 3 | Stateful updates, actions, persistence, and conflict recovery | Implemented; deterministic recovery demonstrated |
 | 4 | Content adapters, extensions, and embeddable AI setup | Implemented; experimental packages and deterministic demo |
-| 5 | Gaming News, Staff Business, and Asset Workbench apps | Planned |
+| 5 | Gaming News, Staff Business, and Asset Workbench apps | Implemented; standalone synthetic workflows |
 | 6 | Complete docs, document explorer, and demos | Planned |
 | 7 | Package verification and public developer preview | Planned |
 
@@ -24,3 +24,5 @@ Phase 3 evidence: [workspace and action guide](docs/phase-3-workspaces.md), [sch
 Phase 4 evidence: [completion record](docs/phase-4-completion.md), [content/setup guide](docs/phase-4-content-and-setup.md), [schema 0.3](specs/output-document/v0.3-content-and-extensions.md), [decision 0007](docs/architecture/0007-content-extensions-and-setup.md), and [automated checks](tests/README.md). Three phases remain after Phase 4: **5 complete example apps**, **6 complete docs/demos**, and **7 developer preview**. Live-model verification remains a separate deferred gate.
 
 Later directions include additional renderers, content formats, providers, storage adapters, and supported hosting models. Arbitrary generated scripts and real-time collaborative editing require separate designs.
+
+Phase 5 evidence: [completion record](docs/phase-5-completion.md), [standalone app guide](docs/phase-5-example-apps.md), [decision 0008](docs/architecture/0008-standalone-example-apps.md), and the [workflow test matrix](tests/README.md). Two phases remain: **6 complete docs/demos** and **7 developer preview**. The deferred live-model gate remains required before a public preview. The examples' synthetic authentication is Development-only.

@@ -1,0 +1,21 @@
+@inject AiSession Session
+@inject ExampleWorkspaceController Workspaces
+<section class="workspace-tools" aria-label="Private workspace controls">
+    <p>Private workspace <strong>@Session.WorkspaceKey</strong> · checkpoint @Session.StoredVersion</p>
+    <div class="toolbar">
+        <button disabled="@_busy" @onclick="Save">Save workspace</button>
+        <button disabled="@_busy" @onclick="Reconnect">Reconnect saved workspace</button>
+        <label>Workspace key <input maxlength="64" @bind="_key" /></label>
+        <button disabled="@_busy" @onclick="Fork">Save a copy</button>
+        <button disabled="@_busy" @onclick="Open">Open saved workspace</button>
+    </div>
+    @if (Workspaces.Message is { } message) { <p role="status">@message</p> }
+</section>
+@code {
+    private string _key = "saved-copy";
+    private bool _busy;
+    private async Task Save() { _busy = true; try { await Workspaces.SaveAsync(); } finally { _busy = false; } }
+    private async Task Reconnect() { _busy = true; try { await Workspaces.ReconnectAsync(); } finally { _busy = false; } }
+    private async Task Fork() { _busy = true; try { await Workspaces.ForkAsync(_key); } finally { _busy = false; } }
+    private async Task Open() { _busy = true; try { await Workspaces.OpenAsync(_key); } finally { _busy = false; } }
+}

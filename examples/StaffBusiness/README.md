@@ -1,7 +1,13 @@
-# Staff Business example
+# Staff Business
 
-The independently runnable app is planned for Phase 5. The [authored staff fixture](../../specs/fixtures/staff.json) remains available in the docs playground. Phase 3 adds a Development-only [recovery demo](../../docs/phase-3-workspaces.md) with synthetic protected-cookie identities, real private SQLite checkpoints, shared job saves, restricted-action checks, and record-version conflicts. Its [host-owned services](../IntentBlazor.Examples/StaffWorkspaces.cs) use the public workspace/action contracts; production account integration remains the consuming app's responsibility.
+Independently runnable Phase 5 Blazor Web App with synthetic roles, jobs waiting on materials, assignment drafts, shared operation history, and an example-owned EF Core SQLite database. Its page uses default AiInput/AiOutput; the framework checkpoint database remains separate.
 
-Demonstrate authenticated synthetic staff, shared job records, private AI sessions, assignment forms, permission checks, and optimistic concurrency. Keep domain storage separate from framework session persistence.
+~~~powershell
+dotnet run --project examples/StaffBusiness --no-launch-profile -- --environment Development --urls http://localhost:5182
+~~~
 
-Acceptance: two staff users edit the same job; the second receives a recoverable conflict, and a restricted user cannot invoke a prohibited operation.
+Open http://localhost:5182. Alex and Sam are synthetic Dispatchers; Riley is a Reader. Use independent browser sessions/profiles for two users. Select the same job in both, edit both drafts, save Alex's assignment, and attempt Sam's save. The conflict retains Sam's draft. Reconnect/refresh, review the saved values and history, explicitly choose Use current record version after review, then save. Riley's UI and direct-service save attempts are denied by the server.
+
+Ignored artifacts/phase5-staff contains business.sqlite and workspaces.sqlite. Configure trusted Example:DataDirectory for another isolated directory. The [repository](StaffRepository.cs) uses IDbContextFactory, optimistic versions, and transactional operation/receipt writes. IStaffRepository is the replacement seam; choose another EF provider and migrations in the consuming host. EnsureCreated initializes this small synthetic example, so do not point it at an existing business database.
+
+Ai:Provider/Ai:Model opt into existing model adapters; Fixture is the default. UserSecretsId is IntentBlazor.Examples.StaffBusiness. No inference occurs on initial load/restoration, and live-model verification is deferred. See the [Phase 5 guide](../../docs/phase-5-example-apps.md) for setup, permission/conflict semantics, private workspace controls, and the Development-only synthetic identity boundary.

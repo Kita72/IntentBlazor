@@ -59,3 +59,21 @@ Phase 4 adds the following behavior evidence. Files and parsed data in these tes
 | Explicit probes separate connection from presentation, avoid tools, and enforce current policy | `ExplicitProbe_DistinguishesConnectionFromValidPresentationAndNeverInvokesTools`, `Probe_RechecksRevokedPermissionBeforeSendingAndSanitizesFailures`, `ProbeConnectionRevokedDuringResponse_DoesNotPublishTheCapabilityResult`. |
 
 Rendering regressions also reject literal uncompiled `@onclick`, `@onchange`, and `@bind` attributes in the new Razor libraries. Browser checks of actual event handling, the browser file-selection limitation, and the package-only consumer are recorded separately in the [Phase 4 completion record](../docs/phase-4-completion.md). None of these checks certify a real provider/model profile.
+
+Phase 5 adds app-owned acceptance scenarios, with real temporary SQLite/EF databases, actual image bytes, default component rendering, and an in-process ASP.NET Core TestServer. No external feed/model is called by these tests.
+
+| Requirement | Evidence |
+| --- | --- |
+| News preferences, comparisons, bookmarks, attribution, follow-up selection and reopen; private libraries remain isolated | `PreferencesComparisonBookmarksAndSources_SurviveFollowupAndReopenWithoutAnotherOwnersLibrary`. |
+| Changed articles and forged owners cannot save; library quotas and request payloads are enforced | `ChangedArticleOrForgedOwner_CannotCommitAComparisonOrBookmark`, `PrivateNewsLibrary_EnforcesQuotaAndIdempotentRequestPayloads`. |
+| Configured feeds use the exact endpoint and reject unsafe, duplicate, unknown, oversized and cancelled content | `ConfiguredNewsFeed_RejectsInvalidRecordsBeforeTheyEnterTheWorkspace`, `ConfiguredNewsFeed_ReadsTheExactEndpointAndEnforcesActualStreamBytesAndUnknownMembers`. |
+| Two staff can share records without losing a private draft; a conflict requires explicit reviewed rebasing | `TwoStaff_SaveConflictsRetainPrivateDraftsAndRequireAnExplicitReviewedRebase`. |
+| A reader or forged owner cannot write through generated UI or direct service calls | `ReaderCannotSaveFromGeneratedUiOrDirectHandler_AndForgedOwnersCannotWrite`. |
+| EF-backed receipts prevent repeat writes; invalid versions/values have no side effects | `ApplicationReceipt_PreventsARepeatedWriteAndRejectsChangedPayloadAfterReopeningContexts`, `DirectBusinessSave_RejectsInvalidValuesWithoutChangingRecords`. |
+| Assets import real files, report updated dimensions, create real resized PNGs, recover originals, select versions and reopen privately | `ImportsDimensionGroupsResizeVersionSelectionOriginalRecoveryAndPngExport_UsePublicComponents`. |
+| All three apps use default AiInput/AiOutput without credentials; named copies preserve private values | `EachStandaloneScenario_UsesDefaultAiInputAndAiOutputWithCredentialFreeFixtureMode`, `WorkspaceControls_ForkAndReopenRetainPrivateValuesAndDenyAnotherOwner`. |
+| Optional model mode uses each app's authorized source and does not infer during initialization | `OptionalModelMode_UsesTheAppsAuthorizedSourceAndDefersInferenceUntilSubmission` uses the real SDK with scripted HTTP. |
+| An unavailable initial source leaves a usable input and permits recovery without exposing private details | `UnavailableInitialSource_LeavesTheInputUsableAndCanRecoverWithoutLeakingDetails`. |
+| Synthetic identities are server-allowlisted; HTTP sign-in/out require antiforgery and cannot escalate a role | `SyntheticIdentities_AreServerIssuedAllowlistedAndIsolatedByApp`, `SyntheticSignInAndSignOut_RequireAntiforgeryAndIssueOnlyAllowlistedRoles`. |
+
+Native browser checks exercise the standalone scenarios separately from these deterministic tests. Live provider compatibility, production identity, and other hosting modes remain unverified.

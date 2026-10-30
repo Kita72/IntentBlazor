@@ -1,0 +1,15 @@
+@inject ExampleHostOptions Options
+@inject ExampleModelMode Mode
+<header class="example-header">
+    <a href="/" class="brand">IntentBlazor <span>@Options.Title</span></a>
+    <AuthorizeView><Authorized Context="auth">
+        <div class="identity">@auth.User.Identity?.Name
+            <form method="post" action="/example/sign-out" data-enhance="false"><AntiforgeryToken /><button type="submit" class="secondary">Switch identity</button></form>
+        </div>
+    </Authorized></AuthorizeView>
+</header>
+<section class="intro">
+    <p class="eyebrow">PHASE 5 · @((Mode.Enabled ? "MODEL" : "DETERMINISTIC FIXTURE")) MODE</p>
+    <h1>@Options.Title</h1><p>@Options.Description</p>
+    <p class="mode">@(Mode.Enabled ? $"Requests contact the host-configured {Mode.Provider} model {Mode.Model}. Live compatibility is unverified." : "Authored interactive documents; no model calls. Example accounts are synthetic; data sources are configured by the host.")</p>
+</section>

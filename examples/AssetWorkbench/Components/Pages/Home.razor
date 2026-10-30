@@ -1,0 +1,40 @@
+@page "/"
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@inject IExampleActor Actor
+@inject ExampleWorkspaceController Workspaces
+@inject AiSession Session
+@inject IWorkspaceContent Content
+<PageTitle>Asset Workbench · IntentBlazor</PageTitle>
+<main>
+    @if (_signedIn)
+    {
+        <ExampleHeader />
+        <p>Attach PNG/JPEG files through AiInput, then ask to inspect them. The sample set contains original MIT-licensed procedural images with different dimensions. Resizing creates a real PNG; the originals remain recoverable.</p>
+        <WorkspaceToolbar />
+        <div class="toolbar"><button disabled="@(_busy || Session.IsBusy)" @onclick="Samples">Add original sample assets</button></div>
+        @if (_message is not null) { <p role="status">@_message</p> }
+        <AiInput />
+        <AiOutput />
+        <ExampleAiTools />
+    }
+    else { <ExampleSignIn /> }
+</main>
+@code {
+    private bool _signedIn, _busy;
+    private string? _message;
+    protected override async Task OnInitializedAsync() { _signedIn = await Actor.ReadAsync() is not null; if (_signedIn) await Workspaces.StartAsync(); }
+    private async Task Samples()
+    {
+        if (_busy || Session.IsBusy) return;
+        if (Session.Artifacts.Length + 2 > Content.Limits.MaximumFiles) { _message = "Detach some versions before adding another sample set. Original files stay in private storage."; return; }
+        _busy = true;
+        try
+        {
+            var added = await AssetSamples.CreateAsync(Content); Session.SetArtifacts(Session.Artifacts.AddRange(added));
+            var result = await Session.SubmitAsync("Inspect the imported sample dimensions and preserve my current version.");
+            _message = result.Success ? "Imported two original sample PNGs. Inspect their dimensions below." : result.Errors[0].Message;
+        }
+        catch (IntentBlazor.Content.ContentRejectedException) { _message = "The sample import exceeded the configured content or storage limits. Any imported originals remain in private storage."; }
+        finally { _busy = false; }
+    }
+}

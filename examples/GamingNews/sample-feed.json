@@ -1,0 +1,13 @@
+[
+  {
+    "id": "example-update",
+    "game": "MyGame",
+    "title": "Synthetic example update",
+    "source": "Example editorial team",
+    "sourceUrl": "https://example.com/intentblazor/example-update",
+    "publishedUtc": "2026-10-30T00:00:00Z",
+    "gameVersion": "1.0",
+    "summary": "Original synthetic content demonstrating the feed contract.",
+    "tip": "This fictional tip applies only to version 1.0."
+  }
+]

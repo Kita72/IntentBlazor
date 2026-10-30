@@ -32,7 +32,7 @@
     {
         @if (Current.HasDraft)
         {
-            <p class="ib-draft" role="status">Unsaved local draft. No application data has been saved.</p>
+            <p class="ib-draft" role="status">Unsaved local draft. Some fields still differ from their last accepted values.</p>
         }
         <OutputNodeView Session="@Current" NodeId="@document.RootId" @key="document.Id" />
     }

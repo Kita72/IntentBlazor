@@ -2,7 +2,7 @@
 
 An open-source AI-centric Blazor framework being developed around two living components: **AiInput** receives user intent and content; **AiOutput** becomes the interactive workspace for the task.
 
-**Status: Phase 4 implemented; experimental API.** AiInput and AiOutput share validated documents, protected drafts, registered actions, and optional durable workspaces. Optional packages add bounded content imports, private artifacts, renderer extensions, an image-editor pack, and embeddable AI setup/inspection. Ollama, LM Studio, OpenAI, and an experimental Codex CLI adapter have deterministic tests; live provider verification remains deferred. There are no published packages.
+**Status: Phase 5 implemented; experimental API.** AiInput and AiOutput share validated documents, protected drafts, registered actions, and optional durable workspaces. Optional packages add bounded content imports, private artifacts, renderer extensions, an image-editor pack, and embeddable AI setup/inspection. Three standalone example apps now demonstrate complete synthetic workflows. Ollama, LM Studio, OpenAI, and an experimental Codex CLI adapter have deterministic tests; live provider verification remains deferred. There are no published packages.
 
 ## What we are building
 
@@ -27,6 +27,8 @@ Open http://localhost:5180/playground. Type `news`, `staff`, or `assets`, then s
 Open http://localhost:5180/workspaces for the **recovery demo**. Edit a synthetic staff follow-up, submit a deterministic follow-up request, reconnect, and reload the page. Simulate another staff member saving the shared job, then try your save: the version conflict retains your draft. This Development-only demo creates separate private-workspace and shared-business SQLite files under ignored `artifacts/phase3-demo`. Its protected synthetic identity cookie is a demo aid, not a production account system. See the [workspace and action guide](docs/phase-3-workspaces.md).
 
 Open http://localhost:5180/content for the **content and extension demo**. Attach text, Markdown, JSON, CSV, PNG/JPEG, or a text-based PDF; inspect authorized previews, galleries and charts; resize an image to an actual derived PNG; compare/download versions; and export metadata. The same two components drive the workspace. The [Phase 4 guide](docs/phase-4-content-and-setup.md) explains content limits, public renderer registration, AI setup policy, and current capability boundaries.
+
+Run the complete [Gaming News](examples/GamingNews/README.md), [Staff Business](examples/StaffBusiness/README.md), and [Asset Workbench](examples/AssetWorkbench/README.md) apps independently on ports 5181, 5182, and 5183. They use default AiInput/AiOutput, synthetic Development-only identities, private SQLite workspaces, and app-owned services. The [Phase 5 guide](docs/phase-5-example-apps.md) covers saved news comparisons, EF Core assignment conflicts, real image versions/exports, optional live configuration, and current boundaries.
 
 The verification script restores locked dependencies, builds, checks formatting, runs contract/runtime/Blazor rendering tests, verifies documentation links, and creates local package artifacts. See the [Phase 1 developer guide](docs/phase-1-developer-guide.md) for a complete source-reference example using just `<AiInput />` and `<AiOutput />`.
 

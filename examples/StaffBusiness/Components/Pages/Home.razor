@@ -1,0 +1,21 @@
+@page "/"
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@inject IExampleActor Actor
+@inject ExampleWorkspaceController Workspaces
+<PageTitle>Staff Business · IntentBlazor</PageTitle>
+<main>
+    @if (_signedIn)
+    {
+        <ExampleHeader />
+        <p>Alex and Sam can save assignments; Riley has read-only access. Each identity has private workspaces. Refresh after a conflict to review the current record, then explicitly rebase your retained draft.</p>
+        <WorkspaceToolbar />
+        <AiInput />
+        <AiOutput />
+        <ExampleAiTools />
+    }
+    else { <ExampleSignIn /> }
+</main>
+@code {
+    private bool _signedIn;
+    protected override async Task OnInitializedAsync() { _signedIn = await Actor.ReadAsync() is not null; if (_signedIn) await Workspaces.StartAsync(); }
+}

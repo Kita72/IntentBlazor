@@ -1,0 +1,31 @@
+@inherits IntentBlazor.Blazor.IntentExtensionComponent<AssetVersionsConfiguration>
+@inject IWorkspaceContent Content
+<DimensionSummary Artifacts="@_items" />
+<section class="asset-versions" aria-label="@Node.Title">
+    <h3>@Node.Title</h3>
+    @foreach (var item in _items)
+    {
+        <figure @key="item.Reference.Id">
+            @if (item.Width is not null) { <img src="@Content.Url(item.Reference)" alt="@item.Name" /> }
+            <figcaption>@item.Name · @item.Width × @item.Height · @item.Provenance</figcaption>
+            <button disabled="@(Session.IsBusy || Session.HasDraft)" @onclick="() => Select(item)">Select version @item.Name</button>
+        </figure>
+    }
+    @if (_items.Count == 0) { <p>Attach files through AiInput or import the original sample set.</p> }
+    @if (Session.HasDraft) { <p>Finish or clear the dimension draft before selecting another working version.</p> }
+</section>
+@code {
+    private IReadOnlyList<ContentArtifact> _items = [];
+    protected override async Task OnParametersSetAsync()
+    {
+        long revision = Session.Revision; List<ContentArtifact> items = [];
+        foreach (var reference in Session.Artifacts) if (await Content.DescribeAsync(reference) is { } item) items.Add(item);
+        if (revision == Session.Revision) _items = items;
+    }
+    private void Select(ContentArtifact item)
+    {
+        var original = item; HashSet<string> visited = [item.Reference.Id];
+        while (original.Parent is { } parent && _items.FirstOrDefault(candidate => candidate.Reference == parent) is { } previous && visited.Add(previous.Reference.Id)) original = previous;
+        Session.DispatchExtension(Node.Id, Session.Revision, new AssetVersionEvent(original.Reference.Id, item.Reference.Id, item.Width is not null));
+    }
+}

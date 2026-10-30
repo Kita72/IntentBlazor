@@ -241,6 +241,8 @@ Exit gate: a contributor can register a specialist renderer or tool through publ
 
 ## Phase 5 Three example applications
 
+Implementation status: implemented as three independently runnable Interactive Server apps with default AiInput/AiOutput, synthetic Development-only identities, private workspaces, and real app-owned news/library, EF Core assignment, and image-version operations. See the [Phase 5 guide](phase-5-example-apps.md), [decision 0008](architecture/0008-standalone-example-apps.md), and [workflow test matrix](../tests/README.md). Optional model/feed configuration does not certify a live provider profile.
+
 Build each example as an independently runnable Blazor Web App. Shared demo features may be reused in the documentation website, but each example must remain understandable without the docs host.
 
 Each example has a clearly labelled fixture mode and a configurable live mode. Default setup must not require private business data, copyrighted game assets, an external database, or a paid API account.

@@ -5,9 +5,13 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="../../examples/GamingNews/IntentBlazor.GamingNews.csproj" />
+    <ProjectReference Include="../../examples/StaffBusiness/IntentBlazor.StaffBusiness.csproj" />
+    <ProjectReference Include="../../examples/AssetWorkbench/IntentBlazor.AssetWorkbench.csproj" />
     <ProjectReference Include="../../src/IntentBlazor.Blazor.AI/IntentBlazor.Blazor.AI.csproj" />
     <ProjectReference Include="../../src/IntentBlazor.Packs.ImageEditor/IntentBlazor.Packs.ImageEditor.csproj" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" />
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" PrivateAssets="all" />
     <FrameworkReference Include="Microsoft.AspNetCore.App" />

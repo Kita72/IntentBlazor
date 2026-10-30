@@ -1,0 +1,12 @@
+<section aria-label="Dimension inspection">
+    <h3>Dimension inspection</h3>
+    @{ var groups = Artifacts.Where(item => item.Width is not null && item.Height is not null).GroupBy(item => (item.Width, item.Height)).ToArray(); }
+    <p>@(groups.Length > 1 ? "Multiple dimension groups were found. Inspect the intended size before resizing." : groups.Length == 0 ? "No image assets are attached yet." : "All attached image versions currently have the same dimensions.")</p>
+    <ul>
+        @foreach (var group in groups)
+        { <li data-dimension="@($"{group.Key.Width}x{group.Key.Height}")">@group.Key.Width × @group.Key.Height: @group.Count() image(s)</li> }
+    </ul>
+</section>
+@code {
+    [Parameter, EditorRequired] public IReadOnlyList<ContentArtifact> Artifacts { get; set; } = [];
+}

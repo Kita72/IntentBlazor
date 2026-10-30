@@ -1,0 +1,3 @@
+.asset-versions { display: flex; flex-wrap: wrap; gap: 1rem; }
+.asset-versions h3 { width: 100%; } figure { margin: 0; padding: 1rem; border: 1px solid #c8d9d3; border-radius: .5rem; max-width: 100%; }
+img { max-width: 160px; max-height: 120px; image-rendering: pixelated; } figcaption { max-width: 30ch; overflow-wrap: anywhere; margin: .6rem 0; }

@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <UserSecretsId>IntentBlazor.Examples.AssetWorkbench</UserSecretsId>
+    <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../IntentBlazor.ExampleHost/IntentBlazor.ExampleHost.csproj" />
+    <ProjectReference Include="../../src/IntentBlazor.Packs.ImageEditor/IntentBlazor.Packs.ImageEditor.csproj" />
+  </ItemGroup>
+</Project>

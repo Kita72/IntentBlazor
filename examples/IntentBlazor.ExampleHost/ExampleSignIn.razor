@@ -1,0 +1,13 @@
+@inject ExampleHostOptions Options
+<section class="panel sign-in">
+    <p class="eyebrow">DEVELOPMENT EXAMPLE · SYNTHETIC ACCOUNTS</p>
+    <h1>@Options.Title</h1><p>@Options.Description</p>
+    <p>Choose an example identity. This creates a protected local cookie, not a production account.</p>
+    <form method="post" action="/example/sign-in" data-enhance="false">
+        <AntiforgeryToken />
+        <label>Example identity <select name="user">
+            @foreach (var user in Options.Users) { <option value="@user.Id">@user.Name</option> }
+        </select></label>
+        <button type="submit">Open example workspace</button>
+    </form>
+</section>

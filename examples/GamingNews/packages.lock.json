@@ -125,14 +125,20 @@
           "IntentBlazor.Runtime": "[0.1.0-alpha.0, )"
         }
       },
-      "intentblazor.core": {
-        "type": "Project"
-      },
-      "intentblazor.examples": {
+      "intentblazor.blazor.ai": {
         "type": "Project",
         "dependencies": {
           "IntentBlazor.AI": "[0.1.0-alpha.0, )",
-          "IntentBlazor.Runtime": "[0.1.0-alpha.0, )",
+          "IntentBlazor.Blazor": "[0.1.0-alpha.0, )"
+        }
+      },
+      "intentblazor.core": {
+        "type": "Project"
+      },
+      "intentblazor.examplehost": {
+        "type": "Project",
+        "dependencies": {
+          "IntentBlazor.Blazor.AI": "[0.1.0-alpha.0, )",
           "IntentBlazor.Storage.Sqlite": "[0.1.0-alpha.0, )"
         }
       },

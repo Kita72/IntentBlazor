@@ -2,6 +2,12 @@
   "version": 2,
   "dependencies": {
     "net10.0": {
+      "Microsoft.AspNetCore.TestHost": {
+        "type": "Direct",
+        "requested": "[10.0.14, )",
+        "resolved": "10.0.14",
+        "contentHash": "u4AX1M5Uzmw7V3NCdJJO4ITwH0DDDufyzmVlksE4QguVd23Co8adaREMp2VahlRB5f/rmtaFYVJIA1iIFnchmQ=="
+      },
       "Microsoft.NET.Test.Sdk": {
         "type": "Direct",
         "requested": "[18.11.0, )",
@@ -55,6 +61,44 @@
           "SQLitePCLRaw.core": "2.1.13"
         }
       },
+      "Microsoft.EntityFrameworkCore": {
+        "type": "Transitive",
+        "resolved": "10.0.14",
+        "contentHash": "vY3931PYPIDBbKovGHbACmpOWvURvKNyRXfCjMh5yLW+FH6vLWeqUu2xzSCRo4Oz4tgx9GYpd0JlV5LDyAoQdg==",
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore.Abstractions": "10.0.14",
+          "Microsoft.EntityFrameworkCore.Analyzers": "10.0.14"
+        }
+      },
+      "Microsoft.EntityFrameworkCore.Abstractions": {
+        "type": "Transitive",
+        "resolved": "10.0.14",
+        "contentHash": "/SaznoTTFfKzxYEbCPAwwKBR3XT92DZgH4jJ3/cqs2skP3o2D+TL6i9Aaj+8Azwtu6/sRd0ve4P2mN12nfVmCw=="
+      },
+      "Microsoft.EntityFrameworkCore.Analyzers": {
+        "type": "Transitive",
+        "resolved": "10.0.14",
+        "contentHash": "gaANlGNTxkgODX2eeVT8jjd3AmlFilQV4DFf8qoW30+wUCm2o4N7nEHtZvnHIwfhaJni2DqcjE47Au7tC0Q5jA=="
+      },
+      "Microsoft.EntityFrameworkCore.Relational": {
+        "type": "Transitive",
+        "resolved": "10.0.14",
+        "contentHash": "Ut0kgtfoKX9QElQVEXSEAgdQc79jISWStVWSOhfPDDHNSKMwFzSXG3gtdYFTAbsBoV+8NtXdVaj4xwdqeky8UA==",
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore": "10.0.14"
+        }
+      },
+      "Microsoft.EntityFrameworkCore.Sqlite.Core": {
+        "type": "Transitive",
+        "resolved": "10.0.14",
+        "contentHash": "08VGlMQ9WbK869as9Ho+VZQbM5Qu6zdorgeh6ShVwQgLYgfUBiaIm02T7spfW7Xc1MBHCvclwPgGWpvx5BYGXQ==",
+        "dependencies": {
+          "Microsoft.Data.Sqlite.Core": "10.0.14",
+          "Microsoft.EntityFrameworkCore.Relational": "10.0.14",
+          "Microsoft.Extensions.DependencyModel": "10.0.14",
+          "SQLitePCLRaw.core": "2.1.13"
+        }
+      },
       "Microsoft.Extensions.AI.Abstractions": {
         "type": "Transitive",
         "resolved": "10.11.0",
@@ -72,6 +116,11 @@
         "type": "Transitive",
         "resolved": "10.10.0",
         "contentHash": "Sh3ujDRJpCMNY4x+43ljCROt4qBOoWfsL8l816RPYZS1S+Tw277r5002rbB15Sh6hFcCT8mGYBO7NtpfSYrQ0Q=="
+      },
+      "Microsoft.Extensions.DependencyModel": {
+        "type": "Transitive",
+        "resolved": "10.0.14",
+        "contentHash": "N8OcqM0370wSXMJ3ZxO66rSElHrIgxvpfUn0vV7zRj7NvKo0nfwgEoTmC3Yz3860o60IaQ4KIPyeLIGX9EeNWA=="
       },
       "Microsoft.Extensions.VectorData.Abstractions": {
         "type": "Transitive",
@@ -207,6 +256,13 @@
           "OpenAI": "[2.14.0, )"
         }
       },
+      "intentblazor.assetworkbench": {
+        "type": "Project",
+        "dependencies": {
+          "IntentBlazor.ExampleHost": "[0.1.0-alpha.0, )",
+          "IntentBlazor.Packs.ImageEditor": "[0.1.0-alpha.0, )"
+        }
+      },
       "intentblazor.blazor": {
         "type": "Project",
         "dependencies": {
@@ -233,12 +289,26 @@
       "intentblazor.core": {
         "type": "Project"
       },
+      "intentblazor.examplehost": {
+        "type": "Project",
+        "dependencies": {
+          "IntentBlazor.Blazor.AI": "[0.1.0-alpha.0, )",
+          "IntentBlazor.Storage.Sqlite": "[0.1.0-alpha.0, )"
+        }
+      },
       "intentblazor.examples": {
         "type": "Project",
         "dependencies": {
           "IntentBlazor.AI": "[0.1.0-alpha.0, )",
           "IntentBlazor.Runtime": "[0.1.0-alpha.0, )",
           "IntentBlazor.Storage.Sqlite": "[0.1.0-alpha.0, )"
+        }
+      },
+      "intentblazor.gamingnews": {
+        "type": "Project",
+        "dependencies": {
+          "IntentBlazor.Blazor": "[0.1.0-alpha.0, )",
+          "IntentBlazor.ExampleHost": "[0.1.0-alpha.0, )"
         }
       },
       "intentblazor.packs.imageeditor": {
@@ -252,6 +322,14 @@
         "type": "Project",
         "dependencies": {
           "IntentBlazor.Core": "[0.1.0-alpha.0, )"
+        }
+      },
+      "intentblazor.staffbusiness": {
+        "type": "Project",
+        "dependencies": {
+          "IntentBlazor.Blazor": "[0.1.0-alpha.0, )",
+          "IntentBlazor.ExampleHost": "[0.1.0-alpha.0, )",
+          "Microsoft.EntityFrameworkCore.Sqlite": "[10.0.14, )"
         }
       },
       "intentblazor.storage.sqlite": {
@@ -283,6 +361,18 @@
         "contentHash": "muyroan6rKrf0omZL8UF7Kw5uOGp/yBg1L/XWvkFN3WhKaNtK2IWqRZw93nIwVqjhTVDO0l4CEGhHIh+mb+sKg==",
         "dependencies": {
           "Microsoft.Data.Sqlite.Core": "10.0.14",
+          "SQLitePCLRaw.bundle_e_sqlite3": "2.1.13",
+          "SQLitePCLRaw.core": "2.1.13"
+        }
+      },
+      "Microsoft.EntityFrameworkCore.Sqlite": {
+        "type": "CentralTransitive",
+        "requested": "[10.0.14, )",
+        "resolved": "10.0.14",
+        "contentHash": "lxrwnVwvlIfQD4IF4WUVupE6Qxfj3MfFftDVwo7tsGAWCKLL8Ttb8UjIt+gE4e9nRlH7EgdC6TrsArFGnNYREw==",
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore.Sqlite.Core": "10.0.14",
+          "Microsoft.Extensions.DependencyModel": "10.0.14",
           "SQLitePCLRaw.bundle_e_sqlite3": "2.1.13",
           "SQLitePCLRaw.core": "2.1.13"
         }

@@ -3,10 +3,17 @@
     <Project Path="apps/IntentBlazor.Docs/IntentBlazor.Docs.csproj" />
   </Folder>
   <Folder Name="/examples/">
+    <Project Path="examples/IntentBlazor.ExampleHost/IntentBlazor.ExampleHost.csproj" />
     <Project Path="examples/IntentBlazor.Examples/IntentBlazor.Examples.csproj" />
+  </Folder>
+  <Folder Name="/examples/AssetWorkbench/">
+    <Project Path="examples/AssetWorkbench/IntentBlazor.AssetWorkbench.csproj" />
   </Folder>
   <Folder Name="/examples/GamingNews/">
     <Project Path="examples/GamingNews/IntentBlazor.GamingNews.csproj" />
+  </Folder>
+  <Folder Name="/examples/StaffBusiness/">
+    <Project Path="examples/StaffBusiness/IntentBlazor.StaffBusiness.csproj" />
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/IntentBlazor.Content/IntentBlazor.Content.csproj" />

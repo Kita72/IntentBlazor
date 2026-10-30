@@ -1,0 +1,18 @@
+@inherits IntentBlazor.Blazor.IntentExtensionComponent<NewsCitationsConfiguration>
+@using IntentBlazor.Core
+@using IntentBlazor.ExampleHost
+<div class="citations" aria-label="@Node.Title">
+    @foreach (var key in Configuration.Selections)
+    {
+        var selected = ExampleData.Selected(Session.Snapshot.Values, key);
+        var row = Session.Data.First(set => set.Id == Configuration.DataSetId).Rows.FirstOrDefault(item => item["id"].GetString() == selected);
+        @if (row is not null)
+        {
+            <div @key="key">
+                @if (NewsJson.SafeSource(row["sourceUrl"].GetString())) { <a href="@row["sourceUrl"].GetString()" target="_blank" rel="noopener noreferrer">@JsonValues.Display(row["source"])</a> }
+                @if (row.TryGetValue("published", out var date)) { <span> · @JsonValues.Display(date) · version @JsonValues.Display(row["gameVersion"])</span> }
+                @if (row.TryGetValue("secondUrl", out var other) && NewsJson.SafeSource(other.GetString())) { <a href="@other.GetString()" target="_blank" rel="noopener noreferrer">@JsonValues.Display(row["secondSource"])</a> }
+            </div>
+        }
+    }
+</div>

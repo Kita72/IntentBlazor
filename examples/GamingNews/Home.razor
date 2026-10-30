@@ -1,29 +1,22 @@
 @page "/"
-@rendermode InteractiveServer
-@inject ExampleModelState Connection
-@inject AiSession Workspace
-@inject ExampleCatalog Catalog
-
-<PageTitle>IntentBlazor Gaming News</PageTitle>
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@inject IExampleActor Actor
+@inject ExampleWorkspaceController Workspaces
+@inject IConfiguration Configuration
+<PageTitle>Gaming News and Tips · IntentBlazor</PageTitle>
 <main>
-    <h1>Gaming News and Tips</h1>
-    @if (Connection.Enabled)
+    @if (_signedIn)
     {
-        <p>Model mode: @Connection.Provider · @Connection.Model. Requests contact the configured model.
-            The data service supplies synthetic articles, not live news.</p>
-        <p>Ask for an interactive list of the sample articles with a selected article card, source, and rating.</p>
+        <ExampleHeader />
+        <p>@(Configuration["News:FeedUrl"] is { Length: > 0 } ? "News source: configured HTTPS JSON feed." : "News source: fictional games and articles. example.com links demonstrate attribution; these are not real gaming reports.")</p>
+        <WorkspaceToolbar />
+        <AiInput />
+        <AiOutput />
+        <ExampleAiTools />
     }
-    else
-    {
-        <p>Deterministic fixture mode. No model connection or live news feed. Submit news to reopen the sample workspace.</p>
-    }
-    <AiInput />
-    <AiOutput />
+    else { <ExampleSignIn /> }
 </main>
-
 @code {
-    protected override void OnInitialized()
-    {
-        if (!Connection.Enabled) Workspace.Open(Catalog.Get("news"));
-    }
+    private bool _signedIn;
+    protected override async Task OnInitializedAsync() { _signedIn = await Actor.ReadAsync() is not null; if (_signedIn) await Workspaces.StartAsync(); }
 }
