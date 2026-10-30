@@ -1,6 +1,6 @@
 # Output documents and authority
 
-Status: accepted direction. The Phase 1 subset is implemented as [experimental schema 0.1](0004-deterministic-output-v01.md); application actions and durable restoration remain planned.
+Status: accepted direction. The Phase 1 subset is implemented as [experimental schema 0.1](0004-deterministic-output-v01.md). [Phase 3](0006-durable-workspaces.md) adds registered actions in schema 0.2 and owner-scoped durable restoration.
 
 AiInput and AiOutput share an explicitly scoped logical session. A document describes data references, exact state, a view, interactions, stable node identities, and an expected revision.
 

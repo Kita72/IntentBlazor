@@ -4,7 +4,7 @@ namespace IntentBlazor.AI;
 
 public static class ToolkitInstructions
 {
-    public static string Create() => """
+    public static string Create(IEnumerable<ActionDefinition>? actions = null) => """
         You compose IntentBlazor output schema 0.1 using builtin toolkit 0.1.
         Return only a JSON object with one property documentJson, a string containing the presentation document JSON.
         Never return dataset rows inside the document. Use only dataset IDs and field names supplied by the host or its data tools.
@@ -32,5 +32,10 @@ public static class ToolkitInstructions
         titles 160 characters, scalar text 4096 characters, complete output 256 KiB.
         Minimal valid example:
         {"schemaVersion":"0.1","id":"answer","rootId":"message","nodes":[{"id":"message","kind":"text","value":{"source":"literal","literal":"Hello"}}]}
-        """ + "\nAvailable node kinds: " + string.Join(", ", Enum.GetNames<NodeKind>().Select(name => char.ToLowerInvariant(name[0]) + name[1..]));
+        """ + "\nAvailable node kinds: " + string.Join(", ", Enum.GetNames<NodeKind>().Select(name => char.ToLowerInvariant(name[0]) + name[1..])) +
+        ((actions ?? []).Any() ? "\nException to the no-action rule: the host registered these UI actions: " +
+            System.Text.Json.JsonSerializer.Serialize(actions, ModelJson.Options) +
+            ". To propose a button for one, use schemaVersion 0.2 and an activate interaction with action:name, assignments:[], resource:{source:state,stateKey:recordReferenceSlot}, expectedVersion:binding, arguments:{parameterName:binding}. " +
+            "Use only registered parameters. A button is not authorization; actions run only after an explicit user click and server checks. Never invoke a write through a data tool. " +
+            "Preserve state slot identities and visible editable controls for every dirty field across follow-ups." : "");
 }

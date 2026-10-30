@@ -98,7 +98,7 @@ public sealed class ModelGenerationTests
     }
 
     [Fact]
-    public async Task ModelContext_ContainsCurrentSelectionButRejectsDirtyDraftBeforeSending()
+    public async Task ModelContext_ContainsSelectionAndDraftButRejectsDestructiveReplacement()
     {
         ScriptChatClient client = new(ModelTestSupport.Text(ModelTestSupport.Envelope()));
         using ServiceProvider root = ModelTestSupport.Provider(client, nativeTools: false);
@@ -112,7 +112,8 @@ public sealed class ModelGenerationTests
         TestContent.Select(session, "jobs", "job-101");
         session.Change("notesInput", "Keep this draft", session.Revision);
         Assert.False((await session.SubmitAsync("replace this")).Success);
-        Assert.Single(client.Calls);
+        Assert.Equal(2, client.Calls.Count);
+        Assert.Contains("Keep this draft", client.Calls[1].Messages.Single(message => message.Role == ChatRole.User).Text);
         Assert.Equal("Keep this draft", TestContent.Value(session, "notes"));
     }
 

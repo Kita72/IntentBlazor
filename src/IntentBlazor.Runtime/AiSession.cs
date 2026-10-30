@@ -11,7 +11,11 @@ public sealed record WorkspaceSnapshot(
     long Revision,
     ImmutableDictionary<string, JsonElement> Values,
     ImmutableDictionary<string, SortState> Sorting,
-    ImmutableHashSet<string> DirtyStates);
+    ImmutableHashSet<string> DirtyStates)
+{
+    public ConversationContext Conversation { get; init; } = new(0, "", []);
+    public ImmutableArray<ArtifactReference> Artifacts { get; init; } = [];
+}
 public sealed record SessionEvent(string NodeId, UiEventKind Kind, long ExpectedRevision)
 {
     public JsonElement Value { get; init; } = JsonValues.Null;
@@ -27,7 +31,7 @@ public interface IInputProcessor
 
 public sealed class InputRejectedException(string message) : Exception(message);
 
-public sealed class AiSession(DocumentValidator validator, IInputProcessor processor) : IDisposable
+public sealed partial class AiSession(DocumentValidator validator, IInputProcessor processor, WorkspaceServices? workspaceServices = null) : IDisposable
 {
     private OutputContent? _content;
     private ImmutableDictionary<string, JsonElement> _values = ImmutableDictionary<string, JsonElement>.Empty;
@@ -47,12 +51,13 @@ public sealed class AiSession(DocumentValidator validator, IInputProcessor proce
     public InputProgress? Progress { get; private set; }
     public ImmutableArray<DocumentError> Errors { get; private set; } = [];
     public ImmutableArray<InputTurn> History { get; private set; } = [];
-    public WorkspaceSnapshot Snapshot => new(Document, Revision, _values, _sorting, _dirty);
+    public WorkspaceSnapshot Snapshot => new(Document, Revision, _values, _sorting, _dirty)
+    { Conversation = ConversationHistory.Select(_archive), Artifacts = Artifacts };
     public event Action? Changed;
 
     public OperationResult Open(OutputContent content, bool discardDraft = false, long? expectedRevision = null)
     {
-        if (_disposed) return Fail("disposed", "The session has been disposed.");
+        if (_disposed || _ownershipInvalidated) return Fail("disposed", "The session has been disposed or its owner changed.");
         if (expectedRevision is not null && expectedRevision != Revision)
             return Fail("stale-revision", "The workspace changed while this output was being prepared.");
         if (HasDraft && !discardDraft)
@@ -123,6 +128,7 @@ public sealed class AiSession(DocumentValidator validator, IInputProcessor proce
 
     public OperationResult Dispatch(SessionEvent message)
     {
+        if (IsActionRunning) return Fail("action-busy", "Wait for the application action to finish before editing.");
         if (_disposed || Document is null) return Fail("empty-session", "Open a document before interacting.");
         if (message.ExpectedRevision != Revision) return Fail("stale-revision", "This event belongs to an older workspace revision.");
         OutputNode? node = Document.Nodes.FirstOrDefault(item => item.Id == message.NodeId);
@@ -150,6 +156,7 @@ public sealed class AiSession(DocumentValidator validator, IInputProcessor proce
         {
             if (node.InteractionId is null) return Fail("event-kind", "This node has no declared interaction.");
             OutputInteraction interaction = Document.Interactions.Single(item => item.Id == node.InteractionId);
+            if (interaction.Action is not null) return Fail("action-required", "Use the asynchronous application-action path.");
             if (interaction.Event != message.Kind ||
                 (message.Kind == UiEventKind.Activate && message.Value.ValueKind != JsonValueKind.Null))
                 return Fail("event-kind", "The event does not match the declared interaction.");
@@ -183,6 +190,17 @@ public sealed class AiSession(DocumentValidator validator, IInputProcessor proce
     public async Task<OperationResult> SubmitAsync(string input, CancellationToken cancellationToken = default)
     {
         if (_disposed) return Fail("disposed", "The session has been disposed.");
+        if (_archive.Length >= 512 || System.Text.Encoding.UTF8.GetByteCount(WorkspaceJson.Write(_archive)) > 2 * 1024 * 1024)
+            return Fail("history-quota", "The history quota is full. Save this workspace and start a new one; original records have been retained.");
+        if (_ownerId is not null)
+        {
+            try
+            {
+                if (await OwnerAsync(cancellationToken) is null)
+                    return Fail("workspace-owner", "The workspace identity changed. Open a new session for the current user.");
+            }
+            catch (OperationCanceledException) { return Fail("cancelled", "The follow-up was cancelled before generation."); }
+        }
         if (string.IsNullOrWhiteSpace(input) || input.Length > 2048)
             return Fail("input-limit", "Enter between 1 and 2048 characters.");
         if (Interlocked.CompareExchange(ref _busy, 1, 0) != 0)
@@ -203,7 +221,8 @@ public sealed class AiSession(DocumentValidator validator, IInputProcessor proce
                 ? await streaming.ProcessAsync(input.Trim(), Snapshot, new SessionProgress(this), source.Token)
                 : await processor.ProcessAsync(input.Trim(), Snapshot, source.Token);
             source.Token.ThrowIfCancellationRequested();
-            result = Open(next, expectedRevision: expectedRevision);
+            result = _ownerId is not null && await OwnerAsync(source.Token) is null
+                ? Fail("workspace-owner", "The current identity no longer owns this workspace.") : ApplyUpdate(next, expectedRevision);
             status = result.Success ? "completed" : "rejected";
         }
         catch (OperationCanceledException) when (source.IsCancellationRequested)
@@ -226,8 +245,12 @@ public sealed class AiSession(DocumentValidator validator, IInputProcessor proce
             lock (_cancellationGate) _cancellation = null;
             Interlocked.Exchange(ref _busy, 0);
         }
+        if (_ownershipInvalidated) return result;
         History = History.Add(new(input.Trim(), status));
         if (History.Length > 20) History = History.RemoveAt(0);
+        _archive = _archive.Add(new(_archive.Length + 1L, input.Trim(), status,
+            result.Success && Document is not null ? OutputJson.SerializeDocument(Document) : null));
+        QueueAutoSave();
         Changed?.Invoke();
         return result;
     }
@@ -240,6 +263,7 @@ public sealed class AiSession(DocumentValidator validator, IInputProcessor proce
     public void Dispose()
     {
         _disposed = true;
+        _lifetime.Cancel();
         Cancel();
         Changed = null;
     }
@@ -274,6 +298,7 @@ public sealed class AiSession(DocumentValidator validator, IInputProcessor proce
     {
         Errors = [];
         Changed?.Invoke();
+        QueueAutoSave();
         return OperationResult.Ok;
     }
 
@@ -302,7 +327,7 @@ public sealed class AiSession(DocumentValidator validator, IInputProcessor proce
     {
         public void Report(InputProgress value)
         {
-            if (session._disposed) return;
+            if (session._disposed || session._ownershipInvalidated) return;
             session.Progress = value;
             session.Changed?.Invoke();
         }

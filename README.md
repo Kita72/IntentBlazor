@@ -2,7 +2,7 @@
 
 An open-source AI-centric Blazor framework being developed around two living components: **AiInput** receives user intent and content; **AiOutput** becomes the interactive workspace for the task.
 
-**Status: Phase 2 adapters implemented; live verification deferred.** AiInput and AiOutput share versioned documents, validation, deterministic rendering, and an optional model pipeline. Ollama, LM Studio, OpenAI, and an experimental Codex CLI adapter have deterministic tests. No real model profile is certified yet. Application actions and durable persistence remain planned. There are no published packages; the public API is experimental.
+**Status: Phase 3 implemented; experimental API.** AiInput and AiOutput share versioned documents, deterministic rendering, protected drafts, registered server actions, and optional durable workspaces. The in-memory and SQLite stores use owner-scoped checkpoints and optimistic concurrency. Ollama, LM Studio, OpenAI, and an experimental Codex CLI adapter have deterministic tests; live provider verification remains deferred. There are no published packages.
 
 ## What we are building
 
@@ -24,6 +24,8 @@ dotnet run --project apps/IntentBlazor.Docs --no-launch-profile -- --environment
 
 Open http://localhost:5180/playground. Type `news`, `staff`, or `assets`, then select records, sort the staff table, edit local drafts, and inspect the document and session state. These are synthetic fixtures, with no model calls or external application writes.
 
+Open http://localhost:5180/workspaces for the **recovery demo**. Edit a synthetic staff follow-up, submit a deterministic follow-up request, reconnect, and reload the page. Simulate another staff member saving the shared job, then try your save: the version conflict retains your draft. This Development-only demo creates separate private-workspace and shared-business SQLite files under ignored `artifacts/phase3-demo`. Its protected synthetic identity cookie is a demo aid, not a production account system. See the [workspace and action guide](docs/phase-3-workspaces.md).
+
 The verification script restores locked dependencies, builds, checks formatting, runs contract/runtime/Blazor rendering tests, verifies documentation links, and creates local package artifacts. See the [Phase 1 developer guide](docs/phase-1-developer-guide.md) for a complete source-reference example using just `<AiInput />` and `<AiOutput />`.
 
 ## Repository
@@ -31,10 +33,10 @@ The verification script restores locked dependencies, builds, checks formatting,
 | Path | Purpose |
 | --- | --- |
 | src/IntentBlazor.Core | Output contracts, strict JSON parsing, and semantic validation. |
-| src/IntentBlazor.Runtime | Scoped in-memory sessions, local events, drafts, and an input processor seam. |
+| src/IntentBlazor.Runtime | Scoped sessions, protected updates, conversation context, actions, and replaceable workspace storage. |
 | src/IntentBlazor.AI | Optional model connections, data tools, bounded generation, and safe progress/usage metadata. |
 | src/IntentBlazor.Blazor | Razor class library for the two components and internal renderers. |
-| src/IntentBlazor.Storage.Sqlite | Reserved for the optional persistence adapter; not implemented. |
+| src/IntentBlazor.Storage.Sqlite | Optional SQLite checkpoints and durable action receipts. |
 | apps/IntentBlazor.Docs | Documentation and an interactive document playground. |
 | examples | Shared fixture catalog and three application directions. |
 | specs | Versioned contract reference and authored fixture documents. |

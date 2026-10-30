@@ -4,8 +4,10 @@ using System.Text.Json;
 
 namespace IntentBlazor.Core;
 
-public sealed class DocumentValidator
+public sealed class DocumentValidator(IEnumerable<ActionDefinition>? actions = null)
 {
+    public IReadOnlyDictionary<string, ActionDefinition> Actions { get; } =
+        (actions ?? []).ToImmutableDictionary(action => action.Name, StringComparer.Ordinal);
     public OperationResult Validate(OutputContent content)
     {
         try
@@ -41,11 +43,11 @@ public sealed class DocumentValidator
         };
     }
 
-    private static void ValidateCore(OutputContent content)
+    private void ValidateCore(OutputContent content)
     {
         Need(content is not null && content.Document is not null, "missing-document", "", "A document is required.");
         OutputDocument doc = content.Document;
-        Need(doc.SchemaVersion == "0.1", "schema-version", "schemaVersion", "Only schema 0.1 is supported.");
+        Need(doc.SchemaVersion is "0.1" or "0.2", "schema-version", "schemaVersion", "Only schema 0.1 and 0.2 are supported.");
         Need(Identifier(doc.Id) && doc.Revision > 0, "identity", "id", "A valid ID and positive revision are required.");
         Need(doc.Requires is not null && doc.Requires.Count > 0 &&
             doc.Requires.All(pair => pair.Key == "builtin" && pair.Value == "0.1"),
@@ -107,15 +109,20 @@ public sealed class DocumentValidator
         Dictionary<string, OutputInteraction> interactions = doc.Interactions.ToDictionary(item => item.Id, StringComparer.Ordinal);
         foreach (OutputInteraction interaction in interactions.Values)
         {
-            Need(interaction.Action is null, "unsupported-action", interaction.Id, "Application actions are not enabled in Phase 1.");
+            Need(interaction.Action is null || (doc.SchemaVersion == "0.2" && Actions.ContainsKey(interaction.Action)),
+                "unsupported-action", interaction.Id, "Actions require schema 0.2 and an explicitly registered definition.");
             Need(interaction.Event is UiEventKind.Select or UiEventKind.Activate && !interaction.Assignments.IsDefault &&
                 interaction.Assignments.Length <= 16, "interaction", interaction.Id, "Declare bounded local select or activate effects.");
             Need(interaction.Assignments.All(assignment => assignment is not null && assignment.Value is not null &&
                 Identifier(assignment.StateKey) && doc.State.ContainsKey(assignment.StateKey)) &&
                 interaction.Assignments.Select(assignment => assignment.StateKey).Distinct(StringComparer.Ordinal).Count() == interaction.Assignments.Length,
                 "effect-target", interaction.Id, "Assignments require unique existing state targets.");
-            Need(interaction.ClearDrafts ? interaction.Assignments.IsEmpty : !interaction.Assignments.IsEmpty,
+            Need(interaction.Action is not null ? interaction.Assignments.IsEmpty && !interaction.ClearDrafts :
+                interaction.ClearDrafts ? interaction.Assignments.IsEmpty : !interaction.Assignments.IsEmpty,
                 "empty-effect", interaction.Id, "Declare assignments or a clear-draft effect, without combining them.");
+            if (interaction.Action is null)
+                Need(interaction.Resource is null && interaction.ExpectedVersion is null && interaction.Arguments is { Count: 0 },
+                    "action-properties", interaction.Id, "Action bindings belong only to registered actions.");
         }
 
         Dictionary<string, OutputNode> nodes = doc.Nodes.ToDictionary(node => node.Id, StringComparer.Ordinal);
@@ -179,6 +186,27 @@ public sealed class DocumentValidator
                 Need(node.Kind == NodeKind.Button ? interaction.Event == UiEventKind.Activate :
                     node.Kind is NodeKind.List or NodeKind.Table && interaction.Event == UiEventKind.Select,
                     "event-kind", node.Id, "The node and interaction event kinds do not agree.");
+                if (interaction.Action is { } name)
+                {
+                    ActionDefinition definition = Actions[name];
+                    Need(node.Kind == NodeKind.Button && interaction.Resource is { Source: BindingSource.State, StateKey: not null } &&
+                        doc.State.TryGetValue(interaction.Resource.StateKey, out StateDefinition? resource) &&
+                        resource.Kind == StateKind.RecordReference && resource.DataSetId == definition.DataSetId,
+                        "action-resource", node.Id, "Actions target selected host-owned records.");
+                    Need(interaction.ExpectedVersion is not null &&
+                        ValidateBinding(interaction.ExpectedVersion, doc, data, null) is StateKind.Text or StateKind.Number,
+                        "action-version", node.Id, "Actions require a text or numeric expected record version.");
+                    Need(interaction.Arguments is not null && interaction.Arguments.Count == definition.Parameters.Count &&
+                        interaction.Arguments.All(pair => definition.Parameters.ContainsKey(pair.Key) && pair.Value is not null),
+                        "action-arguments", node.Id, "Arguments must match the registered action parameters.");
+                    foreach (var pair in interaction.Arguments)
+                    {
+                        StateDefinition parameter = definition.Parameters[pair.Key];
+                        StateKind? sourceKind = ValidateBinding(pair.Value, doc, data, null);
+                        Need(sourceKind == parameter.Kind || (sourceKind == StateKind.RecordReference && parameter.Kind == StateKind.Text) ||
+                            (sourceKind is null && parameter.Nullable), "action-argument-type", node.Id, "An action argument has the wrong type.");
+                    }
+                }
                 foreach (StateAssignment assignment in interaction.Assignments)
                 {
                     StateKind? source = ValidateBinding(assignment.Value, doc, data, node);

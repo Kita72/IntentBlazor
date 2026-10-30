@@ -7,9 +7,12 @@ public abstract class SessionComponent : ComponentBase, IAsyncDisposable
 {
     [Inject] private AiSession DefaultSession { get; set; } = default!;
     [Parameter] public AiSession? Session { get; set; }
+    [CascadingParameter] private Task<Microsoft.AspNetCore.Components.Authorization.AuthenticationState>? AuthenticationState { get; set; }
     protected AiSession Current { get; private set; } = default!;
     private AiSession? _subscribed;
     private bool _disposed;
+    protected override async Task OnParametersSetAsync()
+    { if (AuthenticationState is not null) await Current.ValidateOwnerAsync(); }
 
     protected override void OnParametersSet()
     {

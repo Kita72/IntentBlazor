@@ -11,6 +11,7 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <ProjectReference Include="../../src/IntentBlazor.Blazor/IntentBlazor.Blazor.csproj" />
     <ProjectReference Include="../../src/IntentBlazor.AI/IntentBlazor.AI.csproj" />
+    <ProjectReference Include="../../src/IntentBlazor.Storage.Sqlite/IntentBlazor.Storage.Sqlite.csproj" />
     <ProjectReference Include="../../examples/IntentBlazor.Examples/IntentBlazor.Examples.csproj" />
   </ItemGroup>
 </Project>

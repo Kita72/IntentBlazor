@@ -34,8 +34,6 @@ public sealed class ModelInputProcessor(IChatClient client, ModelProfile profile
         {
             if (!profile.SupportsTemperature && options.Temperature is not null)
                 throw new InputRejectedException("The selected connection does not support temperature settings.");
-            if (!workspace.DirtyStates.IsEmpty)
-                throw new InputRejectedException("Clear the current draft before asking for a replacement workspace.");
             foreach (IOutputDataSource source in sources)
                 foreach (OutputDataSet set in await source.LoadAsync(workspace, token)) Accept(set);
 
@@ -70,11 +68,11 @@ public sealed class ModelInputProcessor(IChatClient client, ModelProfile profile
                 }
             }
 
-            List<ChatMessage> messages = [new(ChatRole.System, ToolkitInstructions.Create()),
+            List<ChatMessage> messages = [new(ChatRole.System, ToolkitInstructions.Create(validator.Actions.Values)),
                 new(ChatRole.User, JsonSerializer.Serialize(new
                 {
                     request = input,
-                    workspace = new { workspace.Document, workspace.Revision, workspace.Values, workspace.Sorting },
+                    workspace = new { workspace.Document, workspace.Revision, workspace.Values, workspace.Sorting, workspace.DirtyStates, workspace.Conversation, workspace.Artifacts },
                     hostData = state.Data.Values.ToArray()
                 }, ModelJson.Options))];
 

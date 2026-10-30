@@ -1,9 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-    <Description>Optional SQLite session storage for IntentBlazor. Phase 0 foundation.</Description>
+    <Description>Owner-scoped SQLite workspace checkpoints and action receipts for IntentBlazor.</Description>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="../IntentBlazor.Core/IntentBlazor.Core.csproj" />
+    <ProjectReference Include="../IntentBlazor.Runtime/IntentBlazor.Runtime.csproj" />
+    <PackageReference Include="Microsoft.Data.Sqlite" />
   </ItemGroup>
 </Project>

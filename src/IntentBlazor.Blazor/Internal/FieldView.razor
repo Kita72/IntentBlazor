@@ -8,7 +8,7 @@
     <label for="@FieldId">@Node.Title</label>
     @if (Node.Kind == NodeKind.Select)
     {
-        <select id="@FieldId" @bind:get="Value" @bind:set="(string? value) => Change(value, revision)">
+        <select id="@FieldId" disabled="@Session.IsActionRunning" @bind:get="Value" @bind:set="(string? value) => Change(value, revision)">
             <option value="">Choose…</option>
             @foreach (var row in Session.Rows(Node))
             {
@@ -20,7 +20,7 @@
     else
     {
         <input id="@FieldId" type="@(Definition.Kind == StateKind.Number ? "number" : "text")"
-               min="@Minimum" max="@Maximum" step="any" maxlength="4096"
+               min="@Minimum" max="@Maximum" step="any" maxlength="4096" disabled="@Session.IsActionRunning"
                @bind:get="Value" @bind:set="(string? value) => Change(value, revision)" />
     }
 </div>

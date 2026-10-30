@@ -1,12 +1,12 @@
 # Output document specification
 
-Status: implemented experimental **schema 0.1**, toolkit **builtin 0.1**. The canonical contracts are [OutputDocument.cs](../../src/IntentBlazor.Core/OutputDocument.cs), [OutputJson.cs](../../src/IntentBlazor.Core/OutputJson.cs), and [DocumentValidator.cs](../../src/IntentBlazor.Core/DocumentValidator.cs). C# types plus the strict parser and semantic validator define this version; a separate JSON Schema is not supplied. Earlier JSON sketches in the implementation plan are conceptual.
+Status: implemented experimental **schema 0.1** and [schema 0.2 actions](v0.2-actions.md), toolkit **builtin 0.1**. This page describes the local 0.1 subset. The canonical contracts are [OutputDocument.cs](../../src/IntentBlazor.Core/OutputDocument.cs), [OutputJson.cs](../../src/IntentBlazor.Core/OutputJson.cs), and [DocumentValidator.cs](../../src/IntentBlazor.Core/DocumentValidator.cs). C# types plus the strict parser and semantic validator define these versions; a separate JSON Schema is not supplied. Earlier JSON sketches in the implementation plan are conceptual.
 
 `OutputContent` pairs an `OutputDocument` with host-provided `Data`. Only the document is a presentation proposal. Dataset schemas and rows are supplied by the host after its own authorization; a model must never be allowed to create or authorize its own datasets. Fixtures bundle the pair for deterministic playback.
 
 | Document member | Meaning |
 | --- | --- |
-| schemaVersion | Exact supported schema, currently 0.1. |
+| schemaVersion | Exact supported schema: 0.1 for local interactions, 0.2 for registered actions. |
 | id / revision | Stable document identity and positive authored revision. |
 | rootId / nodes | A single rooted tree with stable node IDs. |
 | requires | Exact required renderer capabilities; builtin 0.1 is currently the only toolkit. |
@@ -20,7 +20,7 @@ Bindings have five explicit sources: literal scalar, named state, selected recor
 
 A local interaction either assigns up to 16 unique state targets atomically or clears current drafts. Assignments read the same pre-event snapshot. A selected key must exist in the declared host dataset. State types, numeric ranges, record references, event kind, visible source, and expected session revision are rechecked before any effect is applied. `action` is reserved and rejected in this phase.
 
-An editable input changes a state slot and marks it dirty relative to its most recent local baseline. Selection effects cannot overwrite dirty targets; document replacement also refuses a dirty workspace by default. Clear-draft restores that baseline. Explicit host `Open(..., discardDraft: true)` can discard it. This is in-memory UI state, not a database save or durable session.
+An editable input changes a state slot and marks it dirty relative to its most recent local baseline. Selection effects cannot overwrite dirty targets; `Open` replacement also refuses a dirty workspace by default. Clear-draft restores that baseline. Explicit host `Open(..., discardDraft: true)` can discard it. Phase 3's `ApplyUpdate` reconciles compatible values/baselines while preserving visible dirty fields. Optional [durable checkpoints](../../docs/phase-3-workspaces.md) preserve this state; only registered application actions can acknowledge a business save.
 
 `AiSession.Revision` is a monotonically increasing interaction counter across document replacements. It is separate from the authored `OutputDocument.Revision`. Events carry the session counter they were rendered against. Async input responses must still match the captured counter; stale responses leave the current workspace intact.
 
@@ -37,4 +37,4 @@ JSON uses case-sensitive camelCase property names and string enums. Unknown memb
 | Scalar text / input request | 4096 / 2048 characters |
 | In-memory input outcome history | Latest 20 turns |
 
-All three [authored fixtures](../fixtures/README.md) use this contract. See the [developer guide](../../docs/phase-1-developer-guide.md), [authority decision](../../docs/architecture/0003-output-and-authority.md), and [Phase 1 decision](../../docs/architecture/0004-deterministic-output-v01.md). Dataset paging, patch updates, application actions, durable memory, artifact handles, extensions, and provider capability negotiation require later versions and are not implied by schema 0.1.
+All three [authored fixtures](../fixtures/README.md) retain schema 0.1. See the [developer guide](../../docs/phase-1-developer-guide.md), [authority decision](../../docs/architecture/0003-output-and-authority.md), and [Phase 1 decision](../../docs/architecture/0004-deterministic-output-v01.md). Phase 3 adds [registered actions](v0.2-actions.md), durable checkpoints, conversation context, and versioned artifact metadata references. Dataset paging, JSON Patch, file storage/content adapters, renderer extensions, and provider capability negotiation remain future work.

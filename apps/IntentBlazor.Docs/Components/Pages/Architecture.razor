@@ -8,9 +8,9 @@
 <div class="card-grid">
     <article class="card"><h2>Core contracts</h2><p>Versioned output documents describe data references,
         state, view nodes, bindings, and interactions.</p></article>
-    <article class="card"><h2>Execution runtime</h2><p>Scoped in-memory sessions coordinate validated documents,
-        selections, typed sorting, draft edits, and revision checks. The optional AI package adds model connections and read-only data tools;
-        application write actions remain planned.</p></article>
+    <article class="card"><h2>Execution runtime</h2><p>Scoped sessions coordinate validated documents,
+        protected drafts, registered server actions, bounded conversation context, and owner-scoped checkpoints.
+        The optional AI package adds model connections and read-only data tools.</p></article>
     <article class="card"><h2>Blazor presentation</h2><p>The output renderer combines familiar controls and specialist
         surfaces while preserving selections and unfinished edits. Try the authored examples in the playground.</p></article>
 </div>
@@ -20,4 +20,5 @@
         validation, concurrency, and persistence. Direct selections and edits remain responsive without model calls.</p>
     <p><a href="https://github.com/Kita72/IntentBlazor/tree/main/docs/architecture">Read the architecture decisions on GitHub</a>.</p>
     <p><a href="/playground">Inspect documents, state, and interactions in the playground</a>.</p>
+    <p><a href="/workspaces">Prove draft recovery and shared-record conflicts with SQLite</a>.</p>
 </section>

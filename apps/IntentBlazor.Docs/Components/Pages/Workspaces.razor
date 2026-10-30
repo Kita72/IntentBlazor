@@ -1,0 +1,117 @@
+@page "/workspaces"
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@implements IAsyncDisposable
+@using IntentBlazor.Docs
+@using IntentBlazor.Blazor
+@using IntentBlazor.Core
+@using IntentBlazor.Runtime
+@using Microsoft.AspNetCore.Components.Authorization
+@inject IEnumerable<RecoveryDemo> Demos
+@inject AuthenticationStateProvider Authentication
+
+<PageTitle>Workspace recovery — IntentBlazor</PageTitle>
+<p class="eyebrow">PHASE 3 · DETERMINISTIC RECOVERY DEMO</p>
+<h1>Keep the draft.<br />Recover the workspace.</h1>
+<p>Synthetic staff and shared jobs, separate SQLite databases for private checkpoints and business records, and no model calls.
+    A protected demo cookie identifies this browser. This is a development demonstration, not a production sign-in system.</p>
+@if (!Demos.Any())
+{
+    <p class="status">The recovery demo is enabled only in Development.</p>
+}
+else if (!_signedIn)
+{
+    <p class="status"><a href="/workspaces/demo-signin" data-enhance-nav="false">Start my private demo workspace</a>.
+        The same browser cookie restores your workspace after a reload.</p>
+}
+else if (_demo is { } demo)
+{
+    <p class="status">Private workspace <code>@demo.Workspace.WorkspaceKey</code> · checkpoint version @demo.Workspace.StoredVersion.
+        Autosave is enabled. Saving a checkpoint preserves a draft; <strong>Save follow-up</strong> changes the shared synthetic job.</p>
+    @if (_message is not null) { <p role="status">@_message</p> }
+    <ol>
+        <li>Select Cinderworks, change the owner or notes, then enter a follow-up request below. The edited fields stay intact.</li>
+        <li>Use <strong>Checkpoint and reconnect</strong> to save and create a new session from SQLite. Your exact draft and selection return.</li>
+        <li>Use <strong>Simulate another staff save</strong>, then <strong>Save follow-up</strong>. The record conflict leaves your draft intact.</li>
+        <li>Use <strong>Load latest records — discard local draft</strong> only when you want to discard that draft and review current records.</li>
+    </ol>
+    <div class="actions">
+        <button class="button secondary" disabled="@demo.Workspace.IsBusy" @onclick="Reconnect">Checkpoint and reconnect</button>
+        <button class="button secondary" disabled="@demo.Workspace.IsBusy" @onclick="Conflict">Simulate another staff save</button>
+        <button class="button secondary" disabled="@demo.Workspace.IsBusy" @onclick="Reload">Load latest records — discard local draft</button>
+        <button class="button secondary" @onclick="TogglePermission">@(demo.Permissions.CanSave ? "Simulate restricted staff" : "Restore demo edit permission")</button>
+    </div>
+    <p>Authorization simulation: @(demo.Permissions.CanSave ? "edit permitted" : "read-only staff; the server rejects save actions").</p>
+    <AiInput Session="@demo.Workspace" Placeholder="For example: keep my draft and show the next step" />
+    <AiOutput Session="@demo.Workspace" />
+    <details>
+        <summary>Inspect recovery and conversation state</summary>
+        <pre>@Inspector</pre>
+    </details>
+}
+
+@code {
+    private RecoveryDemo? _demo;
+    private bool _signedIn, _disposed;
+    private string? _message;
+    private string Inspector => _demo is null ? "" : WorkspaceJson.Write(new
+    {
+        _demo.Workspace.Revision, _demo.Workspace.StoredVersion, _demo.Workspace.Snapshot.Values,
+        _demo.Workspace.Snapshot.DirtyStates, _demo.Workspace.Artifacts, _demo.Workspace.Snapshot.Conversation,
+        OriginalTurnsRetained = _demo.Workspace.Archive.Length, _demo.Workspace.LastActionRequestId
+    });
+    protected override async Task OnInitializedAsync()
+    {
+        _signedIn = (await Authentication.GetAuthenticationStateAsync()).User.Identity?.IsAuthenticated == true;
+        if (!_signedIn || !Demos.Any()) return;
+        _demo = Demos.Single();
+        _demo.Workspace.Changed += OnChanged;
+        OperationResult result = await _demo.Workspace.ConnectAsync("staff-demo");
+        if (!result.Success) { _message = result.Errors[0].Message; return; }
+        if (_demo.Workspace.Document is null) _demo.Workspace.Open(_demo.CurrentRecords());
+        await _demo.Workspace.FlushAsync();
+    }
+    private async Task Reconnect()
+    {
+        if (_demo is null) return;
+        await _demo.Workspace.FlushAsync();
+        if (!(await _demo.Workspace.SaveAsync()).Success) { _message = "Checkpoint conflict: your local draft is retained."; return; }
+        // Rebuild the logical session, including a fresh in-memory state container.
+        _demo.Workspace.Changed -= OnChanged;
+        var previous = _demo;
+        _demo = previous.NewSession();
+        _demo.Workspace.Changed += OnChanged;
+        OperationResult restored = await _demo.Workspace.RestoreAsync("staff-demo");
+        previous.Dispose();
+        _message = restored.Success ? "Reconnected through a new session. The document, selection, sorting, baseline, and draft were restored from SQLite." : restored.Errors[0].Message;
+    }
+    private void Conflict()
+    {
+        if (_demo?.Workspace.Document is null) return;
+        string id = JsonValues.Display(_demo.Workspace.Snapshot.Values["selectedJob"]);
+        if (id.Length == 0) { _message = "Select a job first."; return; }
+        var result = _demo.SaveAsOtherStaff(id);
+        _message = result.Status == ActionStatus.Succeeded
+            ? "Another staff member saved the shared record. Your draft and original version are unchanged; Save follow-up will now report a conflict." : result.Message;
+    }
+    private void Reload()
+    {
+        if (_demo is null) return;
+        _demo.Workspace.Open(_demo.CurrentRecords(), discardDraft: true);
+        _message = "Current records loaded. The local draft was explicitly discarded; select a record to begin again.";
+    }
+    private void TogglePermission()
+    { if (_demo is not null) _demo.Permissions.CanSave = !_demo.Permissions.CanSave; }
+    private async void OnChanged()
+    {
+        if (_disposed) return;
+        try { await InvokeAsync(() => { if (!_disposed) StateHasChanged(); }); }
+        catch (Exception error) { if (!_disposed) await DispatchExceptionAsync(error); }
+    }
+    public async ValueTask DisposeAsync()
+    {
+        _disposed = true;
+        if (_demo is null) return;
+        _demo.Workspace.Changed -= OnChanged;
+        await _demo.Workspace.FlushAsync(); _demo.Dispose();
+    }
+}

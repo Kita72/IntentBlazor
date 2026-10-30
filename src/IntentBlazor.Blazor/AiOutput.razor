@@ -3,9 +3,17 @@
 @using IntentBlazor.Blazor.Internal
 
 <section class="ib-output" aria-label="Dynamic output" data-revision="@Current.Revision">
+    @if (Current.PersistenceError is { } persistence)
+    {
+        <p role="alert">@persistence.Message <small>(@persistence.Code)</small></p>
+    }
+    @if (Current.LastAction is { } action)
+    {
+        <p role="@(action.Status == IntentBlazor.Runtime.ActionStatus.Succeeded ? "status" : "alert")">@action.Status: @action.Message</p>
+    }
     @if (Current.IsBusy)
     {
-        <p role="status">Preparing output…</p>
+        <p role="status">@(Current.IsActionRunning ? "Running application action…" : "Preparing output…")</p>
         @if (Current.Progress is { } progress)
         {
             <p role="status">@progress.Stage · @progress.ModelCalls model calls · @progress.ToolCalls data calls · @progress.Characters characters received</p>

@@ -76,7 +76,13 @@ public sealed record OutputInteraction
     public ImmutableArray<StateAssignment> Assignments { get; init; } = [];
     public bool ClearDrafts { get; init; }
     public string? Action { get; init; }
+    public ValueBinding? Resource { get; init; }
+    public ValueBinding? ExpectedVersion { get; init; }
+    public ImmutableDictionary<string, ValueBinding> Arguments { get; init; } = ImmutableDictionary<string, ValueBinding>.Empty;
 }
+
+public sealed record ActionDefinition(string Name, string Label, string DataSetId,
+    ImmutableDictionary<string, StateDefinition> Parameters);
 
 public sealed record StateAssignment(string StateKey, ValueBinding Value);
 

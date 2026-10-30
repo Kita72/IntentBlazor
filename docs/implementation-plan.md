@@ -202,6 +202,8 @@ Exit gate: a fresh app using the public package surface can connect a verified m
 
 Make the workspace survive follow-up requests, direct edits, and reconnection.
 
+Implementation status: completed through deterministic tests and the Development-only SQLite recovery demo. See [the Phase 3 guide](phase-3-workspaces.md) and [decision 0006](architecture/0006-durable-workspaces.md). Summary generation currently means a bounded deterministic extractive history index; semantic summarization, lasting memory, and transcript retrieval are not implemented. The Phase 2 live-model gate remains deferred independently.
+
 Deliverables:
 
 - Implement revision-checked document updates, dirty-field protection, validated event payloads, and deterministic local effects.
