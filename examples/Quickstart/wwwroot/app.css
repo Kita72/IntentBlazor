@@ -1,0 +1,7 @@
+* { box-sizing: border-box; }
+body { max-width: 960px; margin: 0 auto; padding: 24px; color: #152338; font: 1rem/1.6 system-ui, sans-serif; }
+button, input, textarea, select { font: inherit; }
+fieldset { min-inline-size: 0; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; border: 1px solid #bdcbd3; }
+output { min-width: 2ch; text-align: center; }
+:focus-visible { outline: 3px solid #bd6b12; outline-offset: 3px; }
+@media (max-width: 420px) { body { padding: 14px; } }

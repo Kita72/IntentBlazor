@@ -14,3 +14,5 @@ Review the packages' bundled license/notice files when distributing an applicati
 Documentation sample sprites and the generated geometric PNG are original IntentBlazor samples under this repository's MIT license. Tests create synthetic text, tabular data, images, and PDFs; no third-party game assets or private documents are included.
 
 Staff Business uses Microsoft's [EF Core SQLite provider](https://github.com/dotnet/efcore), licensed under MIT. HTTP identity tests use [ASP.NET Core TestHost](https://github.com/dotnet/aspnetcore), also under MIT. The new app shells/reconnect UI were generated from the official ASP.NET Core templates. See package/upstream notices for transitive and native dependency terms. The [asset sample notice](examples/AssetWorkbench/ASSET-LICENSE.md) records the provenance of the procedural PNG set.
+
+The documentation host alone uses [Markdig](https://github.com/xoofx/markdig), licensed under [BSD-2-Clause](https://github.com/xoofx/markdig/blob/main/license.txt), for authored repository guides. It is not a dependency of any IntentBlazor library package. The framework Markdown node keeps its own bounded renderer.

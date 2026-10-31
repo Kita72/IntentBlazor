@@ -1,8 +1,8 @@
 # Phase 1 developer guide
 
-This guide records the deterministic Phase 1 surface. For the optional model package now implemented, use the [Phase 2 connection guide](phase-2-model-connections.md); live verification remains deferred.
+This guide records the historical deterministic Phase 1 surface. New consumers should start with the [current compiled quickstart](site/quickstart.md), [service guide](site/services.md), and [node reference](site/nodes.md). Persistence/actions and content/renderer registration were added in later phases; live verification remains deferred.
 
-Phase 1 implements the common output document and deterministic renderer. Its public API is experimental and packages have not been published. The tested host is a .NET 10 Blazor Web App using Interactive Server. Provider integration is Phase 2; file attachments, persistence, application saves, and custom renderer registration are not available yet.
+Phase 1 introduced the common output document and deterministic renderer. Its public API is experimental and packages have not been published. The tested host is a .NET 10 Blazor Web App using Interactive Server. The examples and capability descriptions below preserve that phase's original scope; they are not the current feature inventory.
 
 ## Try the three workspaces
 
@@ -100,13 +100,13 @@ Dispose sessions you create yourself; DI disposes its own scoped session. Use th
 
 ## Composition, interaction, and continuity
 
-The built-in toolkit composes layout, card, text, list, table, rating, input, select, button, image, and form nodes. New combinations are new document trees, not generated executable code. [Schema 0.1](../specs/output-document/README.md) describes each envelope member, bindings, local effects, and limits. Custom primitives and capability discovery come later.
+The Phase 1 toolkit composes layout, card, text, list, table, rating, input, select, button, image, and form nodes. New combinations are new document trees, not generated executable code. [Schema 0.1](../specs/output-document/README.md) describes each envelope member, bindings, local effects, and limits. [Schema 0.3](../specs/output-document/v0.3-content-and-extensions.md) now adds content and typed custom renderers.
 
 Selection, sorting, and editing execute locally. Selection effects assign typed state atomically. Inputs mark edited state as dirty. Another selection cannot overwrite those targets, and document replacement refuses a dirty workspace by default. A declared clear-draft button restores the current baseline; it never writes application data. An explicit host `Open(..., discardDraft: true)` opts into losing that draft.
 
 Each successful local event increments the session revision. Controls submit the revision they were rendered against. Input processing receives a snapshot; a response prepared before another local change is rejected as stale. A busy request can be cancelled. Validation errors, cancellation, and processor failures retain the current output.
 
-Memory currently consists of the current document, selection/state, table sorting, dirty-field baselines, and the latest 20 input outcomes in one circuit. There are no folders, durable chats, restoration, or automatic model memory yet. Those require explicit ownership, authorization, retention, and reconciliation in Phase 3.
+Phase 1 memory consisted of the current document, selection/state, table sorting, dirty-field baselines, and the latest 20 input outcomes in one circuit. [Phase 3](phase-3-workspaces.md) now adds owned durable checkpoints, bounded conversation context, summaries, restoration, and forks with explicit reauthorization.
 
 ## Validation and contribution
 

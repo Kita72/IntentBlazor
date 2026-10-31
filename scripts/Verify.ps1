@@ -37,6 +37,7 @@ try {
     foreach ($libraryProject in $libraryProjects) {
         Invoke-DotNet -Arguments @('pack', $libraryProject.FullName, '--no-build', '--no-restore', '--configuration', 'Release', '--output', 'artifacts/packages')
     }
+    & (Join-Path $PSScriptRoot 'Verify-Quickstart.ps1')
     Write-Host 'Repository verification completed.'
 }
 finally {

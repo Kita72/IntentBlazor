@@ -121,7 +121,7 @@
         "kind": "text",
         "value": {
           "source": "literal",
-          "literal": "Local draft only. Application saves and staff authorization arrive in later phases."
+          "literal": "This fixture edits a local draft only. Run Staff Business for authorized shared-record saves."
         }
       }
     ],

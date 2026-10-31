@@ -1,0 +1,38 @@
+@page "/docs"
+@using IntentBlazor.Docs.Documentation
+@inject DocumentationCatalog Catalog
+
+<PageTitle>Documentation — IntentBlazor</PageTitle>
+<p class="eyebrow">BUILD WITH INTENTBLAZOR</p>
+<h1>From two components<br />to your application.</h1>
+<p class="lead">Start with a runnable example, connect a model when you are ready, and expose only the capabilities your app authorizes.</p>
+<div class="actions">
+    <a class="button" href="/docs/quickstart">Run the quickstart</a>
+    <a class="button secondary" href="/explorer">Open the document explorer</a>
+</div>
+<form action="/docs" method="get" class="guide-search" data-enhance>
+    <label for="guide-query">Find a guide by title or topic</label>
+    <input id="guide-query" name="q" value="@Query" type="search" maxlength="100" />
+    <button class="button" type="submit">Search guides</button>
+    @if (!string.IsNullOrWhiteSpace(Query)) { <a href="/docs">Clear search</a> }
+</form>
+@if (!Catalog.Search(Query).Any())
+{
+    <p role="status">No guide matches that topic. Try “state”, “model”, “node”, or “service”.</p>
+}
+@foreach (var group in Catalog.Search(Query).GroupBy(guide => guide.Group))
+{
+    <section aria-label="@group.Key">
+        <h2>@group.Key</h2>
+        <div class="card-grid">
+            @foreach (Guide guide in group)
+            {
+                <article class="card"><h3><a href="@guide.Url">@guide.Title</a></h3><p>@guide.Summary</p></article>
+            }
+        </div>
+    </section>
+}
+
+@code {
+    [SupplyParameterFromQuery(Name = "q")] public string? Query { get; set; }
+}

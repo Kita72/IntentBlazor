@@ -3,7 +3,7 @@
 @using IntentBlazor.Runtime
 
 @{ long revision = Session.Revision; }
-<div class="ib-table-scroll" data-node="@Node.Id">
+<div class="ib-table-scroll" data-node="@Node.Id" tabindex="0" role="region" aria-label="@(Node.Title + " table")">
     <table>
         <caption>@Node.Title</caption>
         <thead>

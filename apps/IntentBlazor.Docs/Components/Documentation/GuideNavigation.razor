@@ -1,0 +1,18 @@
+@using IntentBlazor.Docs.Documentation
+
+<details class="guide-navigation" open>
+    <summary>Documentation sections</summary>
+    <nav aria-label="Documentation navigation">
+        <a href="/docs">Search all guides</a>
+        @foreach (var group in DocumentationCatalog.Guides.GroupBy(guide => guide.Group))
+        {
+            <h2>@group.Key</h2>
+            <ul>
+                @foreach (Guide guide in group)
+                {
+                    <li><NavLink href="@guide.Url" Match="NavLinkMatch.All">@guide.Title</NavLink></li>
+                }
+            </ul>
+        }
+    </nav>
+</details>

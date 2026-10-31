@@ -1,0 +1,119 @@
+@implements IDisposable
+@using IntentBlazor.Docs.Documentation
+@using IntentBlazor.Examples
+@using IntentBlazor.Core
+@using IntentBlazor.Blazor
+@inject ExampleCatalog Catalog
+
+<fieldset class="explorer-controls" disabled="@(!_interactiveReady)">
+<legend class="visually-hidden">Document explorer workspace</legend>
+<div class="actions" aria-label="Fixture selection">
+    @foreach (string name in new[] { "news", "staff", "assets" })
+    {
+        <button type="button" class="button secondary" @onclick="() => _explorer.OpenFixture(name)">Open @name fixture</button>
+    }
+</div>
+<p>Type <code>news</code>, <code>staff</code>, or <code>assets</code>. Selection, sorting, and editing are local.
+    Clear output drafts before replacing a workspace. Render or restore JSON edits before switching fixtures.</p>
+<div class="explorer-workspace">
+    <AiInput Session="@_explorer.Session" Placeholder="Fixture commands: news, staff, assets" />
+    <AiOutput Session="@_explorer.Session" />
+</div>
+<section aria-labelledby="explorer-heading">
+    <h2 id="explorer-heading">Inspect, edit, validate</h2>
+    <p>Presentation JSON uses the current fixture's host-owned datasets. It cannot install a renderer, load a new data source,
+        or register an action. Invalid proposals retain the working output and its revision.</p>
+    <p class="status" role="status">Session revision @_explorer.Session.Revision · @_explorer.Session.Document?.SchemaVersion schema ·
+        @_explorer.Session.Document?.Nodes.Length nodes · @(_explorer.Session.HasDraft ? "Output draft has edits" : "No output draft edits") ·
+        @(_explorer.HasJsonDraft ? "JSON draft has edits" : "JSON matches current document")</p>
+    @if (!_explorer.EditorResult.Success)
+    {
+        <div role="alert" class="explorer-errors">
+            <h3>Proposal retained for correction</h3>
+            <ul>
+                @foreach (DocumentError error in _explorer.EditorResult.Errors)
+                {
+                    <li><a href="/docs/errors"><code>@error.Code</code></a> · <code>@error.Path</code> · @error.Message</li>
+                }
+            </ul>
+        </div>
+    }
+    <label for="document-json">Presentation document JSON</label>
+    <textarea id="document-json" class="document-editor" @bind="_explorer.JsonDraft" @bind:event="oninput" maxlength="262144" spellcheck="false"></textarea>
+    <div class="actions">
+        <button type="button" class="button" @onclick="() => _explorer.Render()">Render proposed document</button>
+        <button type="button" class="button secondary" @onclick="_explorer.RestoreEditor">Restore JSON from current output</button>
+        <button type="button" class="button secondary" disabled="@_explorer.HasJsonDraft" @onclick="() => _explorer.TryInvalidSchema()">Try invalid schema</button>
+    </div>
+    <div class="inspector-grid">
+        <section>
+            <h3>Node tree and bindings</h3>
+            <label for="inspected-node">Inspect a node</label>
+            <select id="inspected-node" @bind="_selectedNode">
+                @foreach (var item in _explorer.Tree())
+                {
+                    <option value="@item.Node.Id">@(new string('·', item.Depth)) @item.Node.Id · @item.Node.Kind</option>
+                }
+            </select>
+            <pre tabindex="0" aria-label="Selected node JSON"><code>@_explorer.NodeJson(_selectedNode)</code></pre>
+        </section>
+        <section>
+            <h3>State, drafts, and history</h3>
+            <pre tabindex="0" aria-label="Current session state"><code>@_explorer.StateJson</code></pre>
+        </section>
+    </div>
+    <details>
+        <summary>Inspect authorized synthetic datasets (read only)</summary>
+        <pre tabindex="0" aria-label="Host-owned fixture data"><code>@_explorer.DataJson</code></pre>
+    </details>
+    <p><a href="/docs/nodes">Node reference</a> · <a href="/docs/bindings">Bindings and events</a> · <a href="/docs/extensions">Build a renderer</a></p>
+</section>
+</fieldset>
+
+@code {
+    [Parameter] public string? Fixture { get; set; }
+    private DocumentExplorer _explorer = default!;
+    private string? _selectedNode;
+    private string? _requestedFixture;
+    private bool _disposed;
+    private bool _interactiveReady;
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender) { _interactiveReady = true; StateHasChanged(); }
+    }
+    protected override void OnInitialized()
+    {
+        _explorer = new(Catalog);
+        _explorer.Changed += OnChanged;
+        _selectedNode = _explorer.Session.Document?.RootId;
+    }
+    protected override void OnParametersSet()
+    {
+        if (Fixture is not null && Fixture != _requestedFixture)
+        {
+            _requestedFixture = Fixture;
+            _explorer.OpenFixture(Fixture);
+        }
+    }
+    private async void OnChanged()
+    {
+        if (_disposed) return;
+        try
+        {
+            await InvokeAsync(() =>
+            {
+                if (_disposed) return;
+                if (!_explorer.Session.Document!.Nodes.Any(node => node.Id == _selectedNode))
+                    _selectedNode = _explorer.Session.Document.RootId;
+                StateHasChanged();
+            });
+        }
+        catch (Exception error) { if (!_disposed) await DispatchExceptionAsync(error); }
+    }
+    public void Dispose()
+    {
+        _disposed = true;
+        _explorer.Changed -= OnChanged;
+        _explorer.Dispose();
+    }
+}

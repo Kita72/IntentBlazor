@@ -1,0 +1,16 @@
+@page "/"
+@rendermode InteractiveServer
+@inject IConfiguration Configuration
+
+<PageTitle>IntentBlazor quickstart</PageTitle>
+<h1>Two components, one workspace.</h1>
+@if (string.IsNullOrWhiteSpace(Configuration["Ai:Provider"]))
+{
+    <p>Authored synthetic catalog mode. Every request opens the same document; no model or credentials are used.</p>
+}
+else
+{
+    <p>Configured model mode. Requests use the server's configured provider and resource limits.</p>
+}
+<AiInput />
+<AiOutput />

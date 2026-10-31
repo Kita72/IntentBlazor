@@ -1,8 +1,9 @@
-.ib-input { display: grid; gap: .6rem; margin-block: 1.5rem; }
-.ib-input ::deep form { display: grid; gap: .6rem; }
+.ib-input { display: grid; grid-template-columns: minmax(0, 1fr); gap: .6rem; margin-block: 1.5rem; }
+.ib-input ::deep form { display: grid; grid-template-columns: minmax(0, 1fr); min-width: 0; gap: .6rem; }
 .ib-input label { font-weight: 650; }
-.ib-input ::deep textarea { width: 100%; min-height: 90px; padding: .8rem; border: 1px solid #a1b4bd; border-radius: 8px; font: inherit; }
-.ib-input-actions { display: flex; gap: .6rem; }
+.ib-input ::deep textarea { box-sizing: border-box; width: 100%; max-width: 100%; min-width: 0; min-height: 90px; padding: .8rem; border: 1px solid #a1b4bd; border-radius: 8px; font: inherit; }
+.ib-input ::deep input[type=file] { width: 100%; max-width: 100%; }
+.ib-input-actions { display: flex; flex-wrap: wrap; gap: .6rem; }
 button { padding: .6rem 1rem; border: 1px solid #075f55; border-radius: 6px; background: #075f55; color: white; font: inherit; cursor: pointer; }
 button:disabled { opacity: .6; cursor: wait; }
 button:focus-visible { outline: 3px solid #bd6b12; outline-offset: 3px; }

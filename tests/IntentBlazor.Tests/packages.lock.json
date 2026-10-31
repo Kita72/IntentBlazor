@@ -289,6 +289,16 @@
       "intentblazor.core": {
         "type": "Project"
       },
+      "intentblazor.docs": {
+        "type": "Project",
+        "dependencies": {
+          "IntentBlazor.Blazor": "[0.1.0-alpha.0, )",
+          "IntentBlazor.Blazor.AI": "[0.1.0-alpha.0, )",
+          "IntentBlazor.Examples": "[0.1.0-alpha.0, )",
+          "IntentBlazor.Packs.ImageEditor": "[0.1.0-alpha.0, )",
+          "Markdig": "[1.5.1, )"
+        }
+      },
       "intentblazor.examplehost": {
         "type": "Project",
         "dependencies": {
@@ -318,6 +328,13 @@
           "IntentBlazor.Content": "[0.1.0-alpha.0, )"
         }
       },
+      "intentblazor.quickstart": {
+        "type": "Project",
+        "dependencies": {
+          "IntentBlazor.AI": "[0.1.0-alpha.0, )",
+          "IntentBlazor.Blazor": "[0.1.0-alpha.0, )"
+        }
+      },
       "intentblazor.runtime": {
         "type": "Project",
         "dependencies": {
@@ -338,6 +355,12 @@
           "IntentBlazor.Runtime": "[0.1.0-alpha.0, )",
           "Microsoft.Data.Sqlite": "[10.0.14, )"
         }
+      },
+      "Markdig": {
+        "type": "CentralTransitive",
+        "requested": "[1.5.1, )",
+        "resolved": "1.5.1",
+        "contentHash": "NtHwU5t5yKr6Gnylhs8/hlR0mOAftTFQURDz2ID8bkunxps1neOzKw0dYKKlwNuwiYIGLHjJTXK91f809Ko1ww=="
       },
       "Microsoft.Agents.AI": {
         "type": "CentralTransitive",

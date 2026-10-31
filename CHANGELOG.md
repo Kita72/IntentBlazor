@@ -4,6 +4,11 @@
 
 ### Added
 
+- Phase 6 static SSR documentation library, searchable guides, complete node/binding/event and generated error references, provider/hosting/migration limits, and labelled demo hub.
+- Interactive fixture document explorer with node/data/state inspection, structured validation, protected JSON drafts, and isolated sessions.
+- Standalone two-component quickstart with compiled C# service/registration/renderer snippets embedded in the site; fresh package-only consumer verification.
+- Maintainer-authorized direct commits and pushes after verification; external contributions retain the PR process.
+
 - Phase 5 standalone Gaming News, Staff Business, and Asset Workbench apps with the default AiInput/AiOutput pair and optional existing model adapters.
 - Synthetic Development-only protected-cookie identities, antiforgery-protected sign-in/out, private named workspace controls, and optional AI setup/inspection shared as non-packable example source.
 - News preferences, safe linked source/date/version attribution, bounded host-configured JSON feeds, private bookmarks, and immutable saved comparison snapshots.
@@ -38,4 +43,4 @@
 
 - Draft status no longer claims that no application data was saved when a successful action leaves other fields dirty.
 
-No public framework package has been released. Live model verification is deferred. Complete documentation-site and developer-preview release work remain planned in Phases 6–7.
+No public framework package has been released. Live model verification is deferred. Phase 6 documentation-site work is implemented. Developer-preview release work remains in Phase 7.

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="/" />
+    <link rel="stylesheet" href="app.css" />
+    <link rel="stylesheet" href="IntentBlazor.Quickstart.styles.css" />
+    <HeadOutlet />
+</head>
+<body>
+    <Router AppAssembly="typeof(App).Assembly">
+        <Found Context="routeData">
+            <RouteView RouteData="routeData" />
+            <FocusOnNavigate RouteData="routeData" Selector="h1" />
+        </Found>
+        <NotFound><h1>Page not found</h1><a href="/">Return to the quickstart</a></NotFound>
+    </Router>
+    <script src="_framework/blazor.web.js"></script>
+</body>
+</html>

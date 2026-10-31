@@ -3,6 +3,7 @@
 param()
 
 $ErrorActionPreference = 'Stop'
+& (Join-Path $PSScriptRoot 'Export-ErrorReference.ps1') -Verify
 $repositoryRoot = [IO.Path]::GetFullPath((Split-Path -Parent $PSScriptRoot))
 $markdownFiles = @(Get-ChildItem -LiteralPath $repositoryRoot -Recurse -Filter '*.md' -File |
     Where-Object {

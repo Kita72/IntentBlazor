@@ -2,6 +2,8 @@
 
 Prepared for Tory on October 29, 2026.
 
+Progress: Phases 0–6 are implemented, with experimental contracts and the Phase 2 live-model gate still deferred. [Phase 6 evidence](phase-6-completion.md) records the learning site, compiled quickstart, and browser checks. Phase 7 release validation remains; no public package or docs deployment has been released.
+
 Build an open-source Blazor framework whose two core interaction components accept user intent and produce a dynamic, interactive workspace. Deliver it as reusable NuGet packages, accompanied by a Blazor documentation and demonstration website and three independently runnable example applications.
 
 The first public milestone is a developer preview. Its purpose is to prove that developers can install the packages, connect a supported model, expose C# application capabilities, and obtain useful interactive output without writing each screen. Production readiness, universal model compatibility, and comprehensive component coverage are later milestones.

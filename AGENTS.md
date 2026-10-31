@@ -11,3 +11,5 @@ Use explicitly scoped sessions and protect direct user edits. Store secrets outs
 Run pwsh -File scripts/Verify.ps1 for appropriate changes. Report the checks actually completed. Do not claim model or hosting compatibility without evidence, and do not add meaningless tests.
 
 Keep documentation and acceptance criteria current. Follow CONTRIBUTING.md for proposed contract changes. Do not publish packages or change repository access as part of routine code contributions.
+
+Tory has authorized AIMIE to commit and push completed, verified phase work directly to main without waiting for a pull-request review. Preserve existing repository protections and access settings. External contributions continue through the pull-request workflow in CONTRIBUTING.md. Package publication and deployment remain separate release tasks.

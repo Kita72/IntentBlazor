@@ -125,6 +125,19 @@ public sealed class RendererTests
         });
     }
 
+    [Fact]
+    public async Task Table_ExposesAFocusableNamedScrollRegion()
+    {
+        await WithRenderer(async (renderer, session) =>
+        {
+            session.Open(TestContent.Catalog.Get("staff"));
+            string html = (await renderer.RenderComponentAsync<AiOutput>()).ToHtmlString();
+            Assert.Contains("data-node=\"jobs\" tabindex=\"0\"", html);
+            Assert.Contains("role=\"region\" aria-label=\"Jobs waiting on materials table\"", html);
+            Assert.Contains("Sort by Customer", html);
+        });
+    }
+
     private static async Task WithRenderer(Func<HtmlRenderer, AiSession, Task> check)
     {
         ServiceCollection services = new();

@@ -1,0 +1,48 @@
+@page "/docs/{Slug}"
+@using IntentBlazor.Docs.Documentation
+@using IntentBlazor.Docs.Components.Documentation
+@inject DocumentationCatalog Catalog
+
+<PageTitle>@(_article?.Guide.Title ?? "Guide not found") — IntentBlazor</PageTitle>
+<div class="documentation-layout">
+    <aside><GuideNavigation /></aside>
+    <article class="documentation-article">
+        @if (_article is { } article)
+        {
+            <p class="eyebrow">EXPERIMENTAL API · @article.Guide.Group</p>
+            <div class="article-tools">
+                <a href="@article.Guide.SourceUrl">View this guide on GitHub</a>
+                <a href="/demos">Try the demos</a>
+            </div>
+            @if (!article.Headings.IsEmpty)
+            {
+                <details class="on-this-page">
+                    <summary>On this page</summary>
+                    <ul>
+                        @foreach (ArticleHeading heading in article.Headings)
+                        {
+                            <li><a href="@(article.Guide.Url + "#" + heading.Id)">@heading.Text</a></li>
+                        }
+                    </ul>
+                </details>
+            }
+            @((MarkupString)article.Html)
+        }
+        else
+        {
+            <h1>Guide not found</h1>
+            <p>This guide is not in the documentation catalog. <a href="/docs">Browse or search the available guides.</a></p>
+        }
+    </article>
+</div>
+
+@code {
+    [Parameter] public string Slug { get; set; } = "";
+    [CascadingParameter] public HttpContext? HttpContext { get; set; }
+    private GuideArticle? _article;
+    protected override void OnParametersSet()
+    {
+        _article = Catalog.Find(Slug);
+        if (_article is null && HttpContext is not null) HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
+    }
+}

@@ -3,6 +3,7 @@
     <Project Path="apps/IntentBlazor.Docs/IntentBlazor.Docs.csproj" />
   </Folder>
   <Folder Name="/examples/">
+    <Project Path="examples/Quickstart/IntentBlazor.Quickstart.csproj" />
     <Project Path="examples/IntentBlazor.ExampleHost/IntentBlazor.ExampleHost.csproj" />
     <Project Path="examples/IntentBlazor.Examples/IntentBlazor.Examples.csproj" />
   </Folder>

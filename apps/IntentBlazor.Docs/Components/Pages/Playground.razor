@@ -1,113 +1,15 @@
 @page "/playground"
+@page "/explorer"
 @rendermode InteractiveServer
-@implements IAsyncDisposable
-@using System.Collections.Immutable
-@using System.Text.Json
-@using IntentBlazor.Core
-@using IntentBlazor.Runtime
-@using IntentBlazor.Blazor
-@using IntentBlazor.Examples
-@inject ExampleCatalog Catalog
+@using IntentBlazor.Docs.Components.Documentation
 
-<PageTitle>Document playground — IntentBlazor</PageTitle>
-<p class="eyebrow">PHASE 1 · DETERMINISTIC FIXTURE MODE</p>
-<h1 class="playground-title">One document model.<br />Three working examples.</h1>
-<p>These are authored, synthetic examples. No model, API key, news feed, business save, or file editing service is connected.</p>
-<div class="actions">
-    @foreach (string fixture in new[] { "news", "staff", "assets" })
-    {
-        <button type="button" class="button secondary" @onclick="() => OpenFixture(fixture)">Open @fixture fixture</button>
-    }
-</div>
-<p>Choose a fixture, or type <code>news</code>, <code>staff</code>, or <code>assets</code> below.
-    Clear an edited draft before replacing its workspace.</p>
-
-<AiInput Session="@Workspace" Placeholder="Fixture commands: news, staff, assets" />
-<AiOutput Session="@Workspace" />
-
-<section>
-    <h2>Document explorer</h2>
-    <p>Edit the presentation document below and render it against the current fixture's host-owned data.
-        Unknown datasets, fields, actions, and invalid graphs are rejected while the current output remains available.</p>
-    <label for="document-json">Presentation document JSON</label>
-    <textarea id="document-json" class="document-editor" @bind="_json" spellcheck="false"></textarea>
-    <div class="actions">
-        <button type="button" class="button secondary" @onclick="RenderDocument">Render proposed document</button>
-        <button type="button" class="button secondary" @onclick="TryInvalid">Try invalid schema</button>
-    </div>
-    <details>
-        <summary>Inspect current state and history</summary>
-        <pre><code>@StateJson</code></pre>
-        <ul>
-            @foreach (var turn in Workspace.History)
-            {
-                <li>@turn.Text — @turn.Status</li>
-            }
-        </ul>
-    </details>
-</section>
+<PageTitle>Document explorer — IntentBlazor</PageTitle>
+<p class="eyebrow">DETERMINISTIC FIXTURE MODE · NO CREDENTIALS</p>
+<h1>See the document<br />behind the interface.</h1>
+<p class="lead">Three authored workspaces share one renderer. Inspect their nodes, host data, state, and interactions,
+    then try your own presentation. No model, live news feed, business save, or file editing service is connected here.</p>
+<DocumentExplorerView Fixture="@Fixture" />
 
 @code {
-    private AiSession Workspace = default!;
-    private string _json = "";
-    private OutputDocument? _shownDocument;
-    private ImmutableArray<OutputDataSet> _hostData = [];
-    private bool _disposed;
-    private static readonly JsonSerializerOptions InspectorOptions = new() { WriteIndented = true };
-    private string StateJson => JsonSerializer.Serialize(new
-    {
-        Workspace.Revision,
-        Workspace.Snapshot.Values,
-        Workspace.Snapshot.Sorting,
-        Workspace.Snapshot.DirtyStates
-    }, InspectorOptions);
-
-    protected override void OnInitialized()
-    {
-        Workspace = new(new DocumentValidator(), new ExampleInputProcessor(Catalog));
-        Workspace.Changed += OnChanged;
-        OpenFixture("news");
-    }
-
-    private void OpenFixture(string name) => Workspace.Open(Catalog.Get(name));
-
-    private void RenderDocument() => Workspace.OpenJson(_json, _hostData);
-
-    private void TryInvalid()
-    {
-        if (Workspace.Document is { } document)
-            Workspace.Open(new() { Document = document with { SchemaVersion = "99" }, Data = _hostData });
-    }
-
-    private async void OnChanged()
-    {
-        if (_disposed) return;
-        try
-        {
-            await InvokeAsync(() =>
-            {
-                if (_disposed) return;
-                if (!ReferenceEquals(_shownDocument, Workspace.Document))
-                {
-                    _shownDocument = Workspace.Document;
-                    _json = _shownDocument is null ? "" : OutputJson.SerializeDocument(_shownDocument);
-                    _hostData = Catalog.Fixtures.Values.FirstOrDefault(content =>
-                        _shownDocument is not null && content.Document.DataSets.SequenceEqual(_shownDocument.DataSets))?.Data ?? [];
-                }
-                StateHasChanged();
-            });
-        }
-        catch (Exception error)
-        {
-            if (!_disposed) await DispatchExceptionAsync(error);
-        }
-    }
-
-    public ValueTask DisposeAsync()
-    {
-        _disposed = true;
-        Workspace.Changed -= OnChanged;
-        Workspace.Dispose();
-        return ValueTask.CompletedTask;
-    }
+    [SupplyParameterFromQuery(Name = "fixture")] public string? Fixture { get; set; }
 }

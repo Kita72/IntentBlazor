@@ -1,0 +1,12 @@
+@inherits IntentExtensionComponent<ScoreConfiguration>
+
+<fieldset>
+    <legend>@Node.Title</legend>
+    <button type="button" @onclick="() => Step(-1)">Decrease score</button>
+    <output aria-live="polite">@JsonValues.Display(Session.Snapshot.Values[Configuration.StateKey])</output>
+    <button type="button" @onclick="() => Step(1)">Increase score</button>
+</fieldset>
+
+@code {
+    private void Step(int delta) => Session.DispatchExtension(Node.Id, Session.Revision, new ScoreEvent(delta));
+}

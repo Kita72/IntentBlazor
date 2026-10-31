@@ -77,3 +77,18 @@ Phase 5 adds app-owned acceptance scenarios, with real temporary SQLite/EF datab
 | Synthetic identities are server-allowlisted; HTTP sign-in/out require antiforgery and cannot escalate a role | `SyntheticIdentities_AreServerIssuedAllowlistedAndIsolatedByApp`, `SyntheticSignInAndSignOut_RequireAntiforgeryAndIssueOnlyAllowlistedRoles`. |
 
 Native browser checks exercise the standalone scenarios separately from these deterministic tests. Live provider compatibility, production identity, and other hosting modes remain unverified.
+
+Phase 6 adds source-backed documentation and a credential-free consumer. These checks use the real parser, validator, sessions, components, and public registration APIs; none sends a live provider request.
+
+| Requirement | Evidence |
+| --- | --- |
+| Every guide/snippet resolves; samples render as code and links cannot execute unsafe schemes | `Articles_ResolveEmbeddedResourcesAndCompiledSamples`, `Links_MapGuidesAndSourceWhileRejectingUnsafeSchemes`, `Markdown_EncodesHtmlAndPreservesNavigableHeadingsAndCode`. |
+| Node/binding/event references track the implemented enums; guide search handles matches and empty results | `Reference_CoversEverySupportedNodeBindingAndEvent`, `Search_ReturnsMatchingTopicsAndAnEmptyResultForUnknownTopics`. |
+| All fixtures expose their own host data and inspectable trees; invalid proposals retain output/state/revision and editable JSON | `Fixtures_RenderWithOnlyTheirHostDataAndInspectableTrees`, `InvalidProposals_RetainOutputDataStateRevisionAndEditableJson`. |
+| JSON drafts survive local events and block fixture/input replacement; proposals cannot create host datasets | `JsonDraft_SurvivesLocalEventsAndBlocksFixtureReplacementUntilExplicitRestore`, `JsonDraft_BlocksInputCommandsAndValidPresentationCannotIntroduceHostData`. |
+| Output drafts remain intact; accepted edits stay isolated and a successful new document clears stale editor notices | `OutputDraft_SurvivesRenderAndFixtureSwitchAttempts`, `ValidEdits_RenderWithoutSharingStateAcrossExplorers`. |
+| Prerendering cannot expose unwired controls; table scroll regions are named and keyboard focusable | `PrerenderedExplorer_DisablesControlsUntilInteractiveHandlersAreReady`, `Table_ExposesAFocusableNamedScrollRegion`. |
+| Default components consume an independent app service and renderer; attribute/explicit tools are equivalent | `DefaultPair_RendersAuthoredDataAndRegisteredInteractiveRendererWithoutAModel`, `Service_RegistersTheSameReadToolThroughAttributesOrExplicitMethods`. |
+| Provider registration does not infer eagerly; typed renderer events enforce bounds, configuration, draft tracking and revisions | `ProviderConfiguration_SelectsTheAdapterWithoutMakingALiveCall`, `Renderer_ClampsBoundsRejectsMalformedAndStaleEventsAndRetainsDrafts`, `Renderer_RejectsConfigurationWithoutItsDeclaredNumericRange`. |
+
+`scripts/Verify-Quickstart.ps1`, called after packing by repository verification, restores/builds a copied consumer outside the source tree with package references, an empty package cache, and explicit package source mapping. `scripts/Export-ErrorReference.ps1 -Verify` checks source/error-index drift. Keyboard and narrow-screen observations are recorded separately in [Phase 6 completion](../docs/phase-6-completion.md); they do not imply live model or comprehensive accessibility certification.

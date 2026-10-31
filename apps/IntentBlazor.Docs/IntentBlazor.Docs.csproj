@@ -5,9 +5,17 @@
     <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Markdig" />
     <ProjectReference Include="../../src/IntentBlazor.Blazor.AI/IntentBlazor.Blazor.AI.csproj" />
     <ProjectReference Include="../../src/IntentBlazor.Packs.ImageEditor/IntentBlazor.Packs.ImageEditor.csproj" />
     <ProjectReference Include="../../examples/IntentBlazor.Examples/IntentBlazor.Examples.csproj" />
     <ProjectReference Include="../../src/IntentBlazor.Blazor/IntentBlazor.Blazor.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="../../docs/**/*.md" LogicalName="docs/%(RecursiveDir)%(Filename)%(Extension)" />
+    <EmbeddedResource Include="../../specs/output-document/*.md" LogicalName="specs/output-document/%(Filename)%(Extension)" />
+    <EmbeddedResource Include="../../README.md;../../CONTRIBUTING.md;../../CHANGELOG.md;../../SECURITY.md" LogicalName="%(Filename)%(Extension)" />
+    <EmbeddedResource Include="../../examples/**/README.md" Exclude="../../examples/**/bin/**;../../examples/**/obj/**" LogicalName="examples/%(RecursiveDir)%(Filename)%(Extension)" />
+    <EmbeddedResource Include="../../examples/Quickstart/**/*.cs;../../examples/Quickstart/**/*.razor" Exclude="../../examples/Quickstart/bin/**;../../examples/Quickstart/obj/**" LogicalName="samples/%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
 </Project>

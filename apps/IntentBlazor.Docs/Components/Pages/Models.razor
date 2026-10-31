@@ -2,7 +2,10 @@
 @rendermode InteractiveServer
 @using IntentBlazor.Blazor
 @using IntentBlazor.Examples
+@using IntentBlazor.AI
+@using Microsoft.Extensions.Options
 @inject ExampleModelState Connection
+@inject IOptions<ModelOptions> Options
 
 <PageTitle>Model connections — IntentBlazor</PageTitle>
 <p class="eyebrow">PHASE 2 · OPT-IN MODEL CONNECTIONS</p>
@@ -24,6 +27,13 @@ else
         The <a href="/playground">fixture playground</a> works without a model or credentials.</p>
 }
 <section>
+    <h2>Request budgets and isolation</h2>
+    <p>Each interactive circuit has a separate scoped session. No model call runs on page load.
+        Per request: @Options.Value.Timeout.TotalSeconds seconds, @Options.Value.MaximumModelCalls model calls,
+        @Options.Value.MaximumToolCalls data-tool calls, @Options.Value.MaximumCorrections correction,
+        @Options.Value.MaximumOutputTokens output tokens, @Options.Value.MaximumContextCharacters context characters,
+        and @Options.Value.MaximumReportedTokens reported tokens. Cancel remains available during generation.</p>
+    <p>These bounds do not establish a shared cost quota. The anonymous live demonstration is restricted to a locally configured Development host.</p>
     <h2>Configure on the trusted application host</h2>
     <p>Select Ai:Provider and Ai:Model in server configuration. Local endpoints default to localhost:11434/v1/ for
         Ollama and localhost:1234/v1/ for LM Studio. An optional Ai:Endpoint overrides the local server address.
@@ -37,5 +47,5 @@ else
         Codex preloads parameterless data methods. Generated presentation JSON is bounded, parsed, and validated before
         the workspace changes. Invalid documents get a bounded correction attempt. Cancellation, timeout, stale responses,
         and failures retain the working output. Partial JSON is never rendered as an interactive view.</p>
-    <p><a href="https://github.com/Kita72/IntentBlazor/blob/phase-2-model-connections/docs/phase-2-model-connections.md">Read the provider setup and public API guide</a>.</p>
+    <p><a href="/docs/models">Read the provider setup and public API guide</a> · <a href="/docs/profiles">Provider evidence</a> · <a href="/docs/hosting">Hosting limits</a>.</p>
 </section>

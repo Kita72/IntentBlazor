@@ -1,0 +1,34 @@
+@page "/demos"
+
+<PageTitle>Demos — IntentBlazor</PageTitle>
+<p class="eyebrow">TRY THE FRAMEWORK</p>
+<h1>Working examples.<br />Clear boundaries.</h1>
+<p class="lead">Start without an account. Each demo tells you whether it uses authored documents, local storage, or an explicitly configured model.</p>
+<section class="card-grid" aria-label="Website demonstrations">
+    <article class="card"><p class="eyebrow">ANONYMOUS · NO CREDENTIALS</p><h2><a href="/explorer">Document explorer</a></h2>
+        <p>Three read-only synthetic datasets. Inspect and edit presentation JSON, select records, sort, and test draft/validation behavior. No model or application writes.</p></article>
+    <article class="card"><p class="eyebrow">DEVELOPMENT · SYNTHETIC IDENTITY</p><h2><a href="/workspaces">Draft recovery</a></h2>
+        <p>Real private SQLite checkpoints and synthetic shared records. Reconnect and provoke a conflicting save while retaining a draft. Requires a locally running Development host.</p></article>
+    <article class="card"><p class="eyebrow">DEVELOPMENT · SYNTHETIC IDENTITY</p><h2><a href="/content">Files and extensions</a></h2>
+        <p>Bounded imports, private artifacts, actual PNG resizing, original/preview comparison, exports, and optional AI setup. No model required.</p></article>
+</section>
+<section>
+    <h2>Run the three independent apps</h2>
+    <p>These applications run separately from this website. They use the default AiInput/AiOutput pair with app-owned services and Development-only synthetic accounts.</p>
+    <div class="card-grid">
+        <article class="card"><h3>Gaming News</h3><p>Source/date/version comparisons, preferences, bookmarks, and a private library. Bundled stories are synthetic; live HTTPS feed/model configuration is optional.</p>
+            <a href="/explorer?fixture=news">Inspect news fixture</a> · <a href="https://github.com/Kita72/IntentBlazor/tree/main/examples/GamingNews">Source and run guide</a></article>
+        <article class="card"><h3>Staff Business</h3><p>Multiple synthetic staff identities, EF Core assignments, authorization, record history, conflicting saves, and explicit review/rebase.</p>
+            <a href="/explorer?fixture=staff">Inspect staff fixture</a> · <a href="https://github.com/Kita72/IntentBlazor/tree/main/examples/StaffBusiness">Source and run guide</a></article>
+        <article class="card"><h3>Asset Workbench</h3><p>Original procedural PNGs, dimension groups, immutable resize versions, comparison, working-version selection, and export.</p>
+            <a href="/explorer?fixture=assets">Inspect asset fixture</a> · <a href="https://github.com/Kita72/IntentBlazor/tree/main/examples/AssetWorkbench">Source and run guide</a></article>
+    </div>
+    <p><a href="/docs/examples">Application workflows and run commands</a> · <a href="/docs/quickstart">Smaller standalone quickstart</a></p>
+</section>
+<section>
+    <h2>Optional model demonstration</h2>
+    <p>The <a href="/models">model page</a> remains disabled until a developer explicitly configures a server-side provider in Development.
+        Deployed documentation stays in fixture mode. The page shows resource limits and uses an isolated circuit; no request runs on page load.</p>
+    <p>Ollama/LM Studio localhost addresses refer to the Blazor server, not the visitor's computer.
+        Adapter tests and probes do not certify any specific live model. See <a href="/docs/profiles">provider evidence</a> and <a href="/docs/hosting">hosting requirements</a>.</p>
+</section>

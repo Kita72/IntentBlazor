@@ -10,7 +10,7 @@ The target is a developer preview demonstrating the same input, output-document,
 | 3 | Stateful updates, actions, persistence, and conflict recovery | Implemented; deterministic recovery demonstrated |
 | 4 | Content adapters, extensions, and embeddable AI setup | Implemented; experimental packages and deterministic demo |
 | 5 | Gaming News, Staff Business, and Asset Workbench apps | Implemented; standalone synthetic workflows |
-| 6 | Complete docs, document explorer, and demos | Planned |
+| 6 | Complete docs, document explorer, and demos | Implemented; compiled quickstart and deterministic explorer |
 | 7 | Package verification and public developer preview | Planned |
 
 See [the implementation plan](docs/implementation-plan.md) for phase deliverables and acceptance gates. No release dates are committed.
@@ -26,3 +26,5 @@ Phase 4 evidence: [completion record](docs/phase-4-completion.md), [content/setu
 Later directions include additional renderers, content formats, providers, storage adapters, and supported hosting models. Arbitrary generated scripts and real-time collaborative editing require separate designs.
 
 Phase 5 evidence: [completion record](docs/phase-5-completion.md), [standalone app guide](docs/phase-5-example-apps.md), [decision 0008](docs/architecture/0008-standalone-example-apps.md), and the [workflow test matrix](tests/README.md). Two phases remain: **6 complete docs/demos** and **7 developer preview**. The deferred live-model gate remains required before a public preview. The examples' synthetic authentication is Development-only.
+
+Phase 6 evidence: [completion record](docs/phase-6-completion.md), [learning guides](docs/site/start.md), [compiled quickstart](examples/Quickstart/README.md), [decision 0009](docs/architecture/0009-documentation-and-samples.md), and [test evidence](tests/README.md). One phase remains: **7 developer preview**, including the deferred live-model gate. No public packages or docs deployment have been released.

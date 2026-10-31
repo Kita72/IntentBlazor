@@ -1,9 +1,11 @@
 using IntentBlazor.Docs;
 using IntentBlazor.Docs.Components;
+using IntentBlazor.Docs.Documentation;
 using IntentBlazor.Examples;
 using IntentBlazor.Runtime;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddSingleton<DocumentationCatalog>();
 ExampleModelState model = builder.Services.AddExampleModel(builder.Configuration);
 if (model.Enabled && !builder.Environment.IsDevelopment())
     throw new InvalidOperationException("The anonymous docs model demo can only be enabled in Development. Keep deployed docs in fixture mode.");

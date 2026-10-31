@@ -1,21 +1,21 @@
 @inherits LayoutComponentBase
+@inject NavigationManager Navigation
 
 <div class="site-shell">
+    <a class="skip-link" href="@(Navigation.Uri.Split('#')[0] + "#main-content")" data-enhance-nav="false">Skip to content</a>
     <header class="site-header">
         <a class="brand" href="/">IntentBlazor<span>AI application framework</span></a>
         <nav aria-label="Main navigation">
             <NavLink href="/" Match="NavLinkMatch.All">Overview</NavLink>
-            <NavLink href="/architecture">Architecture</NavLink>
-            <NavLink href="/playground">Playground</NavLink>
-            <NavLink href="/models">Models</NavLink>
-            <NavLink href="/workspaces">Recovery</NavLink>
-            <NavLink href="/content">Content</NavLink>
+            <NavLink href="/docs">Docs</NavLink>
+            <NavLink href="/explorer">Explorer</NavLink>
+            <NavLink href="/demos">Demos</NavLink>
             <NavLink href="/roadmap">Roadmap</NavLink>
             <NavLink href="/contribute">Contribute</NavLink>
             <a href="https://github.com/Kita72/IntentBlazor">GitHub</a>
         </nav>
     </header>
-    <main id="main-content">
+    <main id="main-content" tabindex="-1">
         @Body
     </main>
     <footer>MIT licensed · Built with .NET and Blazor · Experimental adapters; live verification deferred</footer>
