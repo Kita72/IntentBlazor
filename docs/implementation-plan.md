@@ -2,7 +2,7 @@
 
 Prepared for Tory on October 29, 2026.
 
-Progress: Phases 0–6 are implemented, with experimental contracts and the Phase 2 live-model gate still deferred. [Phase 6 evidence](phase-6-completion.md) records the learning site, compiled quickstart, and browser checks. Phase 7 release validation remains; no public package or docs deployment has been released.
+Progress: Phases 0–6 are implemented, with experimental contracts. Phase 7 has prepared the `0.1.0-preview.1` candidate, independent package consumers, package/symbol audits, repeatable renderer budgets, production hosting checks and gated release tooling. The [readiness record](phase-7-readiness.md) separates these implemented checks from outstanding local/frontier model and NuGet account/publication gates. OpenAI verification remains deferred by the maintainer; no public package release has occurred.
 
 Build an open-source Blazor framework whose two core interaction components accept user intent and produce a dynamic, interactive workspace. Deliver it as reusable NuGet packages, accompanied by a Blazor documentation and demonstration website and three independently runnable example applications.
 

@@ -16,5 +16,7 @@ TestResults/
 *.db-shm
 *.db-wal
 *.pfx
+*.[Pp]ublish[Ss]ettings
+*.pubxml.user
 *.snupkg
 *.nupkg

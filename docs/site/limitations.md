@@ -1,6 +1,6 @@
 # Preview boundaries and remaining gates
 
-**Phase 6 is implemented; no public developer preview has been released.** Package/API version is `0.1.0-alpha.0`; output schemas are experimental. Phase 7 is the remaining implementation phase. The live-model acceptance gate deferred from Phase 2 also remains open.
+**The `0.1.0-preview.1` candidate is prepared; no public package preview has been released.** Output schemas remain experimental. Phase 7 adds verification and release tooling; live-model acceptance and NuGet owner/policy/publication gates remain open. See the [readiness record](../phase-7-readiness.md).
 
 ## Implemented with deterministic evidence
 
@@ -16,7 +16,7 @@ See [release notes](../../CHANGELOG.md), [test evidence](../../tests/README.md),
 
 No local or frontier model/version has passed the live provider matrix yet. Connectivity and presentation probes are not tool-use or workflow certification. Live feed refresh is optional and separately configured; the bundled Gaming News data is synthetic. The Codex adapter does not call or share memory with this desktop chat.
 
-Public NuGet publication, protected release automation, docs deployment, package upgrade policy, measured model latency/cost budgets, and the final compatibility/accessibility pass belong to Phase 7. Ordinary contributor builds remain free of model accounts and credentials.
+Public NuGet publication still requires a confirmed owner/policy and current successful local/frontier evidence. A separate OIDC release workflow, IIS deployment helper and server renderer regression budgets are implemented. Observed failed model runs are not latency/cost guarantees. Ordinary contributor builds remain free of model accounts and credentials. Preview upgrades may break APIs or schemas; review release notes and keep durable data backups before upgrading.
 
 The initial verified hosting shape is Interactive Server. WebAssembly, MAUI/Hybrid, distributed persistence, real-time collaborative document editing, and multi-node recovery are not certified. The framework does not compile generated code or give a model unrestricted access to tools, URLs, files, business services, or renderer types.
 
@@ -26,6 +26,6 @@ Supported imports are UTF-8 text/Markdown, bounded JSON/CSV, PNG/JPEG, and text-
 
 ## Use the evidence at its actual scope
 
-Fixture browser checks prove deterministic UI behavior. Scripted tests prove adapter contracts and failure handling. Package-only quickstart builds prove current compiled API consumption. None alone proves a production model, deployment, authentication integration, security audit, complete assistive-technology compatibility, or a performance guarantee.
+Fixture browser checks prove deterministic UI behavior. Scripted tests prove adapter contracts and failure handling. Package-only consumers prove current compiled API consumption and deterministic fixture execution. None alone proves a production model, deployment, authentication integration, security audit, complete assistive-technology compatibility, or a performance guarantee.
 
 The [provider matrix](../provider-evaluation.md) remains the record for live results. The [roadmap](../../ROADMAP.md) and [implementation plan](../implementation-plan.md) describe the remaining acceptance work without committing release dates.

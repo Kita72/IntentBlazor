@@ -1,0 +1,122 @@
+{
+  "sourceFingerprint": "CB820E6A603EACFA9CA3F38218C3D60179877DB9D3B7EBC377F15EDC96123E8B",
+  "provider": "LM Studio",
+  "model": "intentblazor-evaluation",
+  "modelRevision": "GGUF-SHA256:3F72A20A06F626C78E6C475AE07A64C88B2663149C0F6197B56BF7CF1F37585C",
+  "serverVersion": "lms-cli-07b7252",
+  "checkedAt": "2026-10-30T22:42:27.7643763-06:00",
+  "options": {
+    "timeout": "00:02:00",
+    "maximumModelCalls": 6,
+    "maximumToolCalls": 8,
+    "maximumCorrections": 1,
+    "maximumContextCharacters": 60000,
+    "maximumOutputTokens": 6000,
+    "maximumReportedTokens": 48000,
+    "temperature": 0.1,
+    "useJsonSchema": true,
+    "topP": null,
+    "frequencyPenalty": null,
+    "presencePenalty": null,
+    "seed": null,
+    "reasoningEffort": null
+  },
+  "scenarios": [
+    {
+      "fixture": "news",
+      "initialAccepted": false,
+      "followupAccepted": false,
+      "observedDataCalls": 0,
+      "localInteraction": false,
+      "draftPreserved": false,
+      "renderedCharacters": 0,
+      "firstUsefulOutputMilliseconds": 97368.4259,
+      "followupMilliseconds": 0,
+      "localInteractionMilliseconds": 0,
+      "initialRun": {
+        "status": "invalid-output",
+        "provider": "LM Studio",
+        "model": "intentblazor-evaluation",
+        "modelCalls": 2,
+        "toolCalls": 0,
+        "corrections": 1,
+        "characters": 8112,
+        "inputTokens": 4937,
+        "outputTokens": 3617,
+        "elapsed": "00:01:37.3451641",
+        "totalTokens": 8554,
+        "tools": []
+      },
+      "followupRun": null,
+      "errors": [
+        "input-rejected",
+        "insufficient-observed-data-service-calls"
+      ],
+      "passed": false
+    },
+    {
+      "fixture": "staff",
+      "initialAccepted": false,
+      "followupAccepted": false,
+      "observedDataCalls": 0,
+      "localInteraction": false,
+      "draftPreserved": false,
+      "renderedCharacters": 0,
+      "firstUsefulOutputMilliseconds": 76373.1288,
+      "followupMilliseconds": 0,
+      "localInteractionMilliseconds": 0,
+      "initialRun": {
+        "status": "invalid-output",
+        "provider": "LM Studio",
+        "model": "intentblazor-evaluation",
+        "modelCalls": 2,
+        "toolCalls": 0,
+        "corrections": 1,
+        "characters": 5733,
+        "inputTokens": 4755,
+        "outputTokens": 2130,
+        "elapsed": "00:01:16.3726586",
+        "totalTokens": 6885,
+        "tools": []
+      },
+      "followupRun": null,
+      "errors": [
+        "input-rejected",
+        "insufficient-observed-data-service-calls"
+      ],
+      "passed": false
+    },
+    {
+      "fixture": "assets",
+      "initialAccepted": false,
+      "followupAccepted": false,
+      "observedDataCalls": 0,
+      "localInteraction": false,
+      "draftPreserved": false,
+      "renderedCharacters": 0,
+      "firstUsefulOutputMilliseconds": 120015.7608,
+      "followupMilliseconds": 0,
+      "localInteractionMilliseconds": 0,
+      "initialRun": {
+        "status": "timeout",
+        "provider": "LM Studio",
+        "model": "intentblazor-evaluation",
+        "modelCalls": 2,
+        "toolCalls": 0,
+        "corrections": 1,
+        "characters": 5063,
+        "inputTokens": 2145,
+        "outputTokens": 1395,
+        "elapsed": "00:02:00.0156637",
+        "totalTokens": 3540,
+        "tools": []
+      },
+      "followupRun": null,
+      "errors": [
+        "input-rejected",
+        "insufficient-observed-data-service-calls"
+      ],
+      "passed": false
+    }
+  ]
+}

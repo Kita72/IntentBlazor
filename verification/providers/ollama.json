@@ -1,0 +1,126 @@
+{
+  "sourceFingerprint": "6641CDC6BC1D9CE67ADADC42C13DC02E3A868DCCDDE1C85D2DBED06107E1C44F",
+  "provider": "Ollama",
+  "model": "llama3.2:latest",
+  "modelRevision": "SHA256:a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+  "serverVersion": "0.30.10",
+  "checkedAt": "2026-10-30T22:45:43.2994239-06:00",
+  "options": {
+    "timeout": "00:02:00",
+    "maximumModelCalls": 6,
+    "maximumToolCalls": 8,
+    "maximumCorrections": 1,
+    "maximumContextCharacters": 60000,
+    "maximumOutputTokens": 6000,
+    "maximumReportedTokens": 48000,
+    "temperature": 0.1,
+    "useJsonSchema": true,
+    "topP": null,
+    "frequencyPenalty": null,
+    "presencePenalty": null,
+    "seed": null,
+    "reasoningEffort": null
+  },
+  "scenarios": [
+    {
+      "fixture": "news",
+      "initialAccepted": false,
+      "followupAccepted": false,
+      "observedDataCalls": 0,
+      "localInteraction": false,
+      "draftPreserved": false,
+      "selectionPreserved": false,
+      "renderedCharacters": 0,
+      "firstUsefulOutputMilliseconds": 39511.6083,
+      "followupMilliseconds": 0,
+      "localInteractionMilliseconds": 0,
+      "initialRun": {
+        "status": "invalid-output",
+        "provider": "Ollama",
+        "model": "llama3.2:latest",
+        "modelCalls": 2,
+        "toolCalls": 0,
+        "corrections": 1,
+        "characters": 7481,
+        "inputTokens": 5009,
+        "outputTokens": 1846,
+        "elapsed": "00:00:39.4969022",
+        "totalTokens": 6855,
+        "tools": []
+      },
+      "followupRun": null,
+      "errors": [
+        "input-rejected",
+        "insufficient-observed-data-service-calls"
+      ],
+      "passed": false
+    },
+    {
+      "fixture": "staff",
+      "initialAccepted": true,
+      "followupAccepted": false,
+      "observedDataCalls": 0,
+      "localInteraction": false,
+      "draftPreserved": false,
+      "selectionPreserved": false,
+      "renderedCharacters": 139,
+      "firstUsefulOutputMilliseconds": 3187.6482,
+      "followupMilliseconds": 0,
+      "localInteractionMilliseconds": 0,
+      "initialRun": {
+        "status": "completed",
+        "provider": "Ollama",
+        "model": "llama3.2:latest",
+        "modelCalls": 1,
+        "toolCalls": 0,
+        "corrections": 0,
+        "characters": 195,
+        "inputTokens": 2380,
+        "outputTokens": 47,
+        "elapsed": "00:00:03.1846425",
+        "totalTokens": 2427,
+        "tools": []
+      },
+      "followupRun": null,
+      "errors": [
+        "missing-or-invalid-interaction",
+        "insufficient-observed-data-service-calls",
+        "draft-not-preserved"
+      ],
+      "passed": false
+    },
+    {
+      "fixture": "assets",
+      "initialAccepted": false,
+      "followupAccepted": false,
+      "observedDataCalls": 0,
+      "localInteraction": false,
+      "draftPreserved": false,
+      "selectionPreserved": false,
+      "renderedCharacters": 0,
+      "firstUsefulOutputMilliseconds": 92331.251,
+      "followupMilliseconds": 0,
+      "localInteractionMilliseconds": 0,
+      "initialRun": {
+        "status": "invalid-output",
+        "provider": "Ollama",
+        "model": "llama3.2:latest",
+        "modelCalls": 2,
+        "toolCalls": 0,
+        "corrections": 1,
+        "characters": 7669,
+        "inputTokens": 5344,
+        "outputTokens": 1840,
+        "elapsed": "00:01:32.3311614",
+        "totalTokens": 7184,
+        "tools": []
+      },
+      "followupRun": null,
+      "errors": [
+        "input-rejected",
+        "insufficient-observed-data-service-calls"
+      ],
+      "passed": false
+    }
+  ]
+}

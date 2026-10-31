@@ -1,0 +1,59 @@
+using System.Collections.Immutable;
+using IntentBlazor.Blazor;
+using IntentBlazor.ExampleHost;
+using IntentBlazor.Runtime;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components;
+using System.Security.Claims;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
+namespace IntentBlazor.PackageChecks;
+
+public sealed class PackageActor : IExampleActor, IWorkspaceIdentity
+{
+    public ValueTask<ExampleActor?> ReadAsync(CancellationToken token = default) =>
+        ValueTask.FromResult<ExampleActor?>(new("alex", "Alex", ImmutableHashSet.Create("Dispatcher")));
+    public ValueTask<string?> GetOwnerIdAsync(CancellationToken token) => ValueTask.FromResult<string?>("alex");
+}
+public static class ExampleCheck
+{
+    public static void Configure(IServiceCollection services)
+    {
+        services.AddScoped<PackageActor>();
+        services.AddScoped<IExampleActor>(sp => sp.GetRequiredService<PackageActor>());
+        services.AddScoped<IWorkspaceIdentity>(sp => sp.GetRequiredService<PackageActor>());
+        services.AddScoped<AuthenticationStateProvider, PackageAuthentication>();
+        services.AddScoped<NavigationManager, PackageNavigation>();
+    }
+    public static async Task RunAsync(WebApplication app, string expected)
+    {
+        /* INITIALIZE_STAFF */
+        await using AsyncServiceScope scope = app.Services.CreateAsyncScope();
+        scope.ServiceProvider.GetRequiredService<WorkspaceServices>().AutoSave = false;
+        await scope.ServiceProvider.GetRequiredService<ExampleWorkspaceController>().StartAsync();
+        AiSession session = scope.ServiceProvider.GetRequiredService<AiSession>();
+        if (session.Document is null || session.Data.IsEmpty) throw new InvalidOperationException("The application did not initialize its authorized fixture.");
+        await using HtmlRenderer renderer = new(scope.ServiceProvider, app.Services.GetRequiredService<ILoggerFactory>());
+        await renderer.Dispatcher.InvokeAsync(async () =>
+        {
+            string input = (await renderer.RenderComponentAsync<AiInput>()).ToHtmlString();
+            string output = (await renderer.RenderComponentAsync<AiOutput>()).ToHtmlString();
+            if (!input.Contains(">Request</label>") || !output.Contains(expected) || output.Contains("@onclick"))
+                throw new InvalidOperationException("The default pair did not render the real application fixture.");
+        });
+        Console.WriteLine("Package-only application: " + expected + " initialized and rendered the default pair with authorized data.");
+    }
+}
+public sealed class PackageAuthentication : AuthenticationStateProvider
+{
+    public override Task<AuthenticationState> GetAuthenticationStateAsync() => Task.FromResult(new AuthenticationState(new ClaimsPrincipal(
+        new ClaimsIdentity([new(ClaimTypes.NameIdentifier, "alex"), new(ClaimTypes.Name, "Alex"), new(ClaimTypes.Role, "Dispatcher")], "PackageFixture"))));
+}
+public sealed class PackageNavigation : NavigationManager
+{
+    public PackageNavigation() => Initialize("http://localhost/", "http://localhost/");
+    protected override void NavigateToCore(string uri, bool forceLoad) => throw new InvalidOperationException("This fixture check does not navigate a browser.");
+}

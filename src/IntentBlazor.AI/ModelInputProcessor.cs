@@ -41,7 +41,7 @@ public sealed class ModelInputProcessor(IChatClient client, ModelProfile profile
         {
             if (ModelSetupState.Unsupported(activeProfile, options) is { } unsupported) throw new InputRejectedException(unsupported);
             foreach (IOutputDataSource source in sources)
-                foreach (OutputDataSet set in await source.LoadAsync(workspace, token)) Accept(set);
+                foreach (OutputDataSet set in await source.LoadAsync(workspace, token)) Accept(set, replace: false);
 
             List<AITool> tools = [];
             foreach (DataToolRegistration registration in registrations)
@@ -54,7 +54,7 @@ public sealed class ModelInputProcessor(IChatClient client, ModelProfile profile
                         SerializerOptions = ModelJson.Options,
                         MarshalResult = (value, _, _) => new(value)
                     });
-                DataFunction function = new(inner, Accept, () =>
+                DataFunction function = new(inner, set => Accept(set, replace: true), () =>
                 {
                     token.ThrowIfCancellationRequested();
                     if (state.ToolCalls >= options.MaximumToolCalls)
@@ -92,7 +92,7 @@ public sealed class ModelInputProcessor(IChatClient client, ModelProfile profile
                         text = excerpt,
                         truncated = artifact.TextTruncated || excerpt.Length < text.Length
                     });
-                    if (artifact.StructuredData is { } structured) Accept(structured);
+                    if (artifact.StructuredData is { } structured) Accept(structured, replace: false);
                 }
             List<ChatMessage> messages = [new(ChatRole.System, ToolkitInstructions.Create(validator.Actions.Values, validator.Extensions.Values)),
                 new(ChatRole.User, JsonSerializer.Serialize(new
@@ -180,23 +180,24 @@ public sealed class ModelInputProcessor(IChatClient client, ModelProfile profile
             { Tools = [.. state.Observations] };
         }
 
-        void Accept(OutputDataSet set)
+        void Accept(OutputDataSet set, bool replace)
         {
             token.ThrowIfCancellationRequested();
-            if (state.Data.ContainsKey(set.Id)) throw new InputRejectedException("Data sources must return unique dataset IDs within a request.");
+            if (!replace && state.Data.ContainsKey(set.Id)) throw new InputRejectedException("Data sources must return unique dataset IDs within a request.");
+            OutputDataSet[] retained = state.Data.Values.Where(existing => existing.Id != set.Id).ToArray();
             OutputContent probe = new()
             {
                 Document = new()
                 {
                     Id = "host-data",
                     RootId = "root",
-                    DataSets = [.. state.Data.Keys, set.Id],
+                    DataSets = [.. retained.Select(existing => existing.Id), set.Id],
                     Nodes = [new() { Id = "root", Kind = NodeKind.Text, Value = ValueBinding.Constant("Data validation") }]
                 },
-                Data = [.. state.Data.Values, set]
+                Data = [.. retained, set]
             };
             if (!validator.Validate(probe).Success) throw new InputRejectedException("An application data source returned an invalid or oversized dataset.");
-            state.Data.Add(set.Id, set);
+            state.Data[set.Id] = set;
         }
     }
 

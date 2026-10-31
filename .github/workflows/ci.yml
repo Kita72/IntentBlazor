@@ -31,3 +31,13 @@ jobs:
       - name: Verify repository
         shell: pwsh
         run: ./scripts/Verify.ps1
+      - name: Retain deterministic candidate evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: candidate-evidence-${{ matrix.os }}
+          path: |
+            artifacts/phase7/evidence/packages.json
+            artifacts/phase7/evidence/runtime.json
+            artifacts/phase7/evidence/readiness.json
+          if-no-files-found: warn

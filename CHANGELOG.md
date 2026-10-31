@@ -4,6 +4,17 @@
 
 ### Added
 
+- `0.1.0-preview.1` candidate packaging with eight package-specific readmes, MIT/repository metadata, portable symbols and exact-commit Source Link audits. This candidate is unreleased.
+- Independent package-only quickstart and three-example runtime checks, repeatable renderer budgets, source-bound live evaluation reports and explicit release-readiness gates.
+- Production docs health/version reporting, Development-only model/identity checks, an IIS bundle/deployment helper and a separate tag-triggered NuGet OIDC workflow. Live OpenAI and public NuGet publication remain pending.
+- Keyboard-focusable chart data tables with captions and scoped column headers.
+
+### Fixed
+
+- Registered C# read tools can atomically refresh a dataset already preloaded or returned in the same request. Invalid replacements retain the prior authorized data; independent preload sources still reject duplicate IDs.
+
+### Earlier implementation
+
 - Phase 6 static SSR documentation library, searchable guides, complete node/binding/event and generated error references, provider/hosting/migration limits, and labelled demo hub.
 - Interactive fixture document explorer with node/data/state inspection, structured validation, protected JSON drafts, and isolated sessions.
 - Standalone two-component quickstart with compiled C# service/registration/renderer snippets embedded in the site; fresh package-only consumer verification.

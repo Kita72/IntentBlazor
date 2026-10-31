@@ -39,6 +39,8 @@ public sealed partial class DocumentationCatalog
         new("schema-03", "Schema 0.3 extensions", "Reference", "Content nodes, typed extension configurations, and local effects.", "specs/output-document/v0.3-content-and-extensions.md"),
         new("examples", "Three example workflows", "Operate", "Run news, staff, and asset apps independently.", "docs/phase-5-example-apps.md"),
         new("hosting", "Hosting and migration", "Operate", "Session isolation, deployment boundaries, schema versions, and preview limitations.", "docs/site/hosting.md"),
+        new("readiness", "Preview readiness", "Operate", "Candidate verification, package consumers, performance budgets and release gates.", "docs/phase-7-readiness.md"),
+        new("publishing", "Release and deployment", "Operate", "NuGet trusted publishing and the MonsterASP IIS deployment journey.", "docs/site/releasing.md"),
         new("limitations", "Preview boundaries", "Operate", "Current support, open release gates, and deferred capabilities.", "docs/site/limitations.md"),
         new("architecture", "Architecture decisions", "Project", "Accepted design and extension boundaries.", "docs/architecture/README.md"),
         new("contributing", "Contribute", "Project", "Local checks, contract proposals, MIT terms, and maintainer workflow.", "CONTRIBUTING.md"),

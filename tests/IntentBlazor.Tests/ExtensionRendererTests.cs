@@ -109,6 +109,8 @@ public sealed class ExtensionRendererTests
         {
             string html = (await renderer.RenderComponentAsync<AiOutput>()).ToHtmlString();
             Assert.Contains("<svg", html); Assert.Contains("Chart data", html); Assert.Contains("Select notes.md", html);
+            Assert.Contains("tabindex=\"0\" role=\"region\"", html); Assert.Contains("data table\"", html);
+            Assert.Contains("<caption>", html); Assert.Contains("<th scope=\"col\">", html);
             Assert.Contains("<h2>Heading</h2>", html); Assert.Contains("&lt;script&gt;unsafe&lt;/script&gt;", html); Assert.DoesNotContain("<script>", html);
             Assert.Contains("Download notes.md", html); Assert.Contains("/intent-artifacts/", html);
         });

@@ -5,6 +5,7 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="../../tools/IntentBlazor.Verification/IntentBlazor.Verification.csproj" />
     <ProjectReference Include="../../apps/IntentBlazor.Docs/IntentBlazor.Docs.csproj" />
     <ProjectReference Include="../../examples/Quickstart/IntentBlazor.Quickstart.csproj" />
     <ProjectReference Include="../../examples/GamingNews/IntentBlazor.GamingNews.csproj" />

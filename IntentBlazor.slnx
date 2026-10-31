@@ -29,4 +29,7 @@
   <Folder Name="/tests/">
     <Project Path="tests/IntentBlazor.Tests/IntentBlazor.Tests.csproj" />
   </Folder>
+  <Folder Name="/tools/">
+    <Project Path="tools/IntentBlazor.Verification/IntentBlazor.Verification.csproj" />
+  </Folder>
 </Solution>

@@ -6,7 +6,7 @@
     <AnalysisLevel>latest</AnalysisLevel>
     <Deterministic>true</Deterministic>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-    <Version>0.1.0-alpha.0</Version>
+    <Version>0.1.0-preview.1</Version>
     <Authors>Tory Bertram and contributors</Authors>
     <Copyright>Copyright (c) 2026 Tory Bertram and contributors</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -14,9 +14,15 @@
     <RepositoryUrl>https://github.com/Kita72/IntentBlazor</RepositoryUrl>
     <PackageProjectUrl>https://github.com/Kita72/IntentBlazor</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <DebugType>portable</DebugType>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
   </PropertyGroup>
   <ItemGroup Condition="'$(IsPackable)' == 'true'">
-    <None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="/" />
+    <None Include="$(MSBuildProjectDirectory)/README.md" Pack="true" PackagePath="/" />
+    <None Include="$(MSBuildThisFileDirectory)LICENSE" Pack="true" PackagePath="/" />
   </ItemGroup>
 </Project>

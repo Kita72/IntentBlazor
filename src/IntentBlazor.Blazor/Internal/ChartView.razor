@@ -29,9 +29,11 @@
             }
         }
     </svg>
-    <details><summary>Chart data</summary><table><thead><tr><th>@chart.LabelField</th><th>@chart.ValueField</th></tr></thead><tbody>
+    <details><summary>Chart data</summary>
+    <div class="ib-table-scroll" tabindex="0" role="region" aria-label="@(Node.Title + " data table")">
+    <table><caption>@Node.Title data</caption><thead><tr><th scope="col">@chart.LabelField</th><th scope="col">@chart.ValueField</th></tr></thead><tbody>
         @foreach (var row in rows) { <tr><td>@JsonValues.Display(row[chart.LabelField])</td><td>@JsonValues.Display(row[chart.ValueField])</td></tr> }
-    </tbody></table></details>
+    </tbody></table></div></details>
 </figure>
 @code {
     [Parameter, EditorRequired] public AiSession Session { get; set; } = default!;

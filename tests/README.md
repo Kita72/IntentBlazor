@@ -2,6 +2,18 @@
 
 Run `pwsh -File scripts/Verify.ps1` from the repository root. It restores locked dependencies, builds the solution in Release, verifies formatting, runs the test project without rebuilding, checks documentation links, and packs the eight source libraries locally.
 
+Phase 7 also audits all eight packages and Source Link symbols, restores/builds/runs a package-only quickstart and all three examples outside the repository, and records nine warmed renderer workloads plus a release-readiness report. Candidate checks do not call models or publish packages.
+
+| Requirement | Evidence |
+| --- | --- |
+| Atomic authorized dataset refresh and rejected replacement isolation | `RegisteredReads_RefreshPreloadedAndEarlierResultsWithoutDuplicateDatasets`, `InvalidRefresh_DoesNotPoisonPreviouslyAuthorizedData`, `IndependentPreloadSources_StillRejectDuplicateDatasetIdsBeforeCallingAModel` |
+| Production docs, fixture mode, no synthetic sign-in or anonymous inference | `ProductionHost_ServesFixtureDocsWithoutModelCredentialsOrSyntheticSignIn`, `ProductionHost_RejectsConfiguredAnonymousModelModeBeforeAnyInference` |
+| Reject incomplete, stale or failed release evidence | `Readiness_RequiresEveryProviderAndAccountAndHostGate`, `Readiness_RejectsIncompleteOrStaleLiveEvidence` |
+| Fixed renderer budgets and complete package reports | `RuntimeBudgets_RejectMissingDuplicateForgedAndNonFiniteSamples`, `PackageReports_RequireEightDistinctCleanPackagesAndMatchingVersion`, `PackageAudit_ReportsAbsentMalformedAndIncompleteArtifacts` |
+| Source fingerprints, privacy and local-only evaluation | `Fingerprint_NormalizesLineEndingsAndIgnoresBuildOutputsButDetectsSourceAndFixtureChanges`, `Diagnostics_EmitOnlyRequestShapeEvenWhenMessagesContainSecretsOrValidatorPrefixes`, `LocalEvaluation_RejectsCloudCredentialAndAmbiguousEndpoints` |
+| C# data authorization and protected evaluator edits | `EvaluationFixture_UsesAuthorizedCSharpDataAndProtectsEditsAcrossFollowup` |
+| Chart alternative caption, keyboard region and column headers | `NewNodes_RenderGalleryChartMarkdownAndAuthorizedArtifactThroughAiOutput` |
+
 `IntentBlazor.Tests` uses xUnit with conventional VSTest. No live model, credentials, external database server, or browser installation is required by the automated suite. Phase 3 tests create temporary SQLite files and remove their own test directories.
 
 | Area | Evidence |

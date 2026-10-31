@@ -1,0 +1,39 @@
+using IntentBlazor.Blazor;
+using IntentBlazor.Core;
+using IntentBlazor.Runtime;
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.Extensions.Logging;
+
+namespace IntentBlazor.Quickstart;
+
+public static class QuickstartCheck
+{
+    public static async Task RunAsync()
+    {
+        ServiceCollection services = new();
+        IConfiguration configuration = new ConfigurationBuilder().Build();
+        services.AddSingleton(configuration); services.AddLogging(); services.AddQuickstart(configuration);
+        await using ServiceProvider provider = services.BuildServiceProvider();
+        await using AsyncServiceScope scope = provider.CreateAsyncScope();
+        AiSession session = scope.ServiceProvider.GetRequiredService<AiSession>();
+        await using HtmlRenderer renderer = new(scope.ServiceProvider, provider.GetRequiredService<ILoggerFactory>());
+        await renderer.Dispatcher.InvokeAsync(async () =>
+        {
+            var input = await renderer.RenderComponentAsync<AiInput>();
+            var output = await renderer.RenderComponentAsync<AiOutput>();
+            Require((await session.SubmitAsync("show catalog")).Success, "The app service did not open the catalog.");
+            Require(input.ToHtmlString().Contains(">Request</label>"), "The default input did not render.");
+            Require(output.ToHtmlString().Contains("Brass lantern") && output.ToHtmlString().Contains("Increase score"), "Data/registered renderer missing.");
+            Require(session.Dispatch(new("itemsList", UiEventKind.Select, session.Revision) { Value = JsonValues.From("lantern") }).Success, "Selection failed.");
+            Require(session.DispatchExtension("scoreEditor", session.Revision, new ScoreEvent(1)).Success, "Typed renderer event failed.");
+            Require(session.Snapshot.Values["score"].GetDecimal() == 4 && session.HasDraft, "The renderer did not update a protected draft.");
+            long revision = session.Revision;
+            Require(!session.OpenJson("{\"unknown\":true}", session.Data).Success && session.Revision == revision &&
+                session.Snapshot.Values["score"].GetDecimal() == 4, "An invalid proposal replaced the draft.");
+            Require(session.Dispatch(new("clear", UiEventKind.Activate, session.Revision)).Success && !session.HasDraft &&
+                session.Snapshot.Values["score"].GetDecimal() == 3, "Explicit draft reset failed.");
+        });
+        Console.WriteLine("Package-only quickstart: default AiInput/AiOutput, C# data, selection, extension, draft protection, invalid output, and reset passed.");
+    }
+    private static void Require(bool condition, string message) { if (!condition) throw new InvalidOperationException(message); }
+}

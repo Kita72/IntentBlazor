@@ -249,7 +249,7 @@
       "intentblazor.ai": {
         "type": "Project",
         "dependencies": {
-          "IntentBlazor.Runtime": "[0.1.0-alpha.0, )",
+          "IntentBlazor.Runtime": "[0.1.0-preview.1, )",
           "Microsoft.Agents.AI": "[1.26.0, )",
           "Microsoft.Extensions.AI": "[10.11.0, )",
           "Microsoft.Extensions.AI.OpenAI": "[10.11.0, )",
@@ -259,28 +259,28 @@
       "intentblazor.assetworkbench": {
         "type": "Project",
         "dependencies": {
-          "IntentBlazor.ExampleHost": "[0.1.0-alpha.0, )",
-          "IntentBlazor.Packs.ImageEditor": "[0.1.0-alpha.0, )"
+          "IntentBlazor.ExampleHost": "[0.1.0-preview.1, )",
+          "IntentBlazor.Packs.ImageEditor": "[0.1.0-preview.1, )"
         }
       },
       "intentblazor.blazor": {
         "type": "Project",
         "dependencies": {
-          "IntentBlazor.Core": "[0.1.0-alpha.0, )",
-          "IntentBlazor.Runtime": "[0.1.0-alpha.0, )"
+          "IntentBlazor.Core": "[0.1.0-preview.1, )",
+          "IntentBlazor.Runtime": "[0.1.0-preview.1, )"
         }
       },
       "intentblazor.blazor.ai": {
         "type": "Project",
         "dependencies": {
-          "IntentBlazor.AI": "[0.1.0-alpha.0, )",
-          "IntentBlazor.Blazor": "[0.1.0-alpha.0, )"
+          "IntentBlazor.AI": "[0.1.0-preview.1, )",
+          "IntentBlazor.Blazor": "[0.1.0-preview.1, )"
         }
       },
       "intentblazor.content": {
         "type": "Project",
         "dependencies": {
-          "IntentBlazor.Runtime": "[0.1.0-alpha.0, )",
+          "IntentBlazor.Runtime": "[0.1.0-preview.1, )",
           "PdfPig": "[0.1.16, )",
           "SkiaSharp": "[4.154.0, )",
           "SkiaSharp.NativeAssets.Linux.NoDependencies": "[4.154.0, )"
@@ -292,68 +292,76 @@
       "intentblazor.docs": {
         "type": "Project",
         "dependencies": {
-          "IntentBlazor.Blazor": "[0.1.0-alpha.0, )",
-          "IntentBlazor.Blazor.AI": "[0.1.0-alpha.0, )",
-          "IntentBlazor.Examples": "[0.1.0-alpha.0, )",
-          "IntentBlazor.Packs.ImageEditor": "[0.1.0-alpha.0, )",
+          "IntentBlazor.Blazor": "[0.1.0-preview.1, )",
+          "IntentBlazor.Blazor.AI": "[0.1.0-preview.1, )",
+          "IntentBlazor.Examples": "[0.1.0-preview.1, )",
+          "IntentBlazor.Packs.ImageEditor": "[0.1.0-preview.1, )",
           "Markdig": "[1.5.1, )"
         }
       },
       "intentblazor.examplehost": {
         "type": "Project",
         "dependencies": {
-          "IntentBlazor.Blazor.AI": "[0.1.0-alpha.0, )",
-          "IntentBlazor.Storage.Sqlite": "[0.1.0-alpha.0, )"
+          "IntentBlazor.Blazor.AI": "[0.1.0-preview.1, )",
+          "IntentBlazor.Storage.Sqlite": "[0.1.0-preview.1, )"
         }
       },
       "intentblazor.examples": {
         "type": "Project",
         "dependencies": {
-          "IntentBlazor.AI": "[0.1.0-alpha.0, )",
-          "IntentBlazor.Runtime": "[0.1.0-alpha.0, )",
-          "IntentBlazor.Storage.Sqlite": "[0.1.0-alpha.0, )"
+          "IntentBlazor.AI": "[0.1.0-preview.1, )",
+          "IntentBlazor.Runtime": "[0.1.0-preview.1, )",
+          "IntentBlazor.Storage.Sqlite": "[0.1.0-preview.1, )"
         }
       },
       "intentblazor.gamingnews": {
         "type": "Project",
         "dependencies": {
-          "IntentBlazor.Blazor": "[0.1.0-alpha.0, )",
-          "IntentBlazor.ExampleHost": "[0.1.0-alpha.0, )"
+          "IntentBlazor.Blazor": "[0.1.0-preview.1, )",
+          "IntentBlazor.ExampleHost": "[0.1.0-preview.1, )"
         }
       },
       "intentblazor.packs.imageeditor": {
         "type": "Project",
         "dependencies": {
-          "IntentBlazor.Blazor": "[0.1.0-alpha.0, )",
-          "IntentBlazor.Content": "[0.1.0-alpha.0, )"
+          "IntentBlazor.Blazor": "[0.1.0-preview.1, )",
+          "IntentBlazor.Content": "[0.1.0-preview.1, )"
         }
       },
       "intentblazor.quickstart": {
         "type": "Project",
         "dependencies": {
-          "IntentBlazor.AI": "[0.1.0-alpha.0, )",
-          "IntentBlazor.Blazor": "[0.1.0-alpha.0, )"
+          "IntentBlazor.AI": "[0.1.0-preview.1, )",
+          "IntentBlazor.Blazor": "[0.1.0-preview.1, )"
         }
       },
       "intentblazor.runtime": {
         "type": "Project",
         "dependencies": {
-          "IntentBlazor.Core": "[0.1.0-alpha.0, )"
+          "IntentBlazor.Core": "[0.1.0-preview.1, )"
         }
       },
       "intentblazor.staffbusiness": {
         "type": "Project",
         "dependencies": {
-          "IntentBlazor.Blazor": "[0.1.0-alpha.0, )",
-          "IntentBlazor.ExampleHost": "[0.1.0-alpha.0, )",
+          "IntentBlazor.Blazor": "[0.1.0-preview.1, )",
+          "IntentBlazor.ExampleHost": "[0.1.0-preview.1, )",
           "Microsoft.EntityFrameworkCore.Sqlite": "[10.0.14, )"
         }
       },
       "intentblazor.storage.sqlite": {
         "type": "Project",
         "dependencies": {
-          "IntentBlazor.Runtime": "[0.1.0-alpha.0, )",
+          "IntentBlazor.Runtime": "[0.1.0-preview.1, )",
           "Microsoft.Data.Sqlite": "[10.0.14, )"
+        }
+      },
+      "intentblazor.verification": {
+        "type": "Project",
+        "dependencies": {
+          "IntentBlazor.AI": "[0.1.0-preview.1, )",
+          "IntentBlazor.Blazor": "[0.1.0-preview.1, )",
+          "IntentBlazor.Examples": "[0.1.0-preview.1, )"
         }
       },
       "Markdig": {

@@ -5,6 +5,8 @@
     <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
   </PropertyGroup>
   <ItemGroup>
+    <Content Update="appsettings.Local.json;appsettings.*.Local.json;**/*.publishsettings;**/*.pubxml.user" CopyToPublishDirectory="Never" />
+    <None Update=".env;.env.*;**/*.publishsettings;**/*.pubxml.user" CopyToPublishDirectory="Never" />
     <PackageReference Include="Markdig" />
     <ProjectReference Include="../../src/IntentBlazor.Blazor.AI/IntentBlazor.Blazor.AI.csproj" />
     <ProjectReference Include="../../src/IntentBlazor.Packs.ImageEditor/IntentBlazor.Packs.ImageEditor.csproj" />

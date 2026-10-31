@@ -2,7 +2,7 @@
 
 An open-source AI-centric Blazor framework being developed around two living components: **AiInput** receives user intent and content; **AiOutput** becomes the interactive workspace for the task.
 
-**Status: Phase 6 implemented; experimental API.** AiInput and AiOutput share validated documents, protected drafts, registered actions, and optional durable workspaces. Optional packages add bounded content imports, private artifacts, renderer extensions, an image-editor pack, and embeddable AI setup/inspection. Three standalone example apps now demonstrate complete synthetic workflows. Ollama, LM Studio, OpenAI, and an experimental Codex CLI adapter have deterministic tests; live provider verification remains deferred. There are no published packages. The learning site now includes searchable guides, a complete node/binding/event reference, a protected document editor, and a compiled standalone quickstart.
+**Status: `0.1.0-preview.1` candidate; experimental API, no published packages.** AiInput and AiOutput share validated documents, protected drafts, registered actions, and optional durable workspaces. Optional packages add bounded content imports, private artifacts, renderer extensions, an image-editor pack, and embeddable AI setup/inspection. Three standalone example apps demonstrate complete synthetic workflows. Phase 7 adds package-only runtime consumers, package/symbol audits, renderer budgets, production hosting checks, and a separate gated publishing workflow. Local model attempts have mixed results; OpenAI verification remains deferred. See the [candidate readiness record](docs/phase-7-readiness.md) for the remaining publication gates.
 
 ## What we are building
 

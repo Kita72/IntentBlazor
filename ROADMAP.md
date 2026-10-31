@@ -11,7 +11,7 @@ The target is a developer preview demonstrating the same input, output-document,
 | 4 | Content adapters, extensions, and embeddable AI setup | Implemented; experimental packages and deterministic demo |
 | 5 | Gaming News, Staff Business, and Asset Workbench apps | Implemented; standalone synthetic workflows |
 | 6 | Complete docs, document explorer, and demos | Implemented; compiled quickstart and deterministic explorer |
-| 7 | Package verification and public developer preview | Planned |
+| 7 | Package verification and public developer preview | Candidate verification and release tooling implemented; publication gates open |
 
 See [the implementation plan](docs/implementation-plan.md) for phase deliverables and acceptance gates. No release dates are committed.
 
@@ -27,4 +27,6 @@ Later directions include additional renderers, content formats, providers, stora
 
 Phase 5 evidence: [completion record](docs/phase-5-completion.md), [standalone app guide](docs/phase-5-example-apps.md), [decision 0008](docs/architecture/0008-standalone-example-apps.md), and the [workflow test matrix](tests/README.md). Two phases remain: **6 complete docs/demos** and **7 developer preview**. The deferred live-model gate remains required before a public preview. The examples' synthetic authentication is Development-only.
 
-Phase 6 evidence: [completion record](docs/phase-6-completion.md), [learning guides](docs/site/start.md), [compiled quickstart](examples/Quickstart/README.md), [decision 0009](docs/architecture/0009-documentation-and-samples.md), and [test evidence](tests/README.md). One phase remains: **7 developer preview**, including the deferred live-model gate. No public packages or docs deployment have been released.
+Phase 6 evidence: [completion record](docs/phase-6-completion.md), [learning guides](docs/site/start.md), [compiled quickstart](examples/Quickstart/README.md), [decision 0009](docs/architecture/0009-documentation-and-samples.md), and [test evidence](tests/README.md).
+
+Phase 7 candidate evidence: [readiness record](docs/phase-7-readiness.md), [release/deployment guide](docs/site/releasing.md), [decision 0010](docs/architecture/0010-preview-release-gates.md), and [recorded provider attempts](verification/providers/README.md). Package publication requires a NuGet owner/policy and successful current local/frontier evidence. Live OpenAI verification remains deferred by the maintainer. This candidate is not a completed public package release.
