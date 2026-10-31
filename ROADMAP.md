@@ -2,6 +2,8 @@
 
 The target is a developer preview demonstrating the same input, output-document, session, and tool mechanisms across three different app domains.
 
+The [foundation completion plan](docs/foundation-completion-plan.md) is proposed for Tory's review. It groups the remaining provider, browser, developer-host and release work into a finite milestone and keeps later platform/media expansion separate.
+
 | Phase | Milestone | Status |
 | --- | --- | --- |
 | 0 | Open-source foundation, buildable projects, docs shell, contributor workflow | Complete |
