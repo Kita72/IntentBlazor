@@ -54,12 +54,14 @@ $start.UseShellExecute = $false
 $start.CreateNoWindow = $true
 $start.RedirectStandardOutput = $true
 $start.RedirectStandardError = $true
-foreach ($argument in @(
+# MSDeploy parses the raw Windows command line itself; ArgumentList would escape its
+# option-value quotes a second time. These quoted values never pass through a shell.
+$start.Arguments = @(
     '-verb:sync', ('-source:contentPath="' + $source + '"'),
     ('-dest:contentPath="' + $site + '",computerName="' + $endpoint + '",userName="' + $username + '",password="' + $password + '",authType=Basic,includeAcls=False'),
     '-enableRule:AppOffline', '-enableRule:DoNotDeleteRule',
     '-disableLink:AppPoolExtension', '-disableLink:ContentExtension', '-disableLink:CertificateExtension'
-)) { $start.ArgumentList.Add($argument) }
+) -join ' '
 $process = [Diagnostics.Process]::new()
 $process.StartInfo = $start
 try {
@@ -78,6 +80,6 @@ try {
 }
 finally {
     $process.Dispose()
-    $start.ArgumentList.Clear()
+    $start.Arguments = ''
     $username = $null; $password = $null; $output = $null; $document = $null; $profile = $null; $profiles = $null
 }

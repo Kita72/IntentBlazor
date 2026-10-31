@@ -8,6 +8,7 @@
 - Independent package-only quickstart and three-example runtime checks, repeatable renderer budgets, source-bound live evaluation reports and explicit release-readiness gates.
 - Production docs health/version reporting, Development-only model/identity checks, an IIS bundle/deployment helper and a separate tag-triggered NuGet OIDC workflow. Live OpenAI and public NuGet publication remain pending.
 - Keyboard-focusable chart data tables with captions and scoped column headers.
+- Public MonsterASP docs/explorer deployment with observed HTTPS, Production fixture mode, a WebSocket circuit, draft-preserving follow-up, keyboard interaction and small-screen chart-table checks.
 
 ### Fixed
 

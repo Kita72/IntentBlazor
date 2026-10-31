@@ -15,7 +15,7 @@ foreach ($required in @('web.config', 'IntentBlazor.Docs.dll', 'IntentBlazor.Doc
     if (-not (Test-Path -LiteralPath (Join-Path $output $required))) { throw "Published output is missing $required." }
 }
 $privateFiles = @(Get-ChildItem -LiteralPath $output -Recurse -File | Where-Object {
-    $_.Name -like '.env*' -or $_.Name -like '*.Local.json' -or $_.Name -like '*.db' -or $_.Name -like '*.sqlite*' -or
+    $_.Name -like '.env*' -or $_.Name -like '*.Local.json' -or $_.Name -match '\.(db|sqlite|sqlite3)(-(wal|shm|journal))?$' -or
     $_.Name -like '*.pfx' -or $_.Name -like '*.publishsettings' -or $_.Name -like '*.pubxml.user'
 })
 if ($privateFiles.Count -gt 0) { throw 'Private/configuration artifacts were found in the publish output; no deployment bundle was created.' }

@@ -30,3 +30,5 @@ Phase 5 evidence: [completion record](docs/phase-5-completion.md), [standalone a
 Phase 6 evidence: [completion record](docs/phase-6-completion.md), [learning guides](docs/site/start.md), [compiled quickstart](examples/Quickstart/README.md), [decision 0009](docs/architecture/0009-documentation-and-samples.md), and [test evidence](tests/README.md).
 
 Phase 7 candidate evidence: [readiness record](docs/phase-7-readiness.md), [release/deployment guide](docs/site/releasing.md), [decision 0010](docs/architecture/0010-preview-release-gates.md), and [recorded provider attempts](verification/providers/README.md). Package publication requires a NuGet owner/policy and successful current local/frontier evidence. Live OpenAI verification remains deferred by the maintainer. This candidate is not a completed public package release.
+
+The [public docs and fixture explorer](https://intentblazor.runasp.net/) are deployed on MonsterASP; the [hosting record](docs/phase-7-hosting.md) separates actual HTTPS/browser checks from package publication.
