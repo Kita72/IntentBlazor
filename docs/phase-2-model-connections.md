@@ -1,6 +1,6 @@
 # Phase 2 model connections
 
-Status: adapters implemented; deterministic tests pass. **Live API and model verification is deferred by the maintainer.** No provider/model profile is currently certified by this repository. The Phase 2 live evaluation gate remains open.
+Status: adapters implemented; deterministic tests pass. The [provider matrix](provider-evaluation.md) records partial local attempts; live OpenAI/Codex verification remains deferred by the maintainer. No provider/model profile is currently certified by this repository. The Phase 2 live evaluation gate remains open. Use the [capability report template](contributing/provider-capability-report.md) to record exact observed scope and failures.
 
 Reference `IntentBlazor.AI` alongside `IntentBlazor.Blazor`. Until publication, use project references or locally packed artifacts. Both target .NET 10. The consuming page still uses only:
 

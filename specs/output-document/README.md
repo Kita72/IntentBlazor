@@ -1,5 +1,7 @@
 # Output document specification
 
+The [keyboard and focus guide](../../docs/contributing/keyboard-and-focus.md) covers the current controls, synthetic fixture walkthroughs, focus during updates, and automated versus manual accessibility checks.
+
 Status: implemented experimental **schema 0.1**, [schema 0.2 actions](v0.2-actions.md), and [schema 0.3 content/extensions](v0.3-content-and-extensions.md), toolkit **builtin 0.1**. This page describes the local 0.1 subset. The canonical contracts are [OutputDocument.cs](../../src/IntentBlazor.Core/OutputDocument.cs), [OutputJson.cs](../../src/IntentBlazor.Core/OutputJson.cs), and [DocumentValidator.cs](../../src/IntentBlazor.Core/DocumentValidator.cs). C# types plus the strict parser and semantic validator define these versions; a separate JSON Schema is not supplied. Earlier JSON sketches in the implementation plan are conceptual.
 
 `OutputContent` pairs an `OutputDocument` with host-provided `Data`. Only the document is a presentation proposal. Dataset schemas and rows are supplied by the host after its own authorization; a model must never be allowed to create or authorize its own datasets. Fixtures bundle the pair for deterministic playback.

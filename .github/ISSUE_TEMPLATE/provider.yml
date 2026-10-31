@@ -2,6 +2,11 @@ name: Provider compatibility
 description: Report a specific model or adapter result.
 labels: ["provider"]
 body:
+  - type: markdown
+    attributes:
+      value: |
+        Use the [provider capability report template](https://github.com/Kita72/IntentBlazor/blob/main/docs/contributing/provider-capability-report.md) for versions, settings, tools, streaming, recovery and usage.
+        The [fictional example](https://github.com/Kita72/IntentBlazor/blob/main/docs/contributing/provider-capability-report-example.md) shows the format only. Partial and failed results are welcome; mark unexercised behavior Not tested. Never include secrets, private prompts, raw private tool data or model reasoning.
   - type: input
     id: profile
     attributes:

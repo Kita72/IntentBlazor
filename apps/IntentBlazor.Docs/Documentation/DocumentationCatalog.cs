@@ -32,6 +32,7 @@ public sealed partial class DocumentationCatalog
         new("extensions", "Create a renderer", "Build", "A compiled typed contract and interactive Razor renderer.", "docs/site/extensions.md"),
         new("nodes", "Output node reference", "Reference", "All node kinds, envelope members, and composition rules.", "docs/site/nodes.md"),
         new("bindings", "Bindings and events", "Reference", "Every state kind, binding source, event, and revision rule.", "docs/site/bindings.md"),
+        new("keyboard", "Keyboard and focus", "Reference", "Native control keys, rating behavior, focus continuity and manual accessibility checks.", "docs/contributing/keyboard-and-focus.md"),
         new("errors", "Errors and recovery", "Reference", "Error codes, source locations, and preserving the last valid output.", "docs/site/errors.md"),
         new("error-codes", "Error code index", "Reference", "Generated index of framework validation, runtime, and setup failures.", "docs/site/error-codes.md"),
         new("schema-01", "Schema 0.1", "Reference", "Strict JSON, tree and data validation, and limits.", "specs/output-document/README.md"),
@@ -44,6 +45,8 @@ public sealed partial class DocumentationCatalog
         new("limitations", "Preview boundaries", "Operate", "Current support, open release gates, and deferred capabilities.", "docs/site/limitations.md"),
         new("architecture", "Architecture decisions", "Project", "Accepted design and extension boundaries.", "docs/architecture/README.md"),
         new("contributing", "Contribute", "Project", "Local checks, contract proposals, MIT terms, and maintainer workflow.", "CONTRIBUTING.md"),
+        new("provider-report", "Provider capability report", "Project", "Copyable profile, task, tool, usage and recovery evidence template.", "docs/contributing/provider-capability-report.md"),
+        new("provider-report-example", "Fictional report example", "Project", "Invented partial results showing the report format; no compatibility claim.", "docs/contributing/provider-capability-report-example.md"),
         new("releases", "Release notes", "Project", "Implemented changes and unreleased status.", "CHANGELOG.md"),
         new("security", "Security policy", "Project", "Report vulnerabilities privately.", "SECURITY.md")
     ];

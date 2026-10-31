@@ -1,5 +1,7 @@
 # Provider evaluation matrix
 
+Contribute observations with the [provider capability report template](contributing/provider-capability-report.md). The [fictional example](contributing/provider-capability-report-example.md) demonstrates the format only; it is not live evidence. Separate transport, native tools, preload, presentation acceptance and recovery outcomes for each exact profile.
+
 Recorded 2026-10-30 (America/Edmonton). Ordinary CI uses deterministic HTTP/process/model substitutes and never invokes a paid model. Tory explicitly deferred live OpenAI verification. No API key was created and no model was downloaded; local attempts used already-installed models.
 
 | Connection | Implemented path | Observed live result |

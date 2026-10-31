@@ -372,18 +372,26 @@ These decisions do not prevent implementing the provider-independent contracts a
 
 ## Developer preview release checklist
 
-- [ ] Repository identity, ownership, license, contribution policy, and security contact are established.
-- [ ] AiInput and AiOutput work through public APIs with explicitly scoped sessions.
-- [ ] Attribute and explicit tool registration cover the documented examples.
-- [ ] Documents compose normal UI and at least one specialist interactive renderer.
-- [ ] Local interactions remain responsive without model calls for every event.
-- [ ] Follow-up requests preserve selections and unsaved edits.
-- [ ] Persisted sessions restore without duplicate writes or unauthorized data access.
+Reconciled October 31, 2026 against the [test inventory](../tests/README.md), [candidate readiness](phase-7-readiness.md), [hosting record](phase-7-hosting.md) and [approved foundation plan](foundation-completion-plan.md). Checked behavior refers to the documented deterministic/public-API and fixture evidence; it does not certify untested models or hosting modes.
+
+- [x] Repository identity, ownership, license, contribution policy, and security contact are established.
+- [x] AiInput and AiOutput work through public APIs with explicitly scoped sessions.
+- [x] Attribute and explicit tool registration cover the documented examples.
+- [x] Documents compose normal UI and at least one specialist interactive renderer.
+- [x] Local interactions remain responsive without model calls for every event.
+- [x] Follow-up requests preserve selections and unsaved edits.
+- [x] Persisted sessions restore without duplicate writes or unauthorized data access.
 - [ ] Ollama, LM Studio, and at least one frontier profile have individually recorded results.
-- [ ] Three standalone sample apps pass their representative scenarios.
-- [ ] Fresh package consumption and documented quickstart are verified.
-- [ ] Documentation and deterministic demos run without paid-model credentials.
-- [ ] Release notes distinguish supported capabilities, experimental features, and deferred work.
-- [ ] Public GitHub contribution routes and preview feedback channels are available.
+- [x] Three standalone sample apps pass their representative fixture scenarios.
+- [x] Fresh locally packed candidate consumption and the documented quickstart are verified; public-feed verification remains pending below.
+- [x] Documentation and deterministic demos run without paid-model credentials.
+- [x] Public Production fixture docs have HTTPS and interactive circuit evidence.
+- [x] Release notes distinguish supported capabilities, experimental features, and deferred work.
+- [x] Public GitHub contribution routes and preview feedback channels are available.
+- [x] Keyboard/focus guidance and a reusable provider capability report template with a fictional example are available.
+- [ ] Current successful live news/staff/assets profiles satisfy every required provider gate, including the documented native-tool coverage.
+- [ ] Browser regression automation and the compiled production-host integration recipe meet foundation Steps 3 and 4.
+- [ ] Compatibility, source-bound release evidence and deployment/rollback acceptance meet foundation Step 5.
+- [ ] NuGet ownership/trusted publishing are confirmed, a tagged prerelease is published and fresh public-feed consumers are verified.
 
 The first implementation milestone is Phase 0 followed by a deterministic renderer that demonstrates all three document shapes. That gives contributors a stable place to work while the live AI path develops.

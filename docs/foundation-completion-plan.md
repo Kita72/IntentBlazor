@@ -1,6 +1,6 @@
 # IntentBlazor foundation completion plan
 
-Status: **proposed for Tory's review**. Recorded October 30, 2026, America/Edmonton. This completes the remaining developer-preview work before adding major capabilities. AiInput and AiOutput remain the two default interaction components; setup, storage, content and specialist renderers stay optional.
+Status: **approved by Tory on October 31, 2026**. Step 1 documentation is implemented; Steps 2–6 remain pending. Originally recorded October 30, 2026, America/Edmonton. This completes the remaining developer-preview work before adding major capabilities. AiInput and AiOutput remain the two default interaction components; setup, storage, content and specialist renderers stay optional.
 
 The outcome is a framework another developer can install, connect to a verified model, expose an authorized C# service, and use to build an interactive application with recoverable state. A usable foundation needs reliable model behavior and a reproducible developer journey alongside the existing deterministic renderer.
 
@@ -29,9 +29,9 @@ The largest remaining gaps are live provider reliability, automated browser work
 
 ## 1 Close the existing backlog and reconcile status
 
-Complete [issue #4](https://github.com/Kita72/IntentBlazor/issues/4) with a dedicated keyboard/focus guide linked from the output specification. Cover lists, tables, inputs, selects, buttons, read-only versus editable ratings, errors, document updates, and the news/staff/asset examples. Distinguish automated checks from human keyboard and screen-reader review.
+The [keyboard and focus guide](contributing/keyboard-and-focus.md) fulfills [issue #4](https://github.com/Kita72/IntentBlazor/issues/4) and is linked from the output specification, binding reference, contribution guide and docs catalog. It covers the current controls, rating display versus score editing, errors/focus during updates, all three synthetic fixture walkthroughs, and automated versus manual checks.
 
-Complete [issue #5](https://github.com/Kita72/IntentBlazor/issues/5) with a reusable provider capability report template and a clearly fictional example. Include exact client/server/model versions, model revision, settings, context limits, streaming, tools, schema output, cancellation, recovery and reported usage. A successful probe must not imply successful tools or application workflows.
+The [provider capability report template](contributing/provider-capability-report.md) and [fictional example](contributing/provider-capability-report-example.md) fulfill [issue #5](https://github.com/Kita72/IntentBlazor/issues/5). The template records exact profile identity, modes, settings, budgets, capability outcomes, recovery, usage and evidence. Contribution routes and the provider issue form link it. Fictional observations cannot serve as live evidence, and a successful probe does not imply working tools or application workflows.
 
 Reconcile the roadmap, current guides, test inventory and original unchecked preview checklist against their evidence. Preserve dated completion records as history. Give every outstanding item a disposition: finish in this milestone, obtain an external decision, or retain in the expansion backlog. Preserve the existing deterministic suite and target the unverified boundaries and missing automated workflows.
 
@@ -109,8 +109,8 @@ Acceptance: another developer can install the public packages, run all three fix
 
 Retain named follow-on work for WASM and MAUI/Blazor Hybrid hosting; distributed stores and multi-node recovery; richer workspace/folder navigation and semantic memory/RAG; image pixel/vision transport, OCR, audio/video and Office fidelity; generative asset tools and advanced 3D editing; and broader renderer/theme ecosystems. Each needs its own contract, authorization, compatibility and acceptance design. This milestone records their boundaries and extension points without making them release blockers or promising their implementation.
 
-## Execution order and decisions for review
+## Execution order and remaining decisions
 
 Start with backlog/documentation closure and local model diagnosis. Browser automation and the host recipe can proceed without paid-model accounts; NuGet ownership setup can be prepared alongside them. Complete compatibility/operations checks and freeze evidence after behavior-changing fixes, then publish and repeat public-feed consumption tests.
 
-The recommended scope is an Interactive Server foundation on .NET 10, with separately recorded .NET 11 compatibility. Preserve the existing three-provider release criteria. Tory's remaining external decisions are the OpenAI/Codex live configuration and budget, NuGet ownership/policy, and the eventual announcement audience. This plan proposes implementation work for review; it does not resume deferred paid inference, change repository access, or publish packages.
+The approved scope is an Interactive Server foundation on .NET 10, with separately recorded .NET 11 compatibility. Preserve the existing three-provider release criteria. Tory's remaining external decisions are the OpenAI/Codex live configuration and budget, NuGet ownership/policy, and the eventual announcement audience. Step 1 does not resume deferred inference or complete the later publication and compatibility work.

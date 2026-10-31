@@ -2,7 +2,7 @@
 
 IntentBlazor turns user intent into a validated interactive workspace. Your app supplies the model connection, authorized data, business services, and identity. The framework coordinates input, a versioned output document, local state, and registered actions.
 
-**Experimental, unreleased API.** The initial target is a .NET 10 Blazor Web App with Interactive Server. Packages have not been published. Live provider verification remains deferred. See [preview boundaries](limitations.md) before choosing a deployment target.
+**Experimental, unreleased API.** The initial target is a .NET 10 Blazor Web App with Interactive Server. Packages have not been published. Local provider acceptance remains incomplete; live OpenAI/Codex verification is deferred. See [preview boundaries](limitations.md) and the [provider matrix](../provider-evaluation.md) before choosing a deployment target.
 
 ## The developer journey
 

@@ -1,5 +1,7 @@
 # State, bindings, and events
 
+The [keyboard and focus guide](../contributing/keyboard-and-focus.md) maps these events to the current native controls, explains focus continuity and distinguishes read-only ratings from score editors.
+
 These are the supported public rules from [Core](../../src/IntentBlazor.Core/OutputDocument.cs) and [AiSession](../../src/IntentBlazor.Runtime/AiSession.cs). There is no expression language, property traversal, generated code, or implicit business write.
 
 ## Typed state

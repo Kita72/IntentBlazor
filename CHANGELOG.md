@@ -4,6 +4,8 @@
 
 ### Added
 
+- Foundation Step 1 contributor guides for native keyboard/focus behavior, rating-display versus score-editing controls, and provider capability reporting with a clearly fictional example. The documentation catalog, output specification and contribution/issue routes link the guides; live evaluation and publication remain separate gates.
+
 - `0.1.0-preview.1` candidate packaging with eight package-specific readmes, MIT/repository metadata, portable symbols and exact-commit Source Link audits. This candidate is unreleased.
 - Independent package-only quickstart and three-example runtime checks, repeatable renderer budgets, source-bound live evaluation reports and explicit release-readiness gates.
 - Production docs health/version reporting, Development-only model/identity checks, an IIS bundle/deployment helper and a separate tag-triggered NuGet OIDC workflow. Live OpenAI and public NuGet publication remain pending.

@@ -2,7 +2,7 @@
 
 The target is a developer preview demonstrating the same input, output-document, session, and tool mechanisms across three different app domains.
 
-The [foundation completion plan](docs/foundation-completion-plan.md) is proposed for Tory's review. It groups the remaining provider, browser, developer-host and release work into a finite milestone and keeps later platform/media expansion separate.
+The [foundation completion plan](docs/foundation-completion-plan.md) was approved by Tory on October 31, 2026. Step 1's keyboard/focus and provider reporting guides are implemented and linked from the contribution routes. Steps 2–6 cover the remaining provider, browser, developer-host and release work, with later platform/media expansion kept separate.
 
 | Phase | Milestone | Status |
 | --- | --- | --- |

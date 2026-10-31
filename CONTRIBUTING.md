@@ -25,7 +25,9 @@ Ordinary builds and fixture-based work must not require a model account, paid cr
 
 The pull-request process above applies to external contributions. For maintainer-directed implementation, Tory has authorized AIMIE to commit and push completed work directly to `main` after verification, without a separate PR review. This does not authorize changing repository protections, publishing packages, or deploying the site. CI still validates pushes to `main`.
 
-Do not publish packages or deploy the docs site from pull requests. Maintainer release workflows will be introduced before the developer preview.
+Do not publish packages or deploy the docs site from pull requests. The separate maintainer publishing workflow requires verified release evidence and confirmed NuGet ownership/trusted-publishing policy; see the [release guide](docs/site/releasing.md).
+
+For renderer contributions, follow the [keyboard and focus guide](docs/contributing/keyboard-and-focus.md). Provider reports should use the [capability report template](docs/contributing/provider-capability-report.md); its [fictional example](docs/contributing/provider-capability-report-example.md) illustrates partial and failed results without claiming model support. Report actual observations and leave unexercised capabilities marked Not tested.
 
 ## Conventions
 
