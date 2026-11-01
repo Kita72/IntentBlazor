@@ -167,7 +167,8 @@ public sealed class CodexProcessRunner(CodexOptions options) : ICodexProcessRunn
         };
         foreach (string argument in new[] { "exec", "--json", "--ephemeral", "--ignore-user-config", "--ignore-rules",
             "--skip-git-repo-check", "--sandbox", "read-only", "--disable", "shell_tool", "--disable", "apps",
-            "-c", "web_search=\"disabled\"", "-m", options.Model, "-C", directory, "--output-schema", schemaPath, "-" })
+            "--disable", "memories", "--disable", "plugins", "--enable", "skip_host_skill_discovery",
+            "-c", "web_search=\"disabled\"", "-c", "project_doc_max_bytes=0", "-m", options.Model, "-C", directory, "--output-schema", schemaPath, "-" })
             start.ArgumentList.Add(argument);
         return start;
     }

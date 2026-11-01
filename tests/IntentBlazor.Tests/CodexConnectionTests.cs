@@ -66,6 +66,10 @@ public sealed class CodexConnectionTests
         Assert.Contains("shell_tool", args);
         Assert.Contains("apps", args);
         Assert.Contains("web_search=\"disabled\"", args);
+        Assert.Contains("project_doc_max_bytes=0", args);
+        Assert.Contains("memories", args);
+        Assert.Contains("plugins", args);
+        Assert.Contains("skip_host_skill_discovery", args);
         Assert.Equal("C:/isolated path", args[Array.IndexOf(args, "-C") + 1]);
         Assert.Equal("C:/isolated path/schema.json", args[Array.IndexOf(args, "--output-schema") + 1]);
         Assert.Equal("-", args[^1]);

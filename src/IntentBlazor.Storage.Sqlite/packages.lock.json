@@ -54,7 +54,7 @@
       "intentblazor.runtime": {
         "type": "Project",
         "dependencies": {
-          "IntentBlazor.Core": "[0.1.0-alpha.0, )",
+          "IntentBlazor.Core": "[0.1.0-preview.1, )",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[10.0.14, )"
         }
       },

@@ -39,6 +39,8 @@ Acceptance: both documentation issues meet their original criteria, current stat
 
 ## 2 Make the real model workflows reliable
 
+Step 2's implementation is described in the [provider workflow guide](foundation-step2-provider-workflows.md): local generation fixes, explicit paid-call gates, six-workflow protocol-2 evaluation and strengthened native-tool acceptance. Offline tests do not finish the live acceptance below. On November 1, 2026, Tory deferred all local inference on the current machine after host instability; OpenAI/Codex paid inference remains deferred. Continue development with substitutes until a suitable live host and configuration are approved.
+
 Investigate the existing failed local runs before changing models or increasing budgets. Separate backend/protocol failures, unsupported combinations of structured output and tools, context/output truncation, slow inference, and invalid presentation documents. Retain strict validation and protected drafts. Fix a demonstrated adapter/prompt/runtime defect with a focused regression test; do not relax the checks to obtain a pass.
 
 Extend the shared evaluation harness to support explicit opt-in OpenAI and Codex runs alongside Ollama and LM Studio. Keep provider SDK calls in the AI boundary. Reuse the same scenario outcomes and sanitized reporting, while recording the different capabilities of each connection. Preloaded C# data and model-initiated native read tools remain separate profiles. Codex must be tested through its supported integration, using an isolated fixture workspace and restricted capabilities.

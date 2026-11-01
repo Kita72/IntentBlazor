@@ -107,13 +107,13 @@ public sealed class ModelGenerationTests
         session.Open(TestContent.Catalog.Get("news"));
         TestContent.Select(session, "headlines", "news-2");
         Assert.True((await session.SubmitAsync("use my selection")).Success);
-        Assert.Contains("news-2", client.Calls[0].Messages.Single(message => message.Role == ChatRole.User).Text);
+        Assert.Contains("news-2", client.Calls[0].Messages.First(message => message.Role == ChatRole.User).Text);
         session.Open(TestContent.Catalog.Get("staff"));
         TestContent.Select(session, "jobs", "job-101");
         session.Change("notesInput", "Keep this draft", session.Revision);
         Assert.False((await session.SubmitAsync("replace this")).Success);
         Assert.Equal(2, client.Calls.Count);
-        Assert.Contains("Keep this draft", client.Calls[1].Messages.Single(message => message.Role == ChatRole.User).Text);
+        Assert.Contains("Keep this draft", client.Calls[1].Messages.First(message => message.Role == ChatRole.User).Text);
         Assert.Equal("Keep this draft", TestContent.Value(session, "notes"));
     }
 

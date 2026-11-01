@@ -75,7 +75,7 @@ public sealed class ModelLimitTests
         using IServiceScope scope = root.CreateScope();
         Assert.True((await scope.ServiceProvider.GetRequiredService<AiSession>().SubmitAsync("news")).Success);
         Assert.Empty(client.Calls[0].Options!.Tools!);
-        Assert.Contains("Fictional fixture:", client.Calls[0].Messages.Single(message => message.Role == ChatRole.User).Text);
+        Assert.Contains("Fictional fixture:", client.Calls[0].Messages.First(message => message.Role == ChatRole.User).Text);
         Assert.Equal(1, scope.ServiceProvider.GetRequiredService<ModelInputProcessor>().LastRun!.ToolCalls);
     }
 
@@ -92,8 +92,8 @@ public sealed class ModelLimitTests
         AiSession second = two.ServiceProvider.GetRequiredService<AiSession>();
         Assert.True((await first.SubmitAsync("news")).Success);
         Assert.True((await second.SubmitAsync("news")).Success);
-        string firstPrompt = client.Calls[0].Messages.Single(message => message.Role == ChatRole.User).Text;
-        string secondPrompt = client.Calls[1].Messages.Single(message => message.Role == ChatRole.User).Text;
+        string firstPrompt = client.Calls[0].Messages.First(message => message.Role == ChatRole.User).Text;
+        string secondPrompt = client.Calls[1].Messages.First(message => message.Role == ChatRole.User).Text;
         Assert.NotEqual(firstPrompt, secondPrompt);
         string firstId = Assert.IsType<ScopedNewsSource>(Assert.Single(one.ServiceProvider.GetServices<IOutputDataSource>())).ScopeId;
         string secondId = Assert.IsType<ScopedNewsSource>(Assert.Single(two.ServiceProvider.GetServices<IOutputDataSource>())).ScopeId;

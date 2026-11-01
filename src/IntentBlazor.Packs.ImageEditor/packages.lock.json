@@ -15,14 +15,14 @@
       "intentblazor.blazor": {
         "type": "Project",
         "dependencies": {
-          "IntentBlazor.Core": "[0.1.0-alpha.0, )",
-          "IntentBlazor.Runtime": "[0.1.0-alpha.0, )"
+          "IntentBlazor.Core": "[0.1.0-preview.1, )",
+          "IntentBlazor.Runtime": "[0.1.0-preview.1, )"
         }
       },
       "intentblazor.content": {
         "type": "Project",
         "dependencies": {
-          "IntentBlazor.Runtime": "[0.1.0-alpha.0, )",
+          "IntentBlazor.Runtime": "[0.1.0-preview.1, )",
           "PdfPig": "[0.1.16, )",
           "SkiaSharp": "[4.154.0, )",
           "SkiaSharp.NativeAssets.Linux.NoDependencies": "[4.154.0, )"
@@ -34,7 +34,7 @@
       "intentblazor.runtime": {
         "type": "Project",
         "dependencies": {
-          "IntentBlazor.Core": "[0.1.0-alpha.0, )"
+          "IntentBlazor.Core": "[0.1.0-preview.1, )"
         }
       },
       "PdfPig": {

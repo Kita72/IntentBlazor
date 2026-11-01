@@ -35,6 +35,7 @@ public sealed class ModelInputProcessor(IChatClient client, ModelProfile profile
         timeout.CancelAfter(options.Timeout);
         CancellationToken token = timeout.Token;
         RunState state = new(options, progress);
+        state.RequiredData.UnionWith(workspace.Document?.DataSets ?? []);
         Stopwatch elapsed = Stopwatch.StartNew();
         string status = "failed";
         try
@@ -94,13 +95,12 @@ public sealed class ModelInputProcessor(IChatClient client, ModelProfile profile
                     });
                     if (artifact.StructuredData is { } structured) Accept(structured, replace: false);
                 }
-            List<ChatMessage> messages = [new(ChatRole.System, ToolkitInstructions.Create(validator.Actions.Values, validator.Extensions.Values)),
+            List<ChatMessage> messages = [new(ChatRole.System, ToolkitInstructions.Create(validator.Actions.Values, validator.Extensions.Values, activeProfile.UseDocumentObject)),
                 new(ChatRole.User, JsonSerializer.Serialize(new
                 {
-                    request = input,
                     workspace = new { workspace.Document, workspace.Revision, workspace.Values, workspace.Sorting, workspace.DirtyStates, workspace.Conversation, workspace.Artifacts },
                     hostData = state.Data.Values.ToArray(), attachments
-                }, ModelJson.Options))];
+                }, ModelJson.Options)), new(ChatRole.User, input)];
 
             // Agent Framework owns function orchestration; no application tool loop.
             BudgetChatClient budget = new(activeClient, state, tools.OfType<AIFunction>().Select(tool => tool.Name).ToHashSet(StringComparer.Ordinal));
@@ -117,15 +117,17 @@ public sealed class ModelInputProcessor(IChatClient client, ModelProfile profile
             };
             run.ChatOptions.AllowMultipleToolCalls = false;
             run.ChatOptions.Tools = tools;
+            string envelopeName = activeProfile.UseDocumentObject ? "document" : "documentJson";
             run.ChatOptions.ResponseFormat = options.UseJsonSchema
-                        ? ChatResponseFormat.ForJsonSchema(JsonSerializer.SerializeToElement(new
-                        {
-                            type = "object",
-                            properties = new { documentJson = new { type = "string" } },
-                            required = new[] { "documentJson" },
-                            additionalProperties = false
-                        }), "intent_output")
-                        : ChatResponseFormat.Json;
+                ? ChatResponseFormat.ForJsonSchema(JsonSerializer.SerializeToElement(new
+                {
+                    type = "object",
+                    properties = new Dictionary<string, object> { [envelopeName] = new { type = activeProfile.UseDocumentObject ? "object" : "string" } },
+                    required = new[] { envelopeName },
+                    additionalProperties = false
+                }), "intent_output")
+                : ChatResponseFormat.Json;
+            state.PresentationFormat = run.ChatOptions.ResponseFormat;
 
             for (int attempt = 0; attempt <= options.MaximumCorrections; attempt++)
             {
@@ -136,11 +138,15 @@ public sealed class ModelInputProcessor(IChatClient client, ModelProfile profile
                 {
                     // The model supplies presentation only; it never supplies its own authoritative data.
                     using JsonDocument envelope = JsonDocument.Parse(state.Text.ToString());
-                    if (envelope.RootElement.ValueKind != JsonValueKind.Object ||
-                        envelope.RootElement.EnumerateObject().Count() != 1 ||
-                        !envelope.RootElement.TryGetProperty("documentJson", out JsonElement value) || value.ValueKind != JsonValueKind.String)
-                        throw new JsonException("Expected documentJson.");
-                    OutputDocument document = OutputJson.ReadDocument(value.GetString()!);
+                    if (envelope.RootElement.ValueKind != JsonValueKind.Object || envelope.RootElement.EnumerateObject().Count() != 1)
+                        throw new JsonException("Expected one presentation envelope property.");
+                    string documentText;
+                    if (activeProfile.UseDocumentObject && envelope.RootElement.TryGetProperty("document", out JsonElement direct) && direct.ValueKind == JsonValueKind.Object)
+                        documentText = direct.GetRawText();
+                    else if (envelope.RootElement.TryGetProperty("documentJson", out JsonElement value) && value.ValueKind == JsonValueKind.String)
+                        documentText = value.GetString()!; // Retain the earlier envelope for compatible custom clients.
+                    else throw new JsonException("The presentation envelope has the wrong name or value type.");
+                    OutputDocument document = OutputJson.ReadDocument(documentText);
                     OutputContent content = new()
                     {
                         Document = document,
@@ -152,9 +158,15 @@ public sealed class ModelInputProcessor(IChatClient client, ModelProfile profile
                         status = "completed";
                         return content;
                     }
+                    state.Validation.Add(new(attempt, [.. result.Errors.Select(error => error.Code).Distinct().Take(32)]));
                     Correct(string.Join(", ", result.Errors.Select(error => $"{error.Code} at {error.Path}: {error.Message}")));
                 }
-                catch (JsonException) { Correct("Return exactly {documentJson:string}, containing a valid supported presentation document."); }
+                catch (JsonException error)
+                {
+                    state.Validation.Add(new(attempt, ["invalid-json"]));
+                    Correct($"Return exactly {{{envelopeName}:{(activeProfile.UseDocumentObject ? "object" : "string")}}}, containing a valid supported presentation document. " +
+                        "Use only the documented property names and types. Parser feedback: " + error.Message[..Math.Min(error.Message.Length, 512)]);
+                }
             }
             status = "invalid-output";
             throw new InputRejectedException("The model could not produce a valid output document within the correction limit.");
@@ -163,6 +175,9 @@ public sealed class ModelInputProcessor(IChatClient client, ModelProfile profile
             {
                 if (state.Corrections == options.MaximumCorrections) return;
                 messages.Add(new(ChatRole.Assistant, state.Text.ToString()));
+                // FunctionInvokingChatClient owns its transcript. Re-supply accepted data for
+                // a correction rather than losing native tool results with the ephemeral run.
+                messages.Add(new(ChatRole.User, JsonSerializer.Serialize(new { hostData = state.Data.Values.ToArray() }, ModelJson.Options)));
                 messages.Add(new(ChatRole.User, "The validator rejected this proposal: " + error + " Correct the presentation only; use the same authorized data."));
                 state.Report("Correcting the proposed document");
             }
@@ -177,7 +192,7 @@ public sealed class ModelInputProcessor(IChatClient client, ModelProfile profile
         {
             LastRun = new(status, activeProfile.Provider, activeProfile.Model, state.ModelCalls, state.ToolCalls, state.Corrections,
                 state.Characters, state.InputTokens, state.OutputTokens, elapsed.Elapsed, state.TotalTokens)
-            { Tools = [.. state.Observations] };
+            { Tools = [.. state.Observations], Validation = [.. state.Validation] };
         }
 
         void Accept(OutputDataSet set, bool replace)
@@ -211,8 +226,11 @@ public sealed class ModelInputProcessor(IChatClient client, ModelProfile profile
 internal sealed class RunState(ModelOptions options, IProgress<InputProgress> progress)
 {
     public List<ModelToolObservation> Observations { get; } = [];
+    public List<ModelValidationObservation> Validation { get; } = [];
     public ModelOptions Options { get; } = options;
     public Dictionary<string, OutputDataSet> Data { get; } = new(StringComparer.Ordinal);
+    public HashSet<string> RequiredData { get; } = new(StringComparer.Ordinal);
+    public ChatResponseFormat? PresentationFormat { get; set; }
     public StringBuilder Text { get; } = new();
     public int ModelCalls, ToolCalls, Corrections, Characters;
     public bool ToolLimitHit;
@@ -234,7 +252,17 @@ internal sealed class BudgetChatClient(IChatClient inner, RunState state, HashSe
         state.ModelCalls++;
         state.Text.Clear();
         state.Report("Generating the output document");
-        await foreach (ChatResponseUpdate update in InnerClient.GetStreamingResponseAsync(materialized, options, cancellationToken))
+        // Retrieve host data before constraining presentation. In particular, a JSON grammar
+        // must not force a local model to express a native function call as document text.
+        ChatOptions? effective = options;
+        if (toolNames.Count > 0 && options?.Tools is { Count: > 0 })
+        {
+            effective = options?.Clone() ?? new();
+            bool missing = state.RequiredData.Any(id => !state.Data.ContainsKey(id));
+            effective.ResponseFormat = state.Data.Count == 0 || missing ? null : state.PresentationFormat;
+            effective.ToolMode = missing ? ChatToolMode.RequireAny : ChatToolMode.Auto;
+        }
+        await foreach (ChatResponseUpdate update in InnerClient.GetStreamingResponseAsync(materialized, effective, cancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             foreach (FunctionCallContent call in update.Contents.OfType<FunctionCallContent>())

@@ -12,4 +12,6 @@ Run pwsh -File scripts/Verify.ps1 for appropriate changes. Report the checks act
 
 Keep documentation and acceptance criteria current. Follow CONTRIBUTING.md for proposed contract changes. Do not publish packages or change repository access as part of routine code contributions.
 
+Tory has deferred local model execution on the current machine after host instability. Do not start Ollama, LM Studio or their model workers, including status commands that can activate background services. Use offline HTTP/process/model substitutes. Live local verification requires a new explicit decision for a suitable host; paid OpenAI/Codex inference also remains deferred.
+
 Tory has authorized AIMIE to commit and push completed, verified phase work directly to main without waiting for a pull-request review. Preserve existing repository protections and access settings. External contributions continue through the pull-request workflow in CONTRIBUTING.md. Package publication and deployment remain separate release tasks.

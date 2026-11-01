@@ -13,11 +13,13 @@ using Microsoft.Extensions.Logging;
 namespace IntentBlazor.Verification;
 
 public sealed record ModelScenarioResult(string Fixture, bool InitialAccepted, bool FollowupAccepted, int ObservedDataCalls,
-    bool LocalInteraction, bool DraftPreserved, bool SelectionPreserved, int RenderedCharacters, double FirstUsefulOutputMilliseconds,
+    bool LocalInteraction, bool DraftPreserved, bool SelectionPreserved, int RenderedCharacters, double InitialRequestMilliseconds,
     double FollowupMilliseconds, double LocalInteractionMilliseconds, ModelRunReport? InitialRun, ModelRunReport? FollowupRun,
     ImmutableArray<string> Errors)
 {
     public ImmutableArray<string> Diagnostics { get; init; } = [];
+    public ImmutableArray<EvaluationRequestMeasurement> Requests { get; init; } = [];
+    public double? TimeToAcceptedOutputMilliseconds => InitialAccepted ? InitialRequestMilliseconds : null;
     public bool Passed => InitialAccepted && FollowupAccepted && ObservedDataCalls >= 2 && LocalInteraction && DraftPreserved && SelectionPreserved &&
         InitialRun?.Status == "completed" && FollowupRun?.Status == "completed" && RenderedCharacters > 0 && !Errors.IsDefault && Errors.IsEmpty;
 }
@@ -25,7 +27,20 @@ public sealed record ModelEvaluation(string SourceFingerprint, string Provider, 
     string ServerVersion, DateTimeOffset CheckedAt, ModelOptions Options, ImmutableArray<ModelScenarioResult> Scenarios)
 {
     public string DataAccess { get; init; } = "native-tools";
-    public string EvaluationProtocol { get; init; } = "1";
+    public const string CurrentProtocol = "2";
+    public string EvaluationProtocol { get; init; } = CurrentProtocol;
+    public string? Endpoint { get; init; }
+    public string ClientVersion { get; init; } = typeof(IntentModelBuilder).Assembly.GetName().Version?.ToString() ?? "unknown";
+    public string? ProviderSdkVersion => Provider == "Codex CLI (experimental)" ? null : typeof(OpenAI.OpenAIClient).Assembly.GetName().Version?.ToString();
+    public string RuntimeVersion { get; init; } = System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription;
+    public string RequestedEnvelope => Provider is "Ollama" or "LM Studio" ? "document-object" : "documentJson-string";
+    public ImmutableArray<ApplicationScenarioResult> Applications { get; init; } = [];
+    public bool Passed => !Scenarios.IsDefault && Scenarios.Length == 3 && !Applications.IsDefault && Applications.Length == 3 &&
+        new[] { "news", "staff", "assets" }.All(name => Scenarios.Any(item => item.Fixture == name && item.Passed) &&
+            Applications.Any(item => item.Model.Fixture == name && item.Passed));
+    public bool NativeToolCoverage => DataAccess == "native-tools" && Passed && Scenarios.Concat(Applications.Select(item => item.Model)).All(item =>
+        HasNativeRead(item.InitialRun) && HasNativeRead(item.FollowupRun));
+    private static bool HasNativeRead(ModelRunReport? run) => run is not null && !run.Tools.IsDefaultOrEmpty && run.Tools.Any(tool => tool.Outcome == "completed");
 }
 
 public sealed class EvaluationData(ExampleCatalog catalog, string fixture) : IOutputDataSource
@@ -48,12 +63,15 @@ public sealed class EvaluationData(ExampleCatalog catalog, string fixture) : IOu
 
 public static class ModelEvaluationRunner
 {
-    public static async Task<ModelEvaluation> RunLocalAsync(string fingerprint, string provider, string model, string revision,
-        string serverVersion, Uri endpoint, string outputDirectory, bool useJsonSchema = true, bool preload = false, CancellationToken token = default)
+    public static Task<ModelEvaluation> RunLocalAsync(string fingerprint, string provider, string model, string revision,
+        string serverVersion, Uri endpoint, string outputDirectory, bool useJsonSchema = true, bool preload = false, CancellationToken token = default, string? scenarioFilter = null)
+        => RunAsync(fingerprint, EvaluationConnection.Local(provider, model, revision, serverVersion, endpoint), outputDirectory, useJsonSchema, preload, token, scenarioFilter);
+
+    public static async Task<ModelEvaluation> RunAsync(string fingerprint, EvaluationConnection connection,
+        string outputDirectory, bool useJsonSchema = true, bool preload = false, CancellationToken token = default, string? scenarioFilter = null)
     {
-        ValidateLocalConnection(provider, endpoint);
-        if (string.IsNullOrWhiteSpace(model) || string.IsNullOrWhiteSpace(revision) || string.IsNullOrWhiteSpace(serverVersion))
-            throw new ArgumentException("Record model identity/revision and the server version.");
+        string[] selected = SelectScenarios(scenarioFilter);
+        preload |= !connection.NativeTools;
         ExampleCatalog catalog = new();
         ModelOptions options = new()
         {
@@ -64,20 +82,19 @@ public static class ModelEvaluationRunner
             MaximumOutputTokens = 6000,
             MaximumReportedTokens = 48000,
             MaximumContextCharacters = 60000,
-            Temperature = .1f,
+            Temperature = connection.Provider is "Ollama" or "LM Studio" ? .1f : null,
             UseJsonSchema = useJsonSchema
         };
         List<ModelScenarioResult> scenarios = [];
-        foreach (string fixture in new[] { "news", "staff", "assets" })
+        foreach (string fixture in selected)
         {
             token.ThrowIfCancellationRequested();
-            Console.WriteLine($"Evaluating {provider}: {fixture} (synthetic, bounded, local only)");
+            Console.WriteLine($"Evaluating {connection.Provider}: {fixture} (synthetic, bounded, opt-in)");
             ServiceCollection services = new(); services.AddLogging();
             EvaluationDiagnostics diagnostics = new(); services.AddSingleton<IHttpMessageHandlerBuilderFilter>(diagnostics);
             EvaluationData data = new(catalog, fixture); services.AddSingleton(data);
-            IntentModelBuilder ai = services.AddIntentBlazorAI(next => Copy(options, next));
+            IntentModelBuilder ai = connection.Register(services, next => Copy(options, next));
             if (preload) services.AddScoped<IOutputDataSource>(_ => data); else ai.AddTools<EvaluationData>();
-            if (provider == "Ollama") ai.UseOllama(model, endpoint); else ai.UseLMStudio(model, endpoint);
             await using ServiceProvider container = services.BuildServiceProvider();
             await using AsyncServiceScope scope = container.CreateAsyncScope();
             AiSession session = scope.ServiceProvider.GetRequiredService<AiSession>();
@@ -110,6 +127,7 @@ public static class ModelEvaluationRunner
                         session.Snapshot.Values[pair.Key].ValueKind == System.Text.Json.JsonValueKind.String)
                         .ToDictionary(pair => pair.Key, pair => session.Snapshot.Values[pair.Key].GetString());
                     start = Stopwatch.GetTimestamp();
+                    diagnostics.Phase = "followup";
                     OperationResult followup = await session.SubmitAsync(
                         (preload ? "Use the current hostData loaded by the C# service. " : "Call fixture_records again for the current authorized datasets. ") + "Show a useful follow-up arrangement. " +
                         "Keep my selected record and visible evaluationDraft input, including their existing state/node identities. " +
@@ -130,15 +148,34 @@ public static class ModelEvaluationRunner
             if (initial.Success && !preserved) errors.Add("draft-not-preserved");
             ModelScenarioResult scenario = new(fixture, initial.Success, followupAccepted, data.Calls, interacted, preserved, selectionPreserved, rendered,
                 firstMilliseconds, followupMilliseconds, localMilliseconds, firstRun, followupRun, [.. errors.Distinct()])
-            { Diagnostics = [.. diagnostics.Observations] };
+            { Diagnostics = [.. diagnostics.Observations], Requests = [.. diagnostics.Requests] };
             scenarios.Add(scenario); Console.WriteLine($"{fixture}: {(scenario.Passed ? "passed" : "not verified")}; C# reads={data.Calls}; errors={string.Join(',', scenario.Errors)}");
             VerificationJson.Write(Path.Combine(outputDirectory, "partial-evaluation.json"),
-                new ModelEvaluation(fingerprint, provider, model, revision, serverVersion, DateTimeOffset.UtcNow, options, [.. scenarios])
-                { DataAccess = preload ? "preloaded" : "native-tools" });
+                new ModelEvaluation(fingerprint, connection.Provider, connection.Model, connection.ModelRevision, connection.ServerVersion, DateTimeOffset.UtcNow, options, [.. scenarios])
+                { DataAccess = preload ? "preloaded" : "native-tools", Endpoint = connection.Endpoint?.AbsoluteUri });
         }
-        return new(fingerprint, provider, model, revision, serverVersion, DateTimeOffset.UtcNow, options, [.. scenarios])
-        { DataAccess = preload ? "preloaded" : "native-tools" };
+        List<ApplicationScenarioResult> applications = [];
+        foreach (string application in selected)
+        {
+            token.ThrowIfCancellationRequested();
+            Console.WriteLine($"Evaluating {connection.Provider}: {application} application services ({(preload ? "preloaded" : "native-tools")})");
+            ApplicationScenarioResult result = await ApplicationEvaluationRunner.RunAsync(application, connection, options, preload, token: token);
+            applications.Add(result);
+            Console.WriteLine($"{application} application: {(result.Passed ? "passed" : "not verified")}; C# reads={result.Model.ObservedDataCalls}; errors={string.Join(',', result.Model.Errors)}");
+            VerificationJson.Write(Path.Combine(outputDirectory, "partial-evaluation.json"), Report());
+        }
+        return Report();
+
+        ModelEvaluation Report() => new(fingerprint, connection.Provider, connection.Model, connection.ModelRevision, connection.ServerVersion, DateTimeOffset.UtcNow, options, [.. scenarios])
+        { DataAccess = preload ? "preloaded" : "native-tools", Endpoint = connection.Endpoint?.AbsoluteUri, Applications = [.. applications] };
     }
+
+    public static string[] SelectScenarios(string? filter) => filter switch
+    {
+        null => ["news", "staff", "assets"],
+        "news" or "staff" or "assets" => [filter],
+        _ => throw new ArgumentException("Select scenario=news, scenario=staff or scenario=assets for a partial diagnostic run.")
+    };
 
     public static void ValidateLocalConnection(string provider, Uri endpoint)
     {
@@ -172,11 +209,13 @@ public static class ModelEvaluationRunner
         return (selected.Success && edited.Success && selection && session.Snapshot.DirtyStates.Contains("evaluationDraft"), Stopwatch.GetElapsedTime(start).TotalMilliseconds);
     }
 
-    private static void Copy(ModelOptions source, ModelOptions target)
+    public static void Copy(ModelOptions source, ModelOptions target)
     {
         target.Timeout = source.Timeout; target.MaximumModelCalls = source.MaximumModelCalls; target.MaximumToolCalls = source.MaximumToolCalls;
         target.MaximumCorrections = source.MaximumCorrections; target.MaximumOutputTokens = source.MaximumOutputTokens;
         target.MaximumReportedTokens = source.MaximumReportedTokens; target.MaximumContextCharacters = source.MaximumContextCharacters;
         target.Temperature = source.Temperature; target.UseJsonSchema = source.UseJsonSchema;
+        target.TopP = source.TopP; target.FrequencyPenalty = source.FrequencyPenalty; target.PresencePenalty = source.PresencePenalty;
+        target.Seed = source.Seed; target.ReasoningEffort = source.ReasoningEffort;
     }
 }

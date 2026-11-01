@@ -2,6 +2,10 @@
 
 Contribute observations with the [provider capability report template](contributing/provider-capability-report.md). The [fictional example](contributing/provider-capability-report-example.md) demonstrates the format only; it is not live evidence. Separate transport, native tools, preload, presentation acceptance and recovery outcomes for each exact profile.
 
+**Foundation Step 2 update, November 1, 2026:** [generation fixes and protocol-2 evaluation](foundation-step2-provider-workflows.md) add local document-object delivery, native data-loading/presentation sequencing, retained tool data during correction, and opt-in OpenAI/Codex commands. Protocol 2 also exercises the real three-app services/actions. Offline verification is separate from live acceptance. Local inference was stopped after host instability and must not be restarted on Tory's current machine. OpenAI/Codex paid calls remain deferred. Earlier partial attempts do not certify the final source or the six-workflow gate.
+
+The following table is the preserved October 30 historical observation, not a current protocol-2 result.
+
 Recorded 2026-10-30 (America/Edmonton). Ordinary CI uses deterministic HTTP/process/model substitutes and never invokes a paid model. Tory explicitly deferred live OpenAI verification. No API key was created and no model was downloaded; local attempts used already-installed models.
 
 | Connection | Implemented path | Observed live result |
@@ -22,7 +26,7 @@ Each profile uses synthetic news, staff and asset fixtures; 120 seconds per subm
 After building the solution, the opt-in loopback evaluator runs as follows:
 
 ~~~powershell
-dotnet tools/IntentBlazor.Verification/bin/Release/net10.0/IntentBlazor.Verification.dll model-local . Ollama 'already-installed-model' 'recorded-digest' 'recorded-server-version' http://127.0.0.1:11434/v1/ artifacts/phase7/evidence/ollama.json
+dotnet tools/IntentBlazor.Verification/bin/Release/net10.0/IntentBlazor.Verification.dll model-local . Ollama 'already-installed-model' 'recorded-digest' 'recorded-server-version' http://127.0.0.1:11434/v1/ artifacts/phase7/evidence/ollama.json --allow-local
 ~~~
 
 Use provider `"LM Studio"` and its loopback endpoint for that server. Append `preloaded` to evaluate C# preload instead of native read tools; use a separate report path. Optional `plain` disables the requested structured response format without changing document validation. Explicit loopback endpoints cannot contain credentials/query strings. Do not use this local runner for cloud models or mislabel placeholder identities as evaluations.

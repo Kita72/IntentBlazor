@@ -45,7 +45,7 @@ public sealed class Phase5HostTests
             Assert.True((await services.GetRequiredService<AiSession>().SubmitAsync("Inspect the current authorized workspace")).Success);
             var request = Assert.Single(handler.Requests); using JsonDocument body = JsonDocument.Parse(request.Body);
             Assert.Equal("phase5-test-model", body.RootElement.GetProperty("model").GetString());
-            JsonElement userContent = body.RootElement.GetProperty("messages").EnumerateArray().Last(message => message.GetProperty("role").GetString() == "user").GetProperty("content");
+            JsonElement userContent = body.RootElement.GetProperty("messages").EnumerateArray().First(message => message.GetProperty("role").GetString() == "user").GetProperty("content");
             string text = userContent.ValueKind == JsonValueKind.String ? userContent.GetString()! : string.Concat(userContent.EnumerateArray().Select(part => part.GetProperty("text").GetString()));
             using JsonDocument context = JsonDocument.Parse(text);
             Assert.Contains(context.RootElement.GetProperty("hostData").EnumerateArray(), set => set.GetProperty("id").GetString() == expectedData);

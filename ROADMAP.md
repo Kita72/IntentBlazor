@@ -2,7 +2,7 @@
 
 The target is a developer preview demonstrating the same input, output-document, session, and tool mechanisms across three different app domains.
 
-The [foundation completion plan](docs/foundation-completion-plan.md) was approved by Tory on October 31, 2026. Step 1's keyboard/focus and provider reporting guides are implemented and linked from the contribution routes. Steps 2–6 cover the remaining provider, browser, developer-host and release work, with later platform/media expansion kept separate.
+The [foundation completion plan](docs/foundation-completion-plan.md) was approved by Tory on October 31, 2026. Step 1's guides are complete. Step 2 adds [provider generation fixes and evaluation paths](docs/foundation-step2-provider-workflows.md), with live acceptance still open. Local inference on the current machine and paid OpenAI/Codex calls are deferred by Tory. Steps 3–6 cover browser, developer-host and release work, with later platform/media expansion kept separate.
 
 | Phase | Milestone | Status |
 | --- | --- | --- |

@@ -38,14 +38,19 @@ public sealed class ModelOptions
 
 public sealed record ModelProfile(string Provider, string Model, Uri? Endpoint, bool NativeTools = true,
     bool SupportsOutputTokenLimit = true, bool SupportsTemperature = true, bool IncrementalText = true,
-    bool SupportsAdvancedSampling = true, bool SupportsReasoningEffort = false);
+    bool SupportsAdvancedSampling = true, bool SupportsReasoningEffort = false)
+{
+    public bool UseDocumentObject { get; init; }
+}
 
 public sealed record ModelRunReport(string Status, string Provider, string Model, int ModelCalls,
     int ToolCalls, int Corrections, int Characters, long? InputTokens, long? OutputTokens, TimeSpan Elapsed, long? TotalTokens)
 {
     public ImmutableArray<ModelToolObservation> Tools { get; init; } = [];
+    public ImmutableArray<ModelValidationObservation> Validation { get; init; } = [];
 }
 public sealed record ModelToolObservation(string Tool, string Outcome, string? DataSetId, int? Rows, TimeSpan Elapsed);
+public sealed record ModelValidationObservation(int Attempt, ImmutableArray<string> ErrorCodes);
 
 // Each call must return data authorized for the current application user.
 public interface IOutputDataSource

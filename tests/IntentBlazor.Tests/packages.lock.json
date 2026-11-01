@@ -360,8 +360,11 @@
         "type": "Project",
         "dependencies": {
           "IntentBlazor.AI": "[0.1.0-preview.1, )",
+          "IntentBlazor.AssetWorkbench": "[0.1.0-preview.1, )",
           "IntentBlazor.Blazor": "[0.1.0-preview.1, )",
-          "IntentBlazor.Examples": "[0.1.0-preview.1, )"
+          "IntentBlazor.Examples": "[0.1.0-preview.1, )",
+          "IntentBlazor.GamingNews": "[0.1.0-preview.1, )",
+          "IntentBlazor.StaffBusiness": "[0.1.0-preview.1, )"
         }
       },
       "Markdig": {

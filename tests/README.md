@@ -1,5 +1,16 @@
 # Validation projects
 
+Foundation Step 2 adds credential-free provider and real application-service checks. These use scripted model/HTTP/process boundaries with real SQLite and software PNG processing; they do not start Ollama/LM Studio or perform paid inference.
+
+| Requirement | Evidence |
+| --- | --- |
+| Local object delivery remains strictly validated; legacy delivery works and forged data cannot replace output | `LocalDocumentEnvelope_AcceptsValidatedObjectsAndRejectsForgedOrWronglyTypedContent`. |
+| Native tools load all referenced datasets before presentation formatting; the final user request remains distinct | `NativeReads_LoadEveryRequiredDatasetBeforeApplyingPresentationFormat`. |
+| Corrections retain actual authorized tool results; reports omit private content | `NativeCorrection_RetainsAuthorizedToolDataAndReportsCodesWithoutPrivateText`, `EvaluationMeasurements_RecordContextGrowthWithoutRetainingMessageOrToolContent`. |
+| Paid evaluation needs explicit opt-in; OpenAI HTTP routing and restricted independent Codex requests work with substitutes | `PaidEvaluation_RejectsMissingOptInBeforeResolvingCredentialsOrStartingCodex`, `OpenAIEvaluation_UsesOfficialSdkEndpointAndNeverNeedsARealKeyInTests`, `CodexEvaluation_UsesPreloadAndARestrictedIndependentProcessRequest`. |
+| Real app services/actions work with default components through native tools and preload; denied reads cannot become success evidence | `ApplicationEvaluation_UsesRealServicesAndActionsWithDefaultComponents`, `ApplicationReads_RejectUnknownDatasetsAndExpiredIdentityWithoutSuccessfulReadEvidence`. |
+| Partial workflows and missing native-tool proof cannot pass release acceptance | `ApplicationEvidence_CannotPassFromAnAcceptedGreetingOrAnIncompleteActionChecklist`, `Readiness_RejectsIncompleteOrStaleLiveEvidence`, `Readiness_RequiresObservedNativeToolsForOpenAIAndAtLeastOneLocalProfile`. |
+
 Run `pwsh -File scripts/Verify.ps1` from the repository root. It restores locked dependencies, builds the solution in Release, verifies formatting, runs the test project without rebuilding, checks documentation links, and packs the eight source libraries locally.
 
 Phase 7 also audits all eight packages and Source Link symbols, restores/builds/runs a package-only quickstart and all three examples outside the repository, and records nine warmed renderer workloads plus a release-readiness report. Candidate checks do not call models or publish packages.

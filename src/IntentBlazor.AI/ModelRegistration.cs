@@ -112,7 +112,8 @@ public sealed class IntentModelBuilder(IServiceCollection services)
             });
             return client.GetChatClient(model).AsIChatClient();
         });
-        ModelProfile profile = new(provider, model, endpoint, SupportsReasoningEffort: supportsReasoningEffort);
+        ModelProfile profile = new(provider, model, endpoint, SupportsReasoningEffort: supportsReasoningEffort)
+        { UseDocumentObject = provider is "Ollama" or "LM Studio" };
         if (presetId is null) return UseChatClient(factory, profile);
         Services.AddIntentModelPreset(new(presetId, profile, factory)); return this;
     }

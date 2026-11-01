@@ -23,6 +23,44 @@
           "SQLitePCLRaw.core": "2.1.13"
         }
       },
+      "Microsoft.EntityFrameworkCore": {
+        "type": "Transitive",
+        "resolved": "10.0.14",
+        "contentHash": "vY3931PYPIDBbKovGHbACmpOWvURvKNyRXfCjMh5yLW+FH6vLWeqUu2xzSCRo4Oz4tgx9GYpd0JlV5LDyAoQdg==",
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore.Abstractions": "10.0.14",
+          "Microsoft.EntityFrameworkCore.Analyzers": "10.0.14"
+        }
+      },
+      "Microsoft.EntityFrameworkCore.Abstractions": {
+        "type": "Transitive",
+        "resolved": "10.0.14",
+        "contentHash": "/SaznoTTFfKzxYEbCPAwwKBR3XT92DZgH4jJ3/cqs2skP3o2D+TL6i9Aaj+8Azwtu6/sRd0ve4P2mN12nfVmCw=="
+      },
+      "Microsoft.EntityFrameworkCore.Analyzers": {
+        "type": "Transitive",
+        "resolved": "10.0.14",
+        "contentHash": "gaANlGNTxkgODX2eeVT8jjd3AmlFilQV4DFf8qoW30+wUCm2o4N7nEHtZvnHIwfhaJni2DqcjE47Au7tC0Q5jA=="
+      },
+      "Microsoft.EntityFrameworkCore.Relational": {
+        "type": "Transitive",
+        "resolved": "10.0.14",
+        "contentHash": "Ut0kgtfoKX9QElQVEXSEAgdQc79jISWStVWSOhfPDDHNSKMwFzSXG3gtdYFTAbsBoV+8NtXdVaj4xwdqeky8UA==",
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore": "10.0.14"
+        }
+      },
+      "Microsoft.EntityFrameworkCore.Sqlite.Core": {
+        "type": "Transitive",
+        "resolved": "10.0.14",
+        "contentHash": "08VGlMQ9WbK869as9Ho+VZQbM5Qu6zdorgeh6ShVwQgLYgfUBiaIm02T7spfW7Xc1MBHCvclwPgGWpvx5BYGXQ==",
+        "dependencies": {
+          "Microsoft.Data.Sqlite.Core": "10.0.14",
+          "Microsoft.EntityFrameworkCore.Relational": "10.0.14",
+          "Microsoft.Extensions.DependencyModel": "10.0.14",
+          "SQLitePCLRaw.core": "2.1.13"
+        }
+      },
       "Microsoft.Extensions.AI.Abstractions": {
         "type": "Transitive",
         "resolved": "10.11.0",
@@ -41,6 +79,11 @@
         "resolved": "10.10.0",
         "contentHash": "Sh3ujDRJpCMNY4x+43ljCROt4qBOoWfsL8l816RPYZS1S+Tw277r5002rbB15Sh6hFcCT8mGYBO7NtpfSYrQ0Q=="
       },
+      "Microsoft.Extensions.DependencyModel": {
+        "type": "Transitive",
+        "resolved": "10.0.14",
+        "contentHash": "N8OcqM0370wSXMJ3ZxO66rSElHrIgxvpfUn0vV7zRj7NvKo0nfwgEoTmC3Yz3860o60IaQ4KIPyeLIGX9EeNWA=="
+      },
       "Microsoft.Extensions.VectorData.Abstractions": {
         "type": "Transitive",
         "resolved": "10.10.0",
@@ -56,6 +99,16 @@
         "dependencies": {
           "Google.Protobuf": "3.30.2"
         }
+      },
+      "SkiaSharp.NativeAssets.macOS": {
+        "type": "Transitive",
+        "resolved": "4.154.0",
+        "contentHash": "GgYL4ML3HT4CW33oXMHdp7BSRU87bPUfWBXdYgNduGlt4GAbAM/3eXcjjUdilS0H1r2R5iBhwvExCfSYGwFKlw=="
+      },
+      "SkiaSharp.NativeAssets.Win32": {
+        "type": "Transitive",
+        "resolved": "4.154.0",
+        "contentHash": "GXgoY77GCXdPcveNAmy8o3gVit8sp6YtnI88h5camLPfihjulwJUajZXKhgVuZ8RhuwSTgfyt/00Dx8HRUSeAA=="
       },
       "SQLitePCLRaw.bundle_e_sqlite3": {
         "type": "Transitive",
@@ -112,6 +165,13 @@
           "OpenAI": "[2.14.0, )"
         }
       },
+      "intentblazor.assetworkbench": {
+        "type": "Project",
+        "dependencies": {
+          "IntentBlazor.ExampleHost": "[0.1.0-preview.1, )",
+          "IntentBlazor.Packs.ImageEditor": "[0.1.0-preview.1, )"
+        }
+      },
       "intentblazor.blazor": {
         "type": "Project",
         "dependencies": {
@@ -119,8 +179,31 @@
           "IntentBlazor.Runtime": "[0.1.0-preview.1, )"
         }
       },
+      "intentblazor.blazor.ai": {
+        "type": "Project",
+        "dependencies": {
+          "IntentBlazor.AI": "[0.1.0-preview.1, )",
+          "IntentBlazor.Blazor": "[0.1.0-preview.1, )"
+        }
+      },
+      "intentblazor.content": {
+        "type": "Project",
+        "dependencies": {
+          "IntentBlazor.Runtime": "[0.1.0-preview.1, )",
+          "PdfPig": "[0.1.16, )",
+          "SkiaSharp": "[4.154.0, )",
+          "SkiaSharp.NativeAssets.Linux.NoDependencies": "[4.154.0, )"
+        }
+      },
       "intentblazor.core": {
         "type": "Project"
+      },
+      "intentblazor.examplehost": {
+        "type": "Project",
+        "dependencies": {
+          "IntentBlazor.Blazor.AI": "[0.1.0-preview.1, )",
+          "IntentBlazor.Storage.Sqlite": "[0.1.0-preview.1, )"
+        }
       },
       "intentblazor.examples": {
         "type": "Project",
@@ -130,10 +213,32 @@
           "IntentBlazor.Storage.Sqlite": "[0.1.0-preview.1, )"
         }
       },
+      "intentblazor.gamingnews": {
+        "type": "Project",
+        "dependencies": {
+          "IntentBlazor.Blazor": "[0.1.0-preview.1, )",
+          "IntentBlazor.ExampleHost": "[0.1.0-preview.1, )"
+        }
+      },
+      "intentblazor.packs.imageeditor": {
+        "type": "Project",
+        "dependencies": {
+          "IntentBlazor.Blazor": "[0.1.0-preview.1, )",
+          "IntentBlazor.Content": "[0.1.0-preview.1, )"
+        }
+      },
       "intentblazor.runtime": {
         "type": "Project",
         "dependencies": {
           "IntentBlazor.Core": "[0.1.0-preview.1, )"
+        }
+      },
+      "intentblazor.staffbusiness": {
+        "type": "Project",
+        "dependencies": {
+          "IntentBlazor.Blazor": "[0.1.0-preview.1, )",
+          "IntentBlazor.ExampleHost": "[0.1.0-preview.1, )",
+          "Microsoft.EntityFrameworkCore.Sqlite": "[10.0.14, )"
         }
       },
       "intentblazor.storage.sqlite": {
@@ -169,6 +274,18 @@
           "SQLitePCLRaw.core": "2.1.13"
         }
       },
+      "Microsoft.EntityFrameworkCore.Sqlite": {
+        "type": "CentralTransitive",
+        "requested": "[10.0.14, )",
+        "resolved": "10.0.14",
+        "contentHash": "lxrwnVwvlIfQD4IF4WUVupE6Qxfj3MfFftDVwo7tsGAWCKLL8Ttb8UjIt+gE4e9nRlH7EgdC6TrsArFGnNYREw==",
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore.Sqlite.Core": "10.0.14",
+          "Microsoft.Extensions.DependencyModel": "10.0.14",
+          "SQLitePCLRaw.bundle_e_sqlite3": "2.1.13",
+          "SQLitePCLRaw.core": "2.1.13"
+        }
+      },
       "Microsoft.Extensions.AI": {
         "type": "CentralTransitive",
         "requested": "[10.11.0, )",
@@ -197,6 +314,28 @@
         "dependencies": {
           "System.ClientModel": "1.15.0"
         }
+      },
+      "PdfPig": {
+        "type": "CentralTransitive",
+        "requested": "[0.1.16, )",
+        "resolved": "0.1.16",
+        "contentHash": "qQcbsNMYVY+K5ELptax2S8thNMk0+rSQq3H/KdYj3LLcko8yTCz8y5KIvsKxIyAuTN0ZYNnfsZkM+0EvxTwHVA=="
+      },
+      "SkiaSharp": {
+        "type": "CentralTransitive",
+        "requested": "[4.154.0, )",
+        "resolved": "4.154.0",
+        "contentHash": "R3BuszJ3tUFmni37nZIRawXL0yx+XHyx7xi1716/0TybuEQFhnBx48Ig3rFpeVFQVytpGpJZZ+NLW9d9UPG7EA==",
+        "dependencies": {
+          "SkiaSharp.NativeAssets.Win32": "4.154.0",
+          "SkiaSharp.NativeAssets.macOS": "4.154.0"
+        }
+      },
+      "SkiaSharp.NativeAssets.Linux.NoDependencies": {
+        "type": "CentralTransitive",
+        "requested": "[4.154.0, )",
+        "resolved": "4.154.0",
+        "contentHash": "U6HQ/n+wQ09WyXQB6PK1l46BIrHqTN/dImV84pti3mLxnlOdcSASPQzJwzuZmEgiCbriLtu5fP0t9cdzpFPHsw=="
       }
     }
   }

@@ -1,6 +1,8 @@
+using System.Collections.Immutable;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 using IntentBlazor.Core;
 using IntentBlazor.Runtime;
 using Microsoft.Extensions.AI;
@@ -68,9 +70,30 @@ internal static class ModelJson
     public static JsonSerializerOptions Options { get; } = Create();
     private static JsonSerializerOptions Create()
     {
+        DefaultJsonTypeInfoResolver resolver = new();
+        resolver.Modifiers.Add(type =>
+        {
+            foreach (JsonPropertyInfo property in type.Properties)
+            {
+                if (type.Type == typeof(OutputNode))
+                    property.ShouldSerialize = property.Name switch
+                    {
+                        "children" => (_, value) => value is ImmutableArray<string> children && !children.IsDefaultOrEmpty,
+                        "fields" => (_, value) => value is ImmutableArray<TableColumn> fields && !fields.IsDefaultOrEmpty,
+                        "title" => (_, value) => value is string { Length: > 0 },
+                        "columns" => (_, value) => value is true,
+                        "ratingMaximum" => (node, _) => ((OutputNode)node).Kind == NodeKind.Rating,
+                        _ => property.ShouldSerialize
+                    };
+                if (type.Type == typeof(ValueBinding) && property.Name == "literal")
+                    property.ShouldSerialize = (_, value) => value is JsonElement literal && literal.ValueKind is not (JsonValueKind.Null or JsonValueKind.Undefined);
+            }
+        });
         JsonSerializerOptions options = new()
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            TypeInfoResolver = resolver,
             UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow,
             MaxDepth = 32
         };

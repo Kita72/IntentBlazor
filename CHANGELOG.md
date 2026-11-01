@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Foundation Step 2 provider generation fixes: local document-object delivery, native reads before presentation formatting, compact context, retained tool data during correction, and metadata-only validation observations.
+- Opt-in OpenAI and isolated Codex evaluation paths with explicit paid-call gates; protocol 2 fixture and real application-service workflows plus native-tool release evidence. Paid live verification remains deferred.
+
 ### Added
 
 - Foundation Step 1 contributor guides for native keyboard/focus behavior, rating-display versus score-editing controls, and provider capability reporting with a clearly fictional example. The documentation catalog, output specification and contribution/issue routes link the guides; live evaluation and publication remain separate gates.

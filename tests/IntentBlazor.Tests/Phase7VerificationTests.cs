@@ -1,5 +1,7 @@
 using System.Collections.Immutable;
 using System.IO.Compression;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using IntentBlazor.AI;
 using IntentBlazor.Examples;
 using IntentBlazor.Verification;
@@ -24,7 +26,7 @@ public sealed class Phase7VerificationTests
         Assert.False(ReleaseReadiness.Evaluate(Version, Fingerprint, models, null, Packages(), true, true).Ready);
         Assert.False(ReleaseReadiness.Evaluate(Version, Fingerprint, models, Runtime(), null, true, true).Ready);
         ReadinessReport empty = ReleaseReadiness.Evaluate(Version, Fingerprint, [], null, null, false, false);
-        Assert.Equal(7, empty.Gates.Length); Assert.All(empty.Gates, gate => Assert.False(gate.Passed));
+        Assert.Equal(8, empty.Gates.Length); Assert.All(empty.Gates, gate => Assert.False(gate.Passed));
         Assert.Contains("deferred", empty.Gates.Single(gate => gate.Gate == "provider:OpenAI").Detail);
     }
 
@@ -41,6 +43,8 @@ public sealed class Phase7VerificationTests
     [InlineData("lost-draft")]
     [InlineData("missing-run")]
     [InlineData("errored-run")]
+    [InlineData("missing-application")]
+    [InlineData("failed-application-action")]
     public void Readiness_RejectsIncompleteOrStaleLiveEvidence(string fault)
     {
         ModelEvaluation[] models = Models(); ModelEvaluation run = models[0]; ModelScenarioResult scenario = run.Scenarios[0];
@@ -58,10 +62,28 @@ public sealed class Phase7VerificationTests
             "lost-draft" => run with { Scenarios = run.Scenarios.SetItem(0, scenario with { DraftPreserved = false }) },
             "missing-run" => run with { Scenarios = run.Scenarios.SetItem(0, scenario with { InitialRun = null }) },
             "errored-run" => run with { Scenarios = run.Scenarios.SetItem(0, scenario with { InitialRun = scenario.InitialRun! with { Status = "invalid-output" } }) },
+            "missing-application" => run with { Applications = run.Applications.RemoveAt(0) },
+            "failed-application-action" => run with { Applications = run.Applications.SetItem(0, run.Applications[0] with { Checks = run.Applications[0].Checks.SetItem("bookmark", false) }) },
             _ => throw new ArgumentException("Unknown test case.")
         };
         ReadinessReport report = Evaluate(models);
         Assert.False(report.Ready); Assert.False(report.Gates.Single(gate => gate.Gate == "provider:Ollama").Passed);
+    }
+
+    [Fact]
+    public void Readiness_RequiresObservedNativeToolsForOpenAIAndAtLeastOneLocalProfile()
+    {
+        ModelEvaluation[] preloaded = Models().Select(model => model with { DataAccess = "preloaded" }).ToArray();
+        Assert.All(preloaded, model => Assert.True(model.Passed));
+        ReadinessReport report = Evaluate(preloaded);
+        Assert.False(report.Ready); Assert.False(report.Gates.Single(gate => gate.Gate == "native-service-tools").Passed);
+        ModelEvaluation[] models = Models();
+        models[2] = models[2] with
+        {
+            Scenarios = models[2].Scenarios.Select(item => item with
+            { InitialRun = item.InitialRun! with { Tools = [] }, FollowupRun = item.FollowupRun! with { Tools = [] } }).ToImmutableArray()
+        };
+        Assert.False(Evaluate(models).Ready);
     }
 
     [Fact]
@@ -185,6 +207,31 @@ public sealed class Phase7VerificationTests
         Assert.All(selected, pair => Assert.Equal(pair.Value, session.Snapshot.Values[pair.Key].GetRawText()));
     }
 
+    [Fact]
+    public void LegacyProviderReports_RemainIntactAndLeaveTheCurrentGatePending()
+    {
+        using ScratchDirectory scratch = new(); string path = System.IO.Path.Combine(scratch.Path, "legacy.json");
+        const string json = """{"evaluationProtocol":"1","sourceFingerprint":"original","scenarios":[{"firstUsefulOutputMilliseconds":123}]}""";
+        File.WriteAllText(path, json);
+        Assert.Null(ReleaseReadiness.ReadOptional<ModelEvaluation>(path));
+        Assert.Equal(json, File.ReadAllText(path));
+        Assert.False(Evaluate([]).Ready);
+    }
+
+    [Fact]
+    public void CurrentProviderReports_RoundtripCompleteEvidenceAndRejectUnexpectedMembers()
+    {
+        using ScratchDirectory scratch = new(); string path = System.IO.Path.Combine(scratch.Path, "current.json");
+        VerificationJson.Write(path, Models()[0]);
+        ModelEvaluation? actual = ReleaseReadiness.ReadOptional<ModelEvaluation>(path);
+        Assert.NotNull(actual); Assert.True(actual.Passed); Assert.True(actual.NativeToolCoverage);
+        Assert.Equal(3, actual.Applications.Length); Assert.Equal(Fingerprint, actual.SourceFingerprint);
+        JsonObject malformed = JsonNode.Parse(File.ReadAllText(path))!.AsObject();
+        malformed["unexpectedPrivateData"] = "test-only";
+        File.WriteAllText(path, malformed.ToJsonString());
+        Assert.Throws<JsonException>(() => ReleaseReadiness.ReadOptional<ModelEvaluation>(path));
+    }
+
     private static ReadinessReport Evaluate(ModelEvaluation[] models, bool policy = true, bool host = true) =>
         ReleaseReadiness.Evaluate(Version, Fingerprint, models, Runtime(), Packages(), policy, host);
     private static PackageReport Packages() => new(Version, new('a', 40), CheckedAt,
@@ -195,9 +242,14 @@ public sealed class Phase7VerificationTests
         Fingerprint, provider, "synthetic-report-only", "test-revision", "test-server", CheckedAt, new ModelOptions(),
         new[] { "news", "staff", "assets" }.Select(fixture =>
         {
-            ModelRunReport run = new("completed", provider, "synthetic-report-only", 1, 1, 0, 200, 100, 100, TimeSpan.FromSeconds(1), 200);
+            ModelRunReport run = new("completed", provider, "synthetic-report-only", 1, 1, 0, 200, 100, 100, TimeSpan.FromSeconds(1), 200)
+            { Tools = [new("test_read", "completed", fixture, 2, TimeSpan.FromMilliseconds(1))] };
             return new ModelScenarioResult(fixture, true, true, 2, true, true, true, 200, 1000, 1000, 1, run, run, []);
-        }).ToImmutableArray())).ToArray();
+        }).ToImmutableArray())).Select(model => model with
+        {
+            Applications = model.Scenarios.Select(item => new ApplicationScenarioResult(item,
+                ApplicationEvaluationRunner.RequiredChecks(item.Fixture).ToImmutableDictionary(key => key, _ => true))).ToImmutableArray()
+        }).ToArray();
 
     private sealed class ScratchDirectory : IDisposable
     {

@@ -166,7 +166,7 @@
       "intentblazor.ai": {
         "type": "Project",
         "dependencies": {
-          "IntentBlazor.Runtime": "[0.1.0-alpha.0, )",
+          "IntentBlazor.Runtime": "[0.1.0-preview.1, )",
           "Microsoft.Agents.AI": "[1.26.0, )",
           "Microsoft.Extensions.AI": "[10.11.0, )",
           "Microsoft.Extensions.AI.OpenAI": "[10.11.0, )",
@@ -176,15 +176,15 @@
       "intentblazor.blazor": {
         "type": "Project",
         "dependencies": {
-          "IntentBlazor.Core": "[0.1.0-alpha.0, )",
-          "IntentBlazor.Runtime": "[0.1.0-alpha.0, )"
+          "IntentBlazor.Core": "[0.1.0-preview.1, )",
+          "IntentBlazor.Runtime": "[0.1.0-preview.1, )"
         }
       },
       "intentblazor.blazor.ai": {
         "type": "Project",
         "dependencies": {
-          "IntentBlazor.AI": "[0.1.0-alpha.0, )",
-          "IntentBlazor.Blazor": "[0.1.0-alpha.0, )"
+          "IntentBlazor.AI": "[0.1.0-preview.1, )",
+          "IntentBlazor.Blazor": "[0.1.0-preview.1, )"
         }
       },
       "intentblazor.core": {
@@ -193,20 +193,20 @@
       "intentblazor.examplehost": {
         "type": "Project",
         "dependencies": {
-          "IntentBlazor.Blazor.AI": "[0.1.0-alpha.0, )",
-          "IntentBlazor.Storage.Sqlite": "[0.1.0-alpha.0, )"
+          "IntentBlazor.Blazor.AI": "[0.1.0-preview.1, )",
+          "IntentBlazor.Storage.Sqlite": "[0.1.0-preview.1, )"
         }
       },
       "intentblazor.runtime": {
         "type": "Project",
         "dependencies": {
-          "IntentBlazor.Core": "[0.1.0-alpha.0, )"
+          "IntentBlazor.Core": "[0.1.0-preview.1, )"
         }
       },
       "intentblazor.storage.sqlite": {
         "type": "Project",
         "dependencies": {
-          "IntentBlazor.Runtime": "[0.1.0-alpha.0, )",
+          "IntentBlazor.Runtime": "[0.1.0-preview.1, )",
           "Microsoft.Data.Sqlite": "[10.0.14, )"
         }
       },

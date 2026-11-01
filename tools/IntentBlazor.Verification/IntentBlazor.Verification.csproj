@@ -10,5 +10,8 @@
     <ProjectReference Include="../../src/IntentBlazor.Blazor/IntentBlazor.Blazor.csproj" />
     <ProjectReference Include="../../src/IntentBlazor.AI/IntentBlazor.AI.csproj" />
     <ProjectReference Include="../../examples/IntentBlazor.Examples/IntentBlazor.Examples.csproj" />
+    <ProjectReference Include="../../examples/GamingNews/IntentBlazor.GamingNews.csproj" />
+    <ProjectReference Include="../../examples/StaffBusiness/IntentBlazor.StaffBusiness.csproj" />
+    <ProjectReference Include="../../examples/AssetWorkbench/IntentBlazor.AssetWorkbench.csproj" />
   </ItemGroup>
 </Project>

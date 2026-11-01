@@ -39,7 +39,9 @@ public sealed class ModelConnectionTests
         Assert.Equal(8000, body.RootElement.GetProperty(provider == "OpenAI" ? "max_completion_tokens" : "max_tokens").GetInt32());
         Assert.False(body.RootElement.TryGetProperty(provider == "OpenAI" ? "max_tokens" : "max_completion_tokens", out _));
         Assert.Equal("json_schema", body.RootElement.GetProperty("response_format").GetProperty("type").GetString());
-        Assert.Contains("documentJson", request.Body);
+        string envelope = provider == "OpenAI" ? "documentJson" : "document";
+        Assert.Equal(provider == "OpenAI" ? "string" : "object", body.RootElement.GetProperty("response_format").GetProperty("json_schema")
+            .GetProperty("schema").GetProperty("properties").GetProperty(envelope).GetProperty("type").GetString());
         Assert.Equal(provider, scope.ServiceProvider.GetRequiredService<ModelInputProcessor>().LastRun!.Provider);
         Assert.NotNull(session.Progress);
     }

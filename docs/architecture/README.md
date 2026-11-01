@@ -10,5 +10,6 @@
 - [0008 Standalone example applications](0008-standalone-example-apps.md)
 - [0009 Documentation and independently consumable samples](0009-documentation-and-samples.md)
 - [0010 Developer preview release gates](0010-preview-release-gates.md)
+- [0011 Provider workflow evaluation and generation diagnostics](0011-provider-workflow-evaluation.md)
 
 Propose substantial changes in an issue or Discussion, then add a numbered decision describing context, choice, consequences, and acceptance evidence. Mark unimplemented specifications as drafts. Do not infer implemented APIs from design examples.
