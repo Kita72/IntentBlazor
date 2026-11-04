@@ -126,10 +126,26 @@ public sealed class BrowserCase(IBrowser browser, string name, string app, strin
         // Route the real server socket. Closing it exercises SignalR reconnect,
         // rather than replacing the document or simulating an application event.
         IWebSocketRoute current = _socket ?? throw new InvalidOperationException("No real circuit socket was observed.");
+        await Page.EvaluateAsync("""
+            () => {
+                const modal = document.getElementById('components-reconnect-modal');
+                if (!modal) throw new Error('The fixture reconnect surface is unavailable.');
+                window.__intentReconnectState = 'waiting';
+                const observe = event => {
+                    window.__intentReconnectState = event.detail.state;
+                    if (event.detail.state === 'hide' || event.detail.state === 'rejected')
+                        modal.removeEventListener('components-reconnect-state-changed', observe);
+                };
+                modal.addEventListener('components-reconnect-state-changed', observe);
+            }
+            """);
         while (_sockets.Reader.TryRead(out _)) { }
         await current.CloseAsync(new() { Code = 1012, Reason = "Offline fixture reconnect" });
         using CancellationTokenSource timeout = new(TimeSpan.FromSeconds(20));
         await _sockets.Reader.ReadAsync(timeout.Token);
+        // Socket establishment precedes the SignalR handshake and circuit
+        // rejoin. Wait for Blazor's completion event before issuing user edits.
+        await Page.WaitForFunctionAsync("() => window.__intentReconnectState === 'hide'", null, new() { Timeout = 20000 });
     }
     public void SuppressActionReply()
     {
