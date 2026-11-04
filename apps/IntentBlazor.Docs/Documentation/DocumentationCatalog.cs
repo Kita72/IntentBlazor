@@ -28,6 +28,7 @@ public sealed partial class DocumentationCatalog
         new("models", "Model connections", "Build", "Ollama, LM Studio, OpenAI, and the experimental Codex CLI adapter.", "docs/phase-2-model-connections.md"),
         new("profiles", "Provider evidence", "Build", "Implemented adapters versus observed live model results.", "docs/provider-evaluation.md"),
         new("provider-workflows", "Evaluate model workflows", "Build", "Local diagnosis, six application checks and opt-in OpenAI/Codex evaluation.", "docs/foundation-step2-provider-workflows.md"),
+        new("browser-regressions", "Offline browser regressions", "Build", "Real browser events, circuit recovery, private workflows and failure diagnostics.", "docs/foundation-step3-browser-regressions.md"),
         new("workspaces", "State and persistence", "Build", "Ownership, history, durable restoration, actions, and conflicting saves.", "docs/phase-3-workspaces.md"),
         new("content", "Files and AI setup", "Build", "Content formats, private artifacts, image editing, setup, and inspection.", "docs/phase-4-content-and-setup.md"),
         new("extensions", "Create a renderer", "Build", "A compiled typed contract and interactive Razor renderer.", "docs/site/extensions.md"),

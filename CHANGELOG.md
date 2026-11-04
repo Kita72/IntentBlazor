@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Foundation Step 3 serial Chromium browser regressions for default components, offline failure modes, actual circuit/process recovery, lost action replies, all three private example workflows, content/download bounds, keyboard/narrow output, AI setup and a package-only public renderer. Verification parses TRX and CI retains failure diagnostics; no local model or paid inference is used.
+- List/table selection buttons now expose explicit `aria-pressed="true"`/`"false"` values in the interactive DOM. Public component parameters and document contracts are unchanged.
 - Framework release scope revised: live provider/native-tool reports are optional compatibility observations, with missing, failed, stale or unreadable reports left unverified. Offline framework, runtime, package, account and hosting checks remain required; no live local/paid inference is needed for publication. Tory's local model installations are reserved for Tory's own testing.
 - Foundation Step 2 provider generation fixes: local document-object delivery, native reads before presentation formatting, compact context, retained tool data during correction, and metadata-only validation observations.
 - Opt-in OpenAI and isolated Codex evaluation paths with explicit paid-call gates; protocol 2 fixture and real application-service workflows plus optional native-tool observations. Paid live inference is not run by framework verification.

@@ -32,7 +32,7 @@ jobs:
         run: ./scripts/Assert-ReleaseTag.ps1 -Tag $env:RELEASE_TAG
       - name: Verify repository and packages
         shell: pwsh
-        run: ./scripts/Verify.ps1
+        run: ./scripts/Verify.ps1 -InstallBrowserDependencies
       - name: Require current release evidence before requesting credentials
         shell: pwsh
         run: ./scripts/Verify-Readiness.ps1 -RequireReady

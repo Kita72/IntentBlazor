@@ -27,6 +27,8 @@
     <Project Path="src/IntentBlazor.Storage.Sqlite/IntentBlazor.Storage.Sqlite.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/IntentBlazor.BrowserHost/IntentBlazor.BrowserHost.csproj" />
+    <Project Path="tests/IntentBlazor.BrowserTests/IntentBlazor.BrowserTests.csproj" />
     <Project Path="tests/IntentBlazor.Tests/IntentBlazor.Tests.csproj" />
   </Folder>
   <Folder Name="/tools/">

@@ -13,6 +13,8 @@ dotnet run --project apps/IntentBlazor.Docs --no-launch-profile -- --environment
 
 Framework build, test and release verification must not require a model account, paid inference, or private data. Use offline substitutes to verify adapter contracts and failure handling. Live-model evaluations are optional developer/contributor observations, recorded separately with provider, model identifier, configuration, scenario, and observed outcome; see [decision 0012](docs/architecture/0012-framework-verification-and-optional-model-reports.md). Do not start Ollama, LM Studio or their workers on Tory's machine, including status commands that activate services.
 
+Verification now includes the [offline browser suite](docs/foundation-step3-browser-regressions.md). The pinned Playwright installer downloads Chromium headless; Linux hosts needing OS dependencies use `pwsh -File scripts/Verify.ps1 -InstallBrowserDependencies`. Tests run serially with GPU/WebGL/Vulkan disabled and isolated synthetic accounts. Keep failure artifacts under ignored `artifacts/browser`; do not substitute DOM assignments or direct session mutations for real input events. Manual screen-reader review remains a separately recorded release procedure.
+
 ## Work and review
 
 1. Find an issue labelled good first issue or help wanted, or open a proposal.

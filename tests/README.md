@@ -1,5 +1,7 @@
 # Validation projects
 
+Foundation Step 3 adds a separate Chromium headless browser project and a guarded offline fixture host. The [browser regression guide](../docs/foundation-step3-browser-regressions.md) maps exact test names to real example workflows, DOM events, circuit/process recovery, lost action replies, file downloads, keyboard behavior and packed renderer checks. The full verification script installs the pinned headless browser, runs serially with GPU/WebGL/Vulkan disabled, parses TRX and retains failure-only diagnostics. No model process or paid call is used.
+
 Foundation Step 2 adds credential-free provider and real application-service checks. These use scripted model/HTTP/process boundaries with real SQLite and software PNG processing; they do not start Ollama/LM Studio or perform paid inference.
 
 | Requirement | Evidence |
@@ -27,7 +29,7 @@ Phase 7 also audits all eight packages and Source Link symbols, restores/builds/
 | C# data authorization and protected evaluator edits | `EvaluationFixture_UsesAuthorizedCSharpDataAndProtectsEditsAcrossFollowup` |
 | Chart alternative caption, keyboard region and column headers | `NewNodes_RenderGalleryChartMarkdownAndAuthorizedArtifactThroughAiOutput` |
 
-`IntentBlazor.Tests` uses xUnit with conventional VSTest. No live model, credentials, external database server, or browser installation is required by the automated suite. Phase 3 tests create temporary SQLite files and remove their own test directories.
+`IntentBlazor.Tests` uses xUnit with conventional VSTest and needs no live model, credentials, external database server or browser installation. The separate `IntentBlazor.BrowserTests` project uses the pinned Chromium headless dependency installed by verification. Both suites use owned temporary SQLite/artifact storage. On Linux, pass `-InstallBrowserDependencies` when OS browser dependencies need installation.
 
 | Area | Evidence |
 | --- | --- |

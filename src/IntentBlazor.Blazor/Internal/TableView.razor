@@ -28,7 +28,7 @@
                     }
                     @if (Node.InteractionId is not null)
                     {
-                        <td><button type="button" aria-pressed="@IsSelected(key)"
+                        <td><button type="button" aria-pressed="@(IsSelected(key) ? "true" : "false")"
                                     @onclick="() => Session.Dispatch(new(Node.Id, UiEventKind.Select, revision) { Value = JsonValues.From(key) })">
                             Select @JsonValues.Display(row[Node.Fields[0].Field])
                         </button></td>

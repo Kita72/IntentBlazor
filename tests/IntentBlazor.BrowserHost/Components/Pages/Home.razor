@@ -1,0 +1,48 @@
+@page "/"
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@implements IAsyncDisposable
+@inject AiSession Session
+@inject BrowserFixtureState Fixture
+
+<PageTitle>Offline browser fixture</PageTitle>
+<h1>Offline browser fixture</h1>
+<p>Scripted synthetic responses. No model server, API key or paid inference.</p>
+<AiInput />
+<AiOutput />
+<section aria-label="Fixture controls">
+    <button @onclick="Save">Save fixture checkpoint</button>
+    <button @onclick="Fixture.Release" disabled="@(!Fixture.Waiting)">Release fixture response</button>
+    <p role="status">@_message</p>
+    <output data-testid="circuit">@Fixture.Instance</output>
+    <output data-testid="history">@Session.Archive.Length</output>
+    <output data-testid="checkpoint">@Session.StoredVersion</output>
+    <output data-testid="waiting">@Fixture.Waiting</output>
+    <output data-testid="temperature">@(Fixture.Temperature?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "unset")</output>
+</section>
+<AiSetup />
+
+@code {
+    private string? _message;
+    protected override async Task OnInitializedAsync()
+    {
+        Session.Changed += Refresh; Fixture.Changed += Refresh;
+        var result = await Session.ConnectAsync("browser");
+        if (!result.Success) throw new InvalidOperationException("The fixture workspace did not connect.");
+        if (Session.Document is null && !Session.Open(FixtureDocuments.Create()).Success)
+            throw new InvalidOperationException("The authored browser document is invalid.");
+    }
+    private async Task Save()
+    {
+        await Session.FlushAsync(); var result = await Session.SaveAsync();
+        _message = result.Success ? "Fixture checkpoint saved." : string.Join(",", result.Errors.Select(error => error.Code));
+    }
+    private async void Refresh()
+    {
+        try { await InvokeAsync(StateHasChanged); }
+        catch (Exception error) { await DispatchExceptionAsync(error); }
+    }
+    public async ValueTask DisposeAsync()
+    {
+        Session.Changed -= Refresh; Fixture.Changed -= Refresh; await Session.FlushAsync();
+    }
+}

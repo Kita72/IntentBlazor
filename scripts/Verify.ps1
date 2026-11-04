@@ -1,6 +1,6 @@
 #requires -Version 7.0
 [CmdletBinding()]
-param()
+param([switch] $InstallBrowserDependencies)
 
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
@@ -26,6 +26,7 @@ try {
         $null -ne $testNode -and $testNode.InnerText -eq 'true'
     })
     foreach ($testProject in $testProjects) {
+        if ($testProject.Name -eq 'IntentBlazor.BrowserTests.csproj') { continue }
         Invoke-DotNet -Arguments @('test', $testProject.FullName, '--no-build', '--no-restore', '--configuration', 'Release')
     }
     if ($testProjects.Count -eq 0) {
@@ -40,6 +41,7 @@ try {
     & (Join-Path $PSScriptRoot 'Verify-Quickstart.ps1')
     & (Join-Path $PSScriptRoot 'Verify-Packages.ps1')
     & (Join-Path $PSScriptRoot 'Verify-Examples.ps1')
+    & (Join-Path $PSScriptRoot 'Verify-Browser.ps1') -NoBuild -InstallDependencies:$InstallBrowserDependencies
     & (Join-Path $PSScriptRoot 'Verify-Readiness.ps1')
     Write-Host 'Repository verification completed.'
 }

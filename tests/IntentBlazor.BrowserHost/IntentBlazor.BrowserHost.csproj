@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/IntentBlazor.Blazor/IntentBlazor.Blazor.csproj" />
+    <ProjectReference Include="../../src/IntentBlazor.Blazor.AI/IntentBlazor.Blazor.AI.csproj" />
+    <ProjectReference Include="../../src/IntentBlazor.Storage.Sqlite/IntentBlazor.Storage.Sqlite.csproj" />
+  </ItemGroup>
+
+</Project>

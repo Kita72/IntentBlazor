@@ -2,7 +2,7 @@
 
 The target is a developer preview demonstrating the same input, output-document, session, and tool mechanisms across three different app domains.
 
-The [foundation completion plan](docs/foundation-completion-plan.md) was approved by Tory on October 31, 2026 and revised on November 4. Steps 1 and 2 are implemented: contributor guides, provider generation fixes and offline-verified connection/evaluation paths. Live local/paid model evaluation is optional developer compatibility work, outside the framework release requirements. Do not start local inference on Tory's current machine or run paid inference. Steps 3–6 cover browser, developer-host and release work, with later platform/media expansion kept separate.
+The [foundation completion plan](docs/foundation-completion-plan.md) was approved by Tory on October 31, 2026 and revised on November 4. Steps 1–3 are implemented: offline browser regressions and contributor guides, provider generation fixes and offline-verified connection/evaluation paths. Live local/paid model evaluation is optional developer compatibility work, outside the framework release requirements. Do not start local inference on Tory's current machine or run paid inference. Steps 4–6 cover developer-host and release work, with later platform/media expansion kept separate.
 
 | Phase | Milestone | Status |
 | --- | --- | --- |

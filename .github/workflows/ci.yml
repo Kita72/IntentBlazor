@@ -30,7 +30,7 @@ jobs:
           global-json-file: global.json
       - name: Verify repository
         shell: pwsh
-        run: ./scripts/Verify.ps1
+        run: ./scripts/Verify.ps1 -InstallBrowserDependencies
       - name: Retain deterministic candidate evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
@@ -40,4 +40,5 @@ jobs:
             artifacts/phase7/evidence/packages.json
             artifacts/phase7/evidence/runtime.json
             artifacts/phase7/evidence/readiness.json
+            artifacts/browser
           if-no-files-found: warn

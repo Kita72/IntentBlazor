@@ -1,6 +1,6 @@
 # IntentBlazor foundation completion plan
 
-Status: **approved by Tory on October 31, 2026; framework scope revised November 4**. Steps 1 and 2 are implemented and verified offline; Steps 3–6 remain. Live model evaluation is optional developer compatibility work, not a deferred release requirement. Originally recorded October 30, 2026, America/Edmonton. AiInput and AiOutput remain the two default interaction components; setup, storage, content and specialist renderers stay optional.
+Status: **approved by Tory on October 31, 2026; framework scope revised November 4**. Steps 1–3 are implemented with offline verification; Steps 4–6 remain. Step 3 adds automated browser checks and a repeatable manual accessibility-review procedure; no complete screen-reader audit is claimed. Live model evaluation is optional developer compatibility work, not a deferred release requirement. Originally recorded October 30, 2026, America/Edmonton. AiInput and AiOutput remain the two default interaction components; setup, storage, content and specialist renderers stay optional.
 
 The outcome is a framework another developer can install, configure with their chosen model, expose an authorized C# service, and use to build an interactive application with recoverable state. We verify connection primitives, tool routing, document handling, state and rendering offline. Developers evaluate their model's behavior, hardware suitability, latency, costs and application workflows. [Decision 0012](architecture/0012-framework-verification-and-optional-model-reports.md) replaces the earlier mandatory live-provider requirements.
 
@@ -10,7 +10,7 @@ The Phase 7 baseline at `b88fc592dcb0e770f6aa0b5142f1edc353301a65` recorded 316 
 
 Repository maintenance has addressed the two open Dependabot pull requests: [#1 setup-dotnet 6.0.0](https://github.com/Kita72/IntentBlazor/pull/1) and [#2 checkout 7.0.1](https://github.com/Kita72/IntentBlazor/pull/2). Both passed Windows/Ubuntu PR checks and were merged sequentially. [Main CI also passed with the combined versions](https://github.com/Kita72/IntentBlazor/actions/runs/41174077728). Their changes retain full commit pins, read-only ordinary CI permissions and disabled checkout credential persistence.
 
-The remaining gaps are automated browser workflows, a complete host integration guide, compatibility/operations checks and publication setup. Step 2 added offline-verified adapters and opt-in evaluation paths for Ollama, LM Studio, OpenAI and Codex. Historical local evaluations remain unverified observations; no paid inference has been performed. They do not need to be completed before framework publication.
+The remaining gaps are a complete host integration guide, compatibility/operations checks and publication setup. Step 2 added offline-verified adapters and opt-in evaluation paths for Ollama, LM Studio, OpenAI and Codex. Historical local evaluations remain unverified observations; no paid inference has been performed. They do not need to be completed before framework publication.
 
 ## Scope decisions
 
@@ -58,6 +58,8 @@ Offline checks also exercise the real example-app service boundaries; the option
 Acceptance: offline tests verify actual request/process shapes, native/preloaded C# data routing, accepted and rejected documents, protected edits and real example services/actions. Default AiInput/AiOutput remain unchanged. Live reports are optional and cannot determine framework release readiness; when supplied, report failures and exact observed settings/usage without certifying untested capabilities. Codex is documented as experimental and preload-only. This acceptance is implemented; model certification is not outstanding milestone work.
 
 ## 3 Automate the important regressions
+
+Implemented: the [offline browser suite](foundation-step3-browser-regressions.md) exercises the default pair, real example apps, failure recovery, actual circuit reconnect and process restoration, lost action replies, private files, keyboard behavior and a packed public renderer. Repository/CI verification installs Chromium headless, runs serially without GPU/model services, validates TRX and retains failure diagnostics. The guide records the manual assistive-technology review owner/procedure separately; no complete screen-reader audit is claimed.
 
 Map each required behavior to existing tests, then add missing checks where they protect an observable outcome. Preserve the existing suite and add a focused browser test project for fixture mode, using Playwright for .NET or an equivalent supported runner. Start with Chromium on CI; keep Windows/Linux repository checks and make broader browser coverage a deliberate matrix choice. [Playwright's CI guidance](https://playwright.dev/dotnet/docs/ci) describes the browser/dependency installation requirements.
 
@@ -113,6 +115,6 @@ Retain named follow-on work for WASM and MAUI/Blazor Hybrid hosting; distributed
 
 ## Execution order and remaining decisions
 
-Steps 1 and 2 are complete. Continue with browser automation and the host recipe without model accounts, inference or local services; NuGet ownership setup can be prepared alongside them. Complete compatibility/operations checks and freeze required evidence after behavior-changing fixes, then publish and repeat public-feed consumption tests.
+Steps 1–3 are implemented. Continue with the production-host recipe without model accounts, inference or local services; NuGet ownership setup can be prepared alongside them. Complete compatibility/operations checks and freeze required evidence after behavior-changing fixes, then publish and repeat public-feed consumption tests.
 
 The approved scope is an Interactive Server foundation on .NET 10, with separately recorded .NET 11 compatibility. Tory's November 4 decision replaces three-provider/native-model release criteria with optional compatibility reports while retaining offline framework checks. Remaining external decisions are NuGet ownership/policy and the eventual announcement audience. No step authorizes using Tory's local model installations or paid inference, and later publication/compatibility work remains incomplete.

@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IsTestProject>true</IsTestProject>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Microsoft.Playwright" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" PrivateAssets="all" />
+    <ProjectReference Include="../IntentBlazor.BrowserHost/IntentBlazor.BrowserHost.csproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="../../examples/GamingNews/IntentBlazor.GamingNews.csproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="../../examples/StaffBusiness/IntentBlazor.StaffBusiness.csproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="../../examples/AssetWorkbench/IntentBlazor.AssetWorkbench.csproj" />
+  </ItemGroup>
+</Project>
