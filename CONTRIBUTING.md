@@ -11,7 +11,7 @@ pwsh -File scripts/Verify.ps1
 dotnet run --project apps/IntentBlazor.Docs --no-launch-profile -- --environment Development --urls http://localhost:5180
 ~~~
 
-Ordinary builds and fixture-based work must not require a model account, paid credentials, or private data. Record live-model evaluations separately with provider, model identifier, configuration, scenario, and observed outcome.
+Framework build, test and release verification must not require a model account, paid inference, or private data. Use offline substitutes to verify adapter contracts and failure handling. Live-model evaluations are optional developer/contributor observations, recorded separately with provider, model identifier, configuration, scenario, and observed outcome; see [decision 0012](docs/architecture/0012-framework-verification-and-optional-model-reports.md). Do not start Ollama, LM Studio or their workers on Tory's machine, including status commands that activate services.
 
 ## Work and review
 

@@ -2,6 +2,8 @@
 
 Status: accepted for foundation Step 2, preserving the common document and two-component page contract.
 
+Revision, November 4, 2026: [decision 0012](0012-framework-verification-and-optional-model-reports.md) supersedes the mandatory live-provider/native-read acceptance described below. The evaluator and six-workflow report criteria remain optional developer diagnostics; no live run is required for framework publication.
+
 Ollama and LM Studio request a single `document` JSON object instead of double-encoding a presentation inside `documentJson`. Their JSON-schema envelope constrains JSON syntax, while the existing strict C# parser and semantic validator enforce every document/data/action rule. Dynamic state and extension configuration still need host validation. `ModelProfile.UseDocumentObject` makes this transport capability explicit for custom clients. Legacy string envelopes remain accepted by these connections for compatibility; extra envelope properties and forged rows remain rejected. OpenAI and Codex keep their strict `documentJson` string envelope. Public OutputDocument schemas and Razor parameters are unchanged.
 
 Keep the official SDK behind IChatClient and Agent Framework's bounded function orchestration. For a workspace whose referenced datasets have not been read in the current request, registered native tools run without a presentation JSON grammar and with a required tool choice. After those datasets are available, restore the configured presentation format. This is data loading through registered read-only C# capabilities, never authorization derived from a document. Fresh workspaces may choose tools automatically. Preload-only connections continue to receive authorized host data without native tool claims.

@@ -2,12 +2,13 @@
 
 ## Unreleased
 
+- Framework release scope revised: live provider/native-tool reports are optional compatibility observations, with missing, failed, stale or unreadable reports left unverified. Offline framework, runtime, package, account and hosting checks remain required; no live local/paid inference is needed for publication. Tory's local model installations are reserved for Tory's own testing.
 - Foundation Step 2 provider generation fixes: local document-object delivery, native reads before presentation formatting, compact context, retained tool data during correction, and metadata-only validation observations.
-- Opt-in OpenAI and isolated Codex evaluation paths with explicit paid-call gates; protocol 2 fixture and real application-service workflows plus native-tool release evidence. Paid live verification remains deferred.
+- Opt-in OpenAI and isolated Codex evaluation paths with explicit paid-call gates; protocol 2 fixture and real application-service workflows plus optional native-tool observations. Paid live inference is not run by framework verification.
 
 ### Added
 
-- Foundation Step 1 contributor guides for native keyboard/focus behavior, rating-display versus score-editing controls, and provider capability reporting with a clearly fictional example. The documentation catalog, output specification and contribution/issue routes link the guides; live evaluation and publication remain separate gates.
+- Foundation Step 1 contributor guides for native keyboard/focus behavior, rating-display versus score-editing controls, and provider capability reporting with a clearly fictional example. The documentation catalog, output specification and contribution/issue routes link the guides; optional live evaluation remains separate from framework publication.
 
 - `0.1.0-preview.1` candidate packaging with eight package-specific readmes, MIT/repository metadata, portable symbols and exact-commit Source Link audits. This candidate is unreleased.
 - Independent package-only quickstart and three-example runtime checks, repeatable renderer budgets, source-bound live evaluation reports and explicit release-readiness gates.

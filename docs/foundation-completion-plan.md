@@ -1,8 +1,8 @@
 # IntentBlazor foundation completion plan
 
-Status: **approved by Tory on October 31, 2026**. Step 1 documentation is implemented; Steps 2–6 remain pending. Originally recorded October 30, 2026, America/Edmonton. This completes the remaining developer-preview work before adding major capabilities. AiInput and AiOutput remain the two default interaction components; setup, storage, content and specialist renderers stay optional.
+Status: **approved by Tory on October 31, 2026; framework scope revised November 4**. Steps 1 and 2 are implemented and verified offline; Steps 3–6 remain. Live model evaluation is optional developer compatibility work, not a deferred release requirement. Originally recorded October 30, 2026, America/Edmonton. AiInput and AiOutput remain the two default interaction components; setup, storage, content and specialist renderers stay optional.
 
-The outcome is a framework another developer can install, connect to a verified model, expose an authorized C# service, and use to build an interactive application with recoverable state. A usable foundation needs reliable model behavior and a reproducible developer journey alongside the existing deterministic renderer.
+The outcome is a framework another developer can install, configure with their chosen model, expose an authorized C# service, and use to build an interactive application with recoverable state. We verify connection primitives, tool routing, document handling, state and rendering offline. Developers evaluate their model's behavior, hardware suitability, latency, costs and application workflows. [Decision 0012](architecture/0012-framework-verification-and-optional-model-reports.md) replaces the earlier mandatory live-provider requirements.
 
 ## Current position
 
@@ -10,14 +10,14 @@ The Phase 7 baseline at `b88fc592dcb0e770f6aa0b5142f1edc353301a65` recorded 316 
 
 Repository maintenance has addressed the two open Dependabot pull requests: [#1 setup-dotnet 6.0.0](https://github.com/Kita72/IntentBlazor/pull/1) and [#2 checkout 7.0.1](https://github.com/Kita72/IntentBlazor/pull/2). Both passed Windows/Ubuntu PR checks and were merged sequentially. [Main CI also passed with the combined versions](https://github.com/Kita72/IntentBlazor/actions/runs/41174077728). Their changes retain full commit pins, read-only ordinary CI permissions and disabled checkout credential persistence.
 
-The largest remaining gaps are live provider reliability, automated browser workflows, publication setup, and a complete host integration guide. The local evaluations did not produce a successful three-app provider profile. OpenAI and Codex live evaluation remain deferred. The current evaluator exposes a loopback-only `model-local` command; adding a key alone will not create an OpenAI evaluation path.
+The remaining gaps are automated browser workflows, a complete host integration guide, compatibility/operations checks and publication setup. Step 2 added offline-verified adapters and opt-in evaluation paths for Ollama, LM Studio, OpenAI and Codex. Historical local evaluations remain unverified observations; no paid inference has been performed. They do not need to be completed before framework publication.
 
 ## Scope decisions
 
 | Item | Treatment in this milestone |
 | --- | --- |
-| Ollama, LM Studio and OpenAI | Complete the existing release gates with exact tested provider/model profiles and all three workflows. |
-| Codex | Verify the supported integration and run a bounded live preload workflow; resolve failures or bring an explicit experimental-status decision to Tory. It does not connect to this desktop chat. |
+| Ollama, LM Studio and OpenAI | Offer configurable connections and capabilities; verify our SDK requests, tools, parsing and errors offline. Live profile reports are optional developer observations. |
+| Codex | Offer the offline-verified experimental independent process adapter and document its preload-only capabilities. No live certification is claimed; it does not connect to this desktop chat. |
 | Browser regression tests | Automate the critical fixture workflows and keep a documented manual accessibility review. |
 | Open issues #4 and #5 | Complete their acceptance criteria, link the results, then close them. |
 | Identity, ownership and durable state | Complete a compiled host integration recipe and verify isolation/recovery; the host continues to own accounts and business rules. |
@@ -37,25 +37,25 @@ Reconcile the roadmap, current guides, test inventory and original unchecked pre
 
 Acceptance: both documentation issues meet their original criteria, current status pages agree, and main CI passes with both action upgrades. No release or feature is marked complete solely to empty a checklist.
 
-## 2 Make the real model workflows reliable
+## 2 Complete the framework provider primitives and offline checks
 
-Step 2's implementation is described in the [provider workflow guide](foundation-step2-provider-workflows.md): local generation fixes, explicit paid-call gates, six-workflow protocol-2 evaluation and strengthened native-tool acceptance. Offline tests do not finish the live acceptance below. On November 1, 2026, Tory deferred all local inference on the current machine after host instability; OpenAI/Codex paid inference remains deferred. Continue development with substitutes until a suitable live host and configuration are approved.
+Step 2 is implemented. The [provider workflow guide](foundation-step2-provider-workflows.md) covers local generation fixes, explicit live-call opt-ins, optional six-workflow protocol-2 reports and native-tool observations. Offline tests verify supported primitives and failure handling. Do not start Ollama, LM Studio or their workers on Tory's current machine, even through service-activating status commands; those installations are reserved for Tory's own testing. Do not run paid OpenAI/Codex inference. A future live diagnostic run requires a new explicit user decision and a suitable host; no such run is required for this milestone.
 
-Investigate the existing failed local runs before changing models or increasing budgets. Separate backend/protocol failures, unsupported combinations of structured output and tools, context/output truncation, slow inference, and invalid presentation documents. Retain strict validation and protected drafts. Fix a demonstrated adapter/prompt/runtime defect with a focused regression test; do not relax the checks to obtain a pass.
+Retain strict validation, protected drafts and bounded calls/corrections. Scripted HTTP/process/model substitutes exercise actual SDK serialization, tool/presentation sequencing, accepted and rejected envelopes, correction data, cancellation, errors, budgets and metadata privacy. A demonstrated framework defect needs a focused regression case; optional live observations must not be relabelled as successful to close a task.
 
-Extend the shared evaluation harness to support explicit opt-in OpenAI and Codex runs alongside Ollama and LM Studio. Keep provider SDK calls in the AI boundary. Reuse the same scenario outcomes and sanitized reporting, while recording the different capabilities of each connection. Preloaded C# data and model-initiated native read tools remain separate profiles. Codex must be tested through its supported integration, using an isolated fixture workspace and restricted capabilities.
+The optional shared harness supports explicit opt-in OpenAI and Codex diagnostics alongside Ollama and LM Studio. Keep provider SDK calls in the AI boundary. Preloaded C# data and model-initiated native read tools remain separate profiles. Codex uses an isolated fixture workspace and restricted capabilities, verified through process substitutes; it remains an experimental independent preload-only adapter.
 
-Evaluate exact available local model revisions and settings. OpenAI and Codex calls begin only after Tory approves the live configuration and resource budget; credentials stay in supported local secret storage, outside chat and reports. No paid inference enters ordinary PR CI. Model downloads or hosting changes require their own decision when needed.
+Developers provide endpoint/model selection, credential resolution, supported capability/options and their authorized C# services. Unsupported settings remain explicit; default AiInput/AiOutput need no additional wiring. Build, test and publication never start a model service or make paid inference calls.
 
-In addition to the shared fixture evaluator, exercise the real example-app service boundaries:
+Offline checks also exercise the real example-app service boundaries; the optional evaluator reuses these outcomes:
 
-| App | Required live workflow |
+| App | Deterministic framework/service workflow |
 | --- | --- |
 | Gaming News | Read authorized news data, compose a source-attributed interactive view, select an item, retain a bookmark/comparison draft through a follow-up. |
 | Staff Business | Read authorized jobs/staff, compose a useful table/editor, preserve direct edits, and route an explicitly confirmed synthetic save through the existing role/version checks. A conflicting save must retain the draft. |
 | Asset Workbench | Read authorized asset metadata, compose an inspection/editing workspace, retain a label/dimension draft, and invoke the existing registered resize/export workflow only through its authorized action boundary. Retain the original image. |
 
-Acceptance: current successful news/staff/assets reports satisfy the existing Ollama, LM Studio and OpenAI release gates. Required supported profiles prove actual C# reads, accepted initial/follow-up documents, selection and draft continuity. The documented service/tool developer journey also needs native-tool coverage for OpenAI and at least one local profile; a preload pass cannot substitute for that claim. Reports record failures, settings, first useful output/follow-up timing, context growth and usage only where observed. Codex has either a verified documented profile or a specific limitation and release-scope decision approved by Tory. Existing release gates stay intact until an explicit decision changes them.
+Acceptance: offline tests verify actual request/process shapes, native/preloaded C# data routing, accepted and rejected documents, protected edits and real example services/actions. Default AiInput/AiOutput remain unchanged. Live reports are optional and cannot determine framework release readiness; when supplied, report failures and exact observed settings/usage without certifying untested capabilities. Codex is documented as experimental and preload-only. This acceptance is implemented; model certification is not outstanding milestone work.
 
 ## 3 Automate the important regressions
 
@@ -103,9 +103,9 @@ Tory creates/selects the NuGet profile or organization and confirms the trusted 
 
 After the code/evidence is frozen, run complete verification, create the exact source/version tag and publish all eight packages with their symbols through the OIDC workflow. Never replace a published version or move a tag to hide a failed attempt. Restore the quickstart and three examples from NuGet.org using a fresh isolated package cache with no local framework feed or framework project references, then exercise their representative workflows.
 
-Update the hosted guides and release notes with the actual package version, source tag, verified provider profiles, known limits and upgrade policy. Create the release discussion/announcement only for the audience and channel Tory selects. Keep ordinary public demos in deterministic mode.
+Update the hosted guides and release notes with the actual package version, source tag, implemented adapter capabilities, optional observed profiles, known limits and upgrade policy. Create the release discussion/announcement only for the audience and channel Tory selects. Keep ordinary public demos in deterministic mode.
 
-Acceptance: another developer can install the public packages, run all three fixture apps, complete the documented verified AI path, add a C# capability/renderer through public contracts and follow the contribution process. The release readiness report is fully green for the intended candidate, with no required item left labelled deferred.
+Acceptance: another developer can install the public packages, run all three fixture apps, configure a model through documented connection primitives, add a C# capability/renderer through public contracts and follow the contribution process. Required framework/package/account/host readiness gates are green for the intended candidate; optional live reports remain clearly separate and may be absent.
 
 ## Expansion backlog after the foundation
 
@@ -113,6 +113,6 @@ Retain named follow-on work for WASM and MAUI/Blazor Hybrid hosting; distributed
 
 ## Execution order and remaining decisions
 
-Start with backlog/documentation closure and local model diagnosis. Browser automation and the host recipe can proceed without paid-model accounts; NuGet ownership setup can be prepared alongside them. Complete compatibility/operations checks and freeze evidence after behavior-changing fixes, then publish and repeat public-feed consumption tests.
+Steps 1 and 2 are complete. Continue with browser automation and the host recipe without model accounts, inference or local services; NuGet ownership setup can be prepared alongside them. Complete compatibility/operations checks and freeze required evidence after behavior-changing fixes, then publish and repeat public-feed consumption tests.
 
-The approved scope is an Interactive Server foundation on .NET 10, with separately recorded .NET 11 compatibility. Preserve the existing three-provider release criteria. Tory's remaining external decisions are the OpenAI/Codex live configuration and budget, NuGet ownership/policy, and the eventual announcement audience. Step 1 does not resume deferred inference or complete the later publication and compatibility work.
+The approved scope is an Interactive Server foundation on .NET 10, with separately recorded .NET 11 compatibility. Tory's November 4 decision replaces three-provider/native-model release criteria with optional compatibility reports while retaining offline framework checks. Remaining external decisions are NuGet ownership/policy and the eventual announcement audience. No step authorizes using Tory's local model installations or paid inference, and later publication/compatibility work remains incomplete.

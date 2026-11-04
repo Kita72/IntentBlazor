@@ -66,7 +66,7 @@ The samples are authored by this project's procedural generator and licensed und
 
 All apps default to Ai:Provider=Fixture. Configure the host with Ai:Provider (Ollama, LMStudio, OpenAI, or experimental Codex) and Ai:Model to opt into model requests. Ai:Endpoint configures a local compatible endpoint; Ai:CodexExecutable configures the workstation CLI. Host-managed Ai:ApiKey can be supplied through user secrets/another secret provider when required. Each app has its own UserSecretsId. Never put credentials in a feed URL, output document, fixture, or committed appsettings file.
 
-The [Phase 2 connection guide](phase-2-model-connections.md) and [provider matrix](provider-evaluation.md) describe adapter boundaries and the deferred live gate. There is no inference on initialization/restoration. Submitting through AiInput in model mode uses the app's authorized IOutputDataSource with the existing model pipeline. Image context remains metadata/text rather than pixels. Open **AI connection and diagnostics** for scoped setup/inspection; a probe is an explicit model request, separate from ordinary fixture checks.
+The [Phase 2 connection guide](phase-2-model-connections.md) and [provider matrix](provider-evaluation.md) describe adapter boundaries and optional compatibility reports. There is no inference on initialization/restoration. Submitting through AiInput in model mode uses the app's authorized IOutputDataSource with the existing model pipeline. Image context remains metadata/text rather than pixels. Open **AI connection and diagnostics** for scoped setup/inspection; a probe is an explicit model request, separate from ordinary fixture checks. Framework verification does not run these live paths.
 
 ## Supporting workspace controls
 

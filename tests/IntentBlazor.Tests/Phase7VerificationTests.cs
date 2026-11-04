@@ -16,18 +16,20 @@ public sealed class Phase7VerificationTests
     private static readonly DateTimeOffset CheckedAt = DateTimeOffset.UnixEpoch;
 
     [Fact]
-    public void Readiness_RequiresEveryProviderAndAccountAndHostGate()
+    public void Readiness_RequiresFrameworkAndPublicationGatesWithoutLiveModels()
     {
         ModelEvaluation[] models = Models();
         Assert.True(Evaluate(models).Ready);
-        Assert.False(Evaluate(models[..2]).Ready);
+        Assert.True(Evaluate([]).Ready);
+        Assert.True(Evaluate(models[..2]).Ready);
         Assert.False(Evaluate(models, policy: false).Ready);
         Assert.False(Evaluate(models, host: false).Ready);
         Assert.False(ReleaseReadiness.Evaluate(Version, Fingerprint, models, null, Packages(), true, true).Ready);
         Assert.False(ReleaseReadiness.Evaluate(Version, Fingerprint, models, Runtime(), null, true, true).Ready);
         ReadinessReport empty = ReleaseReadiness.Evaluate(Version, Fingerprint, [], null, null, false, false);
-        Assert.Equal(8, empty.Gates.Length); Assert.All(empty.Gates, gate => Assert.False(gate.Passed));
-        Assert.Contains("deferred", empty.Gates.Single(gate => gate.Gate == "provider:OpenAI").Detail);
+        Assert.Equal(new[] { "runtime-budgets", "package-metadata", "nuget-policy", "public-host" }, empty.Gates.Select(gate => gate.Gate));
+        Assert.All(empty.Gates, gate => Assert.False(gate.Passed));
+        Assert.Equal(4, empty.ProviderObservations.Length); Assert.All(empty.ProviderObservations, item => Assert.False(item.Passed));
     }
 
     [Theory]
@@ -45,7 +47,7 @@ public sealed class Phase7VerificationTests
     [InlineData("errored-run")]
     [InlineData("missing-application")]
     [InlineData("failed-application-action")]
-    public void Readiness_RejectsIncompleteOrStaleLiveEvidence(string fault)
+    public void Readiness_KeepsIncompleteOrStaleLiveEvidenceUnverifiedWithoutBlockingRelease(string fault)
     {
         ModelEvaluation[] models = Models(); ModelEvaluation run = models[0]; ModelScenarioResult scenario = run.Scenarios[0];
         models[0] = fault switch
@@ -67,23 +69,26 @@ public sealed class Phase7VerificationTests
             _ => throw new ArgumentException("Unknown test case.")
         };
         ReadinessReport report = Evaluate(models);
-        Assert.False(report.Ready); Assert.False(report.Gates.Single(gate => gate.Gate == "provider:Ollama").Passed);
+        Assert.True(report.Ready); Assert.False(report.ProviderObservations.Single(item => item.Gate == "provider:Ollama").Passed);
     }
 
     [Fact]
-    public void Readiness_RequiresObservedNativeToolsForOpenAIAndAtLeastOneLocalProfile()
+    public void Readiness_SeparatesOptionalNativeToolObservationsFromRequiredFrameworkChecks()
     {
         ModelEvaluation[] preloaded = Models().Select(model => model with { DataAccess = "preloaded" }).ToArray();
         Assert.All(preloaded, model => Assert.True(model.Passed));
         ReadinessReport report = Evaluate(preloaded);
-        Assert.False(report.Ready); Assert.False(report.Gates.Single(gate => gate.Gate == "native-service-tools").Passed);
+        Assert.True(report.Ready); Assert.False(report.ProviderObservations.Single(item => item.Gate == "native-service-tools").Passed);
+        Assert.All(report.ProviderObservations.Where(item => item.Gate.StartsWith("provider:", StringComparison.Ordinal)), item => Assert.True(item.Passed));
         ModelEvaluation[] models = Models();
+        Assert.True(Evaluate(models).ProviderObservations.Single(item => item.Gate == "native-service-tools").Passed);
         models[2] = models[2] with
         {
             Scenarios = models[2].Scenarios.Select(item => item with
             { InitialRun = item.InitialRun! with { Tools = [] }, FollowupRun = item.FollowupRun! with { Tools = [] } }).ToImmutableArray()
         };
-        Assert.False(Evaluate(models).Ready);
+        ReadinessReport missingTools = Evaluate(models);
+        Assert.True(missingTools.Ready); Assert.False(missingTools.ProviderObservations.Single(item => item.Gate == "native-service-tools").Passed);
     }
 
     [Fact]
@@ -208,14 +213,15 @@ public sealed class Phase7VerificationTests
     }
 
     [Fact]
-    public void LegacyProviderReports_RemainIntactAndLeaveTheCurrentGatePending()
+    public void LegacyProviderReports_RemainIntactWithoutBlockingFrameworkReadiness()
     {
         using ScratchDirectory scratch = new(); string path = System.IO.Path.Combine(scratch.Path, "legacy.json");
         const string json = """{"evaluationProtocol":"1","sourceFingerprint":"original","scenarios":[{"firstUsefulOutputMilliseconds":123}]}""";
         File.WriteAllText(path, json);
         Assert.Null(ReleaseReadiness.ReadOptional<ModelEvaluation>(path));
         Assert.Equal(json, File.ReadAllText(path));
-        Assert.False(Evaluate([]).Ready);
+        Assert.Null(ReleaseReadiness.ReadProviderObservation(path));
+        Assert.True(Evaluate([]).Ready);
     }
 
     [Fact]
@@ -230,6 +236,41 @@ public sealed class Phase7VerificationTests
         malformed["unexpectedPrivateData"] = "test-only";
         File.WriteAllText(path, malformed.ToJsonString());
         Assert.Throws<JsonException>(() => ReleaseReadiness.ReadOptional<ModelEvaluation>(path));
+        Assert.Null(ReleaseReadiness.ReadProviderObservation(path));
+        Assert.True(Evaluate([]).Ready);
+    }
+
+    [Theory]
+    [InlineData("missing")]
+    [InlineData("malformed")]
+    [InlineData("oversized")]
+    [InlineData("null-scenario")]
+    [InlineData("null-application")]
+    [InlineData("null-application-model")]
+    [InlineData("null-application-checks")]
+    [InlineData("null-tool")]
+    public void OptionalProviderReports_DoNotCertifyUnreadableEvidenceOrBlockFrameworkReadiness(string fault)
+    {
+        using ScratchDirectory scratch = new(); string path = System.IO.Path.Combine(scratch.Path, "optional.json");
+        if (fault == "malformed") File.WriteAllText(path, "not JSON");
+        if (fault == "oversized") File.WriteAllText(path, new string('x', 1048577));
+        if (fault.StartsWith("null-", StringComparison.Ordinal))
+        {
+            VerificationJson.Write(path, Models()[0]);
+            JsonObject json = JsonNode.Parse(File.ReadAllText(path))!.AsObject();
+            switch (fault)
+            {
+                case "null-scenario": json["scenarios"]![0] = null; break;
+                case "null-application": json["applications"]![0] = null; break;
+                case "null-application-model": json["applications"]![0]!["model"] = null; break;
+                case "null-application-checks": json["applications"]![0]!["checks"] = null; break;
+                case "null-tool": json["scenarios"]![0]!["initialRun"]!["tools"]![0] = null; break;
+            }
+            File.WriteAllText(path, json.ToJsonString());
+        }
+        Assert.Null(ReleaseReadiness.ReadProviderObservation(path));
+        ReadinessReport report = Evaluate([]);
+        Assert.True(report.Ready); Assert.All(report.ProviderObservations, item => Assert.False(item.Passed));
     }
 
     private static ReadinessReport Evaluate(ModelEvaluation[] models, bool policy = true, bool host = true) =>

@@ -2,7 +2,7 @@
 
 Prepared for Tory on October 29, 2026.
 
-Progress: Phases 0–6 are implemented, with experimental contracts. Phase 7 has prepared the `0.1.0-preview.1` candidate, independent package consumers, package/symbol audits, repeatable renderer budgets, production hosting checks and gated release tooling. The [readiness record](phase-7-readiness.md) separates these implemented checks from outstanding local/frontier model and NuGet account/publication gates. OpenAI verification remains deferred by the maintainer; no public package release has occurred.
+Progress: Phases 0–6 are implemented, with experimental contracts. Phase 7 has prepared the `0.1.0-preview.1` candidate, independent package consumers, package/symbol audits, repeatable renderer budgets, production hosting checks and gated release tooling. The [readiness record](phase-7-readiness.md) separates these checks from outstanding framework/browser/host and NuGet account/publication work. Tory's November 4 revision, [decision 0012](architecture/0012-framework-verification-and-optional-model-reports.md), makes live model evaluation optional developer compatibility work. No public package release has occurred.
 
 Build an open-source Blazor framework whose two core interaction components accept user intent and produce a dynamic, interactive workspace. Deliver it as reusable NuGet packages, accompanied by a Blazor documentation and demonstration website and three independently runnable example applications.
 
@@ -198,13 +198,13 @@ Deliverables:
 - Begin the GamingNews example with a fixture-backed content service and a real model composing the output.
 - Document the first installation guide, C# service example, and two-component page.
 
-Exit gate: a fresh app using the public package surface can connect a verified model, expose a service, and answer a request with an interactive list or table. No handwritten domain-specific Razor view is required for that workflow. At least one real local and one real frontier-model run is recorded with model/version details.
+Exit gate, revised November 4: a fresh app using the public package surface can register a connection, expose a service, and render an interactive list or table through default AiInput/AiOutput. Offline SDK/HTTP/process/model substitutes verify request formatting, tool routing, documents and failure handling. Live local/frontier reports are optional compatibility observations for developers and contributors, not required release evidence. No handwritten domain-specific Razor view is required for that workflow.
 
 ## Phase 3 Stateful interactions and persistence
 
 Make the workspace survive follow-up requests, direct edits, and reconnection.
 
-Implementation status: completed through deterministic tests and the Development-only SQLite recovery demo. See [the Phase 3 guide](phase-3-workspaces.md) and [decision 0006](architecture/0006-durable-workspaces.md). Summary generation currently means a bounded deterministic extractive history index; semantic summarization, lasting memory, and transcript retrieval are not implemented. The Phase 2 live-model gate remains deferred independently.
+Implementation status: completed through deterministic tests and the Development-only SQLite recovery demo. See [the Phase 3 guide](phase-3-workspaces.md) and [decision 0006](architecture/0006-durable-workspaces.md). Summary generation currently means a bounded deterministic extractive history index; semantic summarization, lasting memory, and transcript retrieval are not implemented. Live-model reports are optional under decision 0012.
 
 Deliverables:
 
@@ -381,7 +381,7 @@ Reconciled October 31, 2026 against the [test inventory](../tests/README.md), [c
 - [x] Local interactions remain responsive without model calls for every event.
 - [x] Follow-up requests preserve selections and unsaved edits.
 - [x] Persisted sessions restore without duplicate writes or unauthorized data access.
-- [ ] Ollama, LM Studio, and at least one frontier profile have individually recorded results.
+- [x] Ollama, LM Studio, OpenAI and experimental Codex connection paths are offline-verified; model-specific live reports are optional developer compatibility work.
 - [x] Three standalone sample apps pass their representative fixture scenarios.
 - [x] Fresh locally packed candidate consumption and the documented quickstart are verified; public-feed verification remains pending below.
 - [x] Documentation and deterministic demos run without paid-model credentials.
@@ -389,7 +389,7 @@ Reconciled October 31, 2026 against the [test inventory](../tests/README.md), [c
 - [x] Release notes distinguish supported capabilities, experimental features, and deferred work.
 - [x] Public GitHub contribution routes and preview feedback channels are available.
 - [x] Keyboard/focus guidance and a reusable provider capability report template with a fictional example are available.
-- [ ] Current successful live news/staff/assets profiles satisfy every required provider gate, including the documented native-tool coverage.
+- [x] Offline provider request, native/preload tool routing, validation and failure checks are implemented; live profile reports are optional under decision 0012.
 - [ ] Browser regression automation and the compiled production-host integration recipe meet foundation Steps 3 and 4.
 - [ ] Compatibility, source-bound release evidence and deployment/rollback acceptance meet foundation Step 5.
 - [ ] NuGet ownership/trusted publishing are confirmed, a tagged prerelease is published and fresh public-feed consumers are verified.

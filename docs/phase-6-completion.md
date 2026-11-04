@@ -1,5 +1,7 @@
 # Phase 6 completion record
 
+Historical record. Tory's November 4, 2026 [scope revision](architecture/0012-framework-verification-and-optional-model-reports.md) supersedes the live-model release requirement mentioned below; live reports are now optional compatibility observations.
+
 Status: implemented; experimental API. Phase 7 developer preview and the deferred live-model acceptance gate remain.
 
 Scope: static SSR learning site, embedded source-controlled guides, complete output reference and error index, independent compiled quickstart, an isolated fixture explorer, demo navigation, provider/hosting limitations, and keyboard/small-screen checks. No package publication, deployment, or live API certification is part of this phase.

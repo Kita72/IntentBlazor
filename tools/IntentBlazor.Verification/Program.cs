@@ -39,7 +39,7 @@ try
         case "readiness" when args.Length is 5 or 6:
             string root = Path.GetFullPath(args[1]), evidence = Path.GetFullPath(args[3]);
             var models = new[] { "ollama.json", "lmstudio.json", "openai.json" }
-                .Select(file => ReleaseReadiness.ReadOptional<ModelEvaluation>(Path.Combine(evidence, file))).OfType<ModelEvaluation>();
+                .Select(file => ReleaseReadiness.ReadProviderObservation(Path.Combine(evidence, file))).OfType<ModelEvaluation>();
             ReadinessReport readiness = ReleaseReadiness.Evaluate(args[2], SourceFingerprint.Compute(root), models,
                 ReleaseReadiness.ReadOptional<RuntimeReport>(Path.Combine(evidence, "runtime.json")),
                 ReleaseReadiness.ReadOptional<PackageReport>(Path.Combine(evidence, "packages.json")),
@@ -47,6 +47,8 @@ try
                 hostVerified: Environment.GetEnvironmentVariable("INTENT_PUBLIC_HOST_VERIFIED") == "true");
             VerificationJson.Write(args[4], readiness);
             foreach (ReleaseFinding gate in readiness.Gates) Console.WriteLine($"{gate.Gate}: {(gate.Passed ? "passed" : "pending")} — {gate.Detail}");
+            foreach (ReleaseFinding observation in readiness.ProviderObservations)
+                Console.WriteLine($"optional {observation.Gate}: {(observation.Passed ? "observed" : "unverified")} — {observation.Detail}");
             return args.Length == 6 && args[5] == "require-ready" && !readiness.Ready ? 1 : 0;
         default:
             Console.Error.WriteLine("Invalid command or argument count. Run without arguments for usage."); return 2;

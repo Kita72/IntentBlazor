@@ -1,6 +1,6 @@
 # Phase 2 model connections
 
-Status: adapters implemented; deterministic tests pass. The [provider matrix](provider-evaluation.md) records partial local attempts; live OpenAI/Codex verification remains deferred by the maintainer. No provider/model profile is currently certified by this repository. The Phase 2 live evaluation gate remains open. Use the [capability report template](contributing/provider-capability-report.md) to record exact observed scope and failures.
+Status: adapters implemented; deterministic tests pass. The [provider matrix](provider-evaluation.md) records partial local attempts; no provider/model profile is currently certified by this repository. Live model reports are optional compatibility observations under [decision 0012](architecture/0012-framework-verification-and-optional-model-reports.md), not a framework release requirement. Do not start local models on Tory's machine or run paid inference. Use the [capability report template](contributing/provider-capability-report.md) to record exact observed scope and failures.
 
 Reference `IntentBlazor.AI` alongside `IntentBlazor.Blazor`. Until publication, use project references or locally packed artifacts. Both target .NET 10. The consuming page still uses only:
 
@@ -152,4 +152,4 @@ The docs website has `/models` for optional model mode and `/playground` for an 
 
 The [Gaming News starter](../examples/GamingNews/README.md) is independently runnable and uses the same registration and two components. Both sample hosts default to fixtures and permit configured model mode only in Development. They are not production authentication examples. Staff Business and Asset Workbench remain authored fixtures until their later application phase.
 
-See the [provider evaluation matrix](provider-evaluation.md). Deterministic CI verifies adapters and failure paths against substitutes; a real local and frontier run is still required before closing the live acceptance gate.
+See the [provider evaluation matrix](provider-evaluation.md). Deterministic CI verifies adapters and failure paths against substitutes. Developers evaluate their selected models and applications; live local/frontier runs are optional and do not gate framework publication.

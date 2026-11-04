@@ -1,5 +1,7 @@
 # Model connections and host-owned data
 
+Revision, November 4, 2026: [decision 0012](0012-framework-verification-and-optional-model-reports.md) supersedes the deferred live-model acceptance below. Framework adapters are verified offline; live reports are optional developer compatibility observations.
+
 Status: implemented adapters; live verification deferred by maintainer direction.
 
 ## Decision

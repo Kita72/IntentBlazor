@@ -2,6 +2,8 @@
 
 Contribute observations with the [provider capability report template](contributing/provider-capability-report.md). The [fictional example](contributing/provider-capability-report-example.md) demonstrates the format only; it is not live evidence. Separate transport, native tools, preload, presentation acceptance and recovery outcomes for each exact profile.
 
+**Framework scope, November 4, 2026:** live reports are optional developer/contributor compatibility observations, not framework release gates. Framework verification uses offline SDK/HTTP/process/model substitutes. Do not start Ollama, LM Studio or their workers on Tory's machine or run paid inference. [Decision 0012](architecture/0012-framework-verification-and-optional-model-reports.md) supersedes the earlier live acceptance requirement while preserving historical failures and the strict criteria for an observed profile.
+
 **Foundation Step 2 update, November 1, 2026:** [generation fixes and protocol-2 evaluation](foundation-step2-provider-workflows.md) add local document-object delivery, native data-loading/presentation sequencing, retained tool data during correction, and opt-in OpenAI/Codex commands. Protocol 2 also exercises the real three-app services/actions. Offline verification is separate from live acceptance. Local inference was stopped after host instability and must not be restarted on Tory's current machine. OpenAI/Codex paid calls remain deferred. Earlier partial attempts do not certify the final source or the six-workflow gate.
 
 The following table is the preserved October 30 historical observation, not a current protocol-2 result.
@@ -29,10 +31,10 @@ After building the solution, the opt-in loopback evaluator runs as follows:
 dotnet tools/IntentBlazor.Verification/bin/Release/net10.0/IntentBlazor.Verification.dll model-local . Ollama 'already-installed-model' 'recorded-digest' 'recorded-server-version' http://127.0.0.1:11434/v1/ artifacts/phase7/evidence/ollama.json --allow-local
 ~~~
 
-Use provider `"LM Studio"` and its loopback endpoint for that server. Append `preloaded` to evaluate C# preload instead of native read tools; use a separate report path. Optional `plain` disables the requested structured response format without changing document validation. Explicit loopback endpoints cannot contain credentials/query strings. Do not use this local runner for cloud models or mislabel placeholder identities as evaluations.
+Use provider `"LM Studio"` and its loopback endpoint for that server. Append `preloaded` to evaluate C# preload instead of native read tools; use a separate report path. Optional `plain` selects JSON-object mode instead of a JSON-schema envelope without changing document validation. Explicit loopback endpoints cannot contain credentials/query strings. Do not use this local runner for cloud models or mislabel placeholder identities as evaluations. Do not run these commands on Tory's current machine.
 
-## Remaining live gate
+## Optional compatibility reports
 
 Scripted tests cover streaming, model IDs, base paths, envelopes, explicit/attribute data tools, bounded corrections, cancellation, failures, unavailable providers and preservation of accepted output. They establish adapter contracts, not model capability. Codex reports completed text rather than incremental document text, supports preloaded data only and has different sampling/output controls.
 
-Before publication, record a current successful local and frontier interactive workflow using actual C# service data, and evaluate Ollama and LM Studio independently. Release readiness requires successful current news/staff/assets evidence for each declared HTTP provider profile; no profile currently meets that gate. Keep live OpenAI deferred until Tory chooses to resume it or explicitly revises the release scope. A connection probe or model listing is insufficient. See the [candidate readiness record](phase-7-readiness.md).
+Application developers choose their model, hardware, provider options and application acceptance checks. Contributors may supply exact-profile reports voluntarily; no local, OpenAI or Codex inference is needed for framework publication. A connection probe or model listing cannot establish tool/workflow compatibility. The [candidate readiness record](phase-7-readiness.md) separates optional observations from mandatory framework/package/account/host checks.

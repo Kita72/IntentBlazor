@@ -24,7 +24,7 @@ Each complete evaluation runs all three shared fixtures and the three real examp
 
 The evaluator uses fresh private temporary SQLite/artifact storage and synthetic identities. It deletes only its own validated temporary directory. Models receive read-only data tools; writes occur only through explicit evaluator action requests and existing server authorization/version checks. No external news feed, staff database or user asset is used.
 
-Protocol `2` requires all six results. A greeting, an incomplete action checklist, a failed follow-up or a partial diagnostic run cannot pass. Release readiness still requires Ollama, LM Studio and OpenAI; an additional gate requires observed native reads for OpenAI and at least one local profile. Preload success cannot supply native-tool evidence. Codex remains experimental and separate from these HTTP-provider release gates.
+Protocol `2` requires all six results for a complete optional profile report. A greeting, an incomplete action checklist, a failed follow-up or a partial diagnostic run cannot pass that report. [Decision 0012](architecture/0012-framework-verification-and-optional-model-reports.md) makes live reports optional developer diagnostics: no local, OpenAI or Codex inference is needed for framework publication. Readiness lists provider/native-tool observations separately from mandatory framework/package/account/host gates. Preload success cannot supply native-tool evidence; Codex remains experimental and preload-only.
 
 ## Local evaluation
 
@@ -37,7 +37,7 @@ dotnet tools/IntentBlazor.Verification/bin/Release/net10.0/IntentBlazor.Verifica
 dotnet tools/IntentBlazor.Verification/bin/Release/net10.0/IntentBlazor.Verification.dll model-local . 'LM Studio' 'loaded-model-id' 'recorded-GGUF-SHA256' 'recorded-app-and-cli-version' http://127.0.0.1:1234/v1/ artifacts/provider-evaluation/lmstudio.json --allow-local
 ~~~
 
-Append `preloaded` for an independent host-data profile. Append `plain` to request JSON-object mode instead of a JSON-schema envelope; validation remains strict. Append `scenario=staff` (or `news`/`assets`) for just that fixture and its app-service workflow. A partial run writes observations but exits `1` because it cannot meet the complete release criteria. Unknown options/scenarios are rejected.
+Append `preloaded` for an independent host-data profile. Append `plain` to request JSON-object mode instead of a JSON-schema envelope; validation remains strict. Append `scenario=staff` (or `news`/`assets`) for just that fixture and its app-service workflow. A partial run writes observations but exits `1` because it cannot meet the complete profile-report criteria. Unknown options/scenarios are rejected.
 
 Without `--allow-local`, the CLI rejects the command before contacting a model server. This switch does not override the maintainer's current-machine deferral; a future live run still needs an approved suitable host.
 
@@ -69,10 +69,10 @@ dotnet tools/IntentBlazor.Verification/bin/Release/net10.0/IntentBlazor.Verifica
 
 Without `--allow-paid`, no process is started. Shell tools, apps, memories, plugins, host skill discovery, web search and AGENTS loading are disabled for the independent request. Existing global configuration is not edited. CLI help/features are inspected separately from paid inference; the recorded baseline is 0.154.0. Future CLI changes can require adapter updates.
 
-Native C# function calling, incremental document text, custom sampling and a provider-side output-token limit are unsupported by this adapter. The runtime still bounds elapsed time, model calls, context/event/output sizes and usage when reported. Cancelling the local process is not proof that remote generation or billing stopped. Codex cannot substitute for OpenAI native-tool acceptance. Its live compatibility and final release scope remain deferred.
+Native C# function calling, incremental document text, custom sampling and a provider-side output-token limit are unsupported by this adapter. The runtime still bounds elapsed time, model calls, context/event/output sizes and usage when reported. Cancelling the local process is not proof that remote generation or billing stopped. Codex does not supply native-tool evidence. It is offered as an experimental adapter without live certification; its live evaluation is optional.
 
 ## Evidence and remaining work
 
 Use the [capability template](contributing/provider-capability-report.md) with the generated report and exact profile settings. Keep raw prompts, rejected model text, reasoning, credentials and generated documents out of committed evidence. [Provider observations](provider-evaluation.md) distinguish historical runs, current attempts, deterministic tests and deferred paid checks. The [foundation plan](foundation-completion-plan.md) retains browser, production-host, compatibility and publication work as separate steps.
 
-The implementation and offline checks do not complete live provider acceptance. Local inference and OpenAI/Codex paid calls are deferred. A future approved host must record successful current protocol-2 evidence before publication; existing release gates remain enforced.
+Step 2's framework implementation and offline verification are complete. Live model evaluation is optional compatibility work for developers and contributors, not an outstanding publication task. Do not start local services on Tory's machine or run paid inference. Browser automation, production-host integration, compatibility and publication work remain in the foundation plan.

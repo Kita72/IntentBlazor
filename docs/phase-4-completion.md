@@ -1,5 +1,7 @@
 # Phase 4 completion record
 
+Historical record. Tory's November 4, 2026 [scope revision](architecture/0012-framework-verification-and-optional-model-reports.md) supersedes the live-model release requirement mentioned below; live reports are now optional compatibility observations.
+
 Recorded October 30, 2026. Phase 4 is implemented for the experimental Interactive Server target. Phase 5 has not started. This is implementation and deterministic validation evidence, not a public package release or live-model certification.
 
 ## Delivered
