@@ -1,6 +1,6 @@
 # Contributing to IntentBlazor
 
-Thank you for helping build IntentBlazor. Read the [README](README.md) for current capabilities and [ROADMAP](ROADMAP.md) for planned work. Claim an issue before substantial work so contributors do not duplicate effort.
+Thank you for helping build IntentBlazor. Read the [README](README.md) for current capabilities and [ROADMAP](ROADMAP.md) for planned work. Coordinate substantial external work with Tory so contributors do not duplicate effort.
 
 ## Local setup
 
@@ -17,17 +17,19 @@ Verification now includes the [offline browser suite](docs/foundation-step3-brow
 
 ## Work and review
 
-1. Find an issue labelled good first issue or help wanted, or open a proposal.
-2. Branch from main using a descriptive name.
+Tory and AIMIE work in Codex on `main`, verify locally, and commit and push directly to `main`. GitHub is used for source hosting and history backup. Keep one upstream branch; no maintainer PR or GitHub CI review is required. Dependencies are maintained deliberately in Codex, with committed lock files. Do not enable Dependabot, GitHub Actions or other repository automation without Tory's instruction. See [decision 0014](docs/architecture/0014-main-only-repository.md).
+
+For an external contribution requested by Tory:
+
+1. Agree the scope with Tory before substantial work.
+2. Work in your own fork; do not create a development branch in the upstream repository.
 3. Keep changes focused. Public contract changes require an architecture proposal under docs/architecture.
 4. Add behaviour-focused regression coverage when introducing or changing executable behaviour.
-5. Run scripts/Verify.ps1 and describe checks actually completed in the pull request.
+5. Run scripts/Verify.ps1 and describe checks actually completed.
 6. Update affected documentation and CHANGELOG.md.
-7. Request review. The maintainer merges changes after checks pass.
+7. Submit the agreed change from your fork for maintainer review. The maintainer verifies it locally before integrating it into `main`.
 
-The pull-request process above applies to external contributions. For maintainer-directed implementation, Tory has authorized AIMIE to commit and push completed work directly to `main` after verification, without a separate PR review. This does not authorize changing repository protections, publishing packages, or deploying the site. CI still validates pushes to `main`.
-
-Do not publish packages or deploy the docs site from pull requests. The separate maintainer publishing workflow requires verified release evidence and confirmed NuGet ownership/trusted-publishing policy; see the [release guide](docs/site/releasing.md).
+Package publication, site deployment, repository access changes and account-wide settings remain separate tasks requiring Tory's explicit instruction. The former publishing workflow has been removed; see the [release guide](docs/site/releasing.md) for the current publication boundary.
 
 For renderer contributions, follow the [keyboard and focus guide](docs/contributing/keyboard-and-focus.md). Provider reports should use the [capability report template](docs/contributing/provider-capability-report.md); its [fictional example](docs/contributing/provider-capability-report-example.md) illustrates partial and failed results without claiming model support. Report actual observations and leave unexercised capabilities marked Not tested.
 
@@ -37,7 +39,7 @@ Follow .editorconfig, nullable C#, dependency injection, cancellation, and small
 
 The nearest Directory.Build.props is imported early by MSBuild. Project files retain their target framework and project-specific settings; shared defaults live at the repository root. Package versions belong in Directory.Packages.props.
 
-New SDK-style test projects should initially use the conventional VSTest command mode. If a different runner is proposed, update the verification script, global configuration, CI, and contributor instructions together. Do not add empty tests just to produce a green result.
+New SDK-style test projects should initially use the conventional VSTest command mode. If a different runner is proposed, update the local verification script, global configuration and contributor instructions together. Do not add empty tests just to produce a green result.
 
 Use synthetic data and original or redistribution-compatible assets. Include attribution and dependency license information. Never commit credentials, private documents, model transcripts containing personal data, or database files. Keep setup secrets in host-managed secret storage.
 

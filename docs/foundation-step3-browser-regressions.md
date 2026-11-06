@@ -10,7 +10,7 @@ Run the full repository acceptance command:
 pwsh -File scripts/Verify.ps1
 ~~~
 
-On a Linux host needing browser system dependencies, use pwsh -File scripts/Verify.ps1 -InstallBrowserDependencies. This explicit flag may require sudo; hosted CI includes it on both OS jobs, and it applies only on Linux. The pinned Playwright installer downloads only Chromium's headless shell and required support files. Package restore/browser installation requires network access; application scenarios use only offline fixtures and loopback traffic.
+On a Linux host needing browser system dependencies, use pwsh -File scripts/Verify.ps1 -InstallBrowserDependencies. This explicit flag may require sudo and applies only on Linux. The pinned Playwright installer downloads only Chromium's headless shell and required support files. Package restore/browser installation requires network access; application scenarios use only offline fixtures and loopback traffic. Verification runs locally; [decision 0014](architecture/0014-main-only-repository.md) removes GitHub CI.
 
 For browser-only iteration, pwsh -File scripts/Verify-Browser.ps1 builds the solution and freshly packed quickstart, installs the pinned headless browser and runs the suite. Its -NoBuild switch is for an already-built, freshly packed tree such as the full verification script. To isolate an existing case after preparing those prerequisites:
 
@@ -20,7 +20,7 @@ dotnet test tests/IntentBlazor.BrowserTests/IntentBlazor.BrowserTests.csproj --n
 
 The suite creates only owned IntentBlazor-Browser-GUID temporary folders with independent workspace/business/artifact storage. It terminates only its own dotnet child processes and validates the temporary root before cleanup. It does not use personal browser profiles, model installations or the public MonsterASP site.
 
-The actual artifacts/browser/browser.trx is parsed after successful execution: every discovered case must execute and pass, with no skips. The summary.json records counters and source revision. Failures retain a case-named subdirectory containing trace.zip, page.html, page.png, browser errors and owned-host logs. Open traces locally with the generated Playwright script's show-trace command. Artifacts contain synthetic UI/authentication and must not be repurposed for production accounts. CI retains them with candidate evidence.
+The actual artifacts/browser/browser.trx is parsed after successful execution: every discovered case must execute and pass, with no skips. The summary.json records counters and source revision. Failures retain a case-named subdirectory containing trace.zip, page.html, page.png, browser errors and owned-host logs. Open traces locally with the generated Playwright script's show-trace command. Artifacts contain synthetic UI/authentication and must not be repurposed for production accounts. Keep them locally with candidate evidence under ignored artifacts.
 
 The harness blocks unexpected external HTTP requests and fails on unhandled page errors. It uses roles/labels and existing renderer identities, condition-based browser assertions and explicit server acknowledgments. A failed request must retain accepted output and allow a later valid request; a DOM value alone is insufficient proof of a saved draft.
 

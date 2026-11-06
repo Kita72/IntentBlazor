@@ -2,6 +2,8 @@
 
 Status: implemented for foundation Step 3. No output schema, session API or required AiInput/AiOutput parameters change.
 
+Revision, November 6, 2026: [decision 0014](0014-main-only-repository.md) removes GitHub CI. The local offline browser suite and its verification entry points remain; references below to CI describe the original implementation and historical evidence.
+
 Use a separate non-packable .NET 10 xUnit/VSTest project with pinned Microsoft.Playwright. Run Chromium headless with GPU, WebGL and Vulkan disabled and test parallelism limited to one. The existing deterministic suite remains independent; browser checks exercise actual DOM events and Interactive Server circuits. Broader browser/platform certification is outside this initial matrix.
 
 Start only owned dotnet fixture processes on dynamic loopback ports with private temporary data. Exercise the real Gaming News, Staff Business and Asset Workbench registrations and synthetic accounts. A separate Development-only browser host drives the default pair and actual AI pipeline with an in-process scripted client for rejected, incomplete, delayed, cancelled, timed-out, unavailable and over-budget responses. It requires an explicit fixture-enable flag. No local model executable, paid provider, secret lookup or remote business feed participates.

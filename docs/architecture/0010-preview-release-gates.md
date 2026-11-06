@@ -2,6 +2,8 @@
 
 Status: accepted for Phase 7 implementation. Public C# document/session contracts remain unchanged.
 
+Revision, November 6, 2026: [decision 0014](0014-main-only-repository.md) removes GitHub CI and the OIDC publishing workflow in favor of local verification and a main-only source repository. Publishing remains deferred until Tory chooses a method. Earlier workflow instructions below are retained as history.
+
 Revision, November 4, 2026: [decision 0012](0012-framework-verification-and-optional-model-reports.md) replaces the live-provider release requirements below with optional compatibility observations. Framework, package, account and hosting checks remain required. The earlier live-gate rationale is retained as history.
 
 Prepare `0.1.0-preview.1` as a candidate, distinct from a published release. Keep package version, output schemas (0.1/0.2/0.3), toolkit version, provider profiles and evidence versions separate. Every library includes its own readme, MIT metadata, repository/source revision and portable symbol package. Verification inspects packed artifacts and builds/runs an independent consumer before publishing.

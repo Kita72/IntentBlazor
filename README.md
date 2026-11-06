@@ -2,7 +2,7 @@
 
 An open-source AI-centric Blazor framework being developed around two living components: **AiInput** receives user intent and content; **AiOutput** becomes the interactive workspace for the task.
 
-**Status: `0.1.0-preview.1` candidate; experimental API, no published packages.** AiInput and AiOutput share validated documents, protected drafts, registered actions, and optional durable workspaces. Optional packages add bounded content imports, private artifacts, renderer extensions, an image-editor pack, and embeddable AI setup/inspection. Three standalone example apps demonstrate complete synthetic workflows. Phase 7 adds package-only runtime consumers, package/symbol audits, renderer budgets, production hosting checks, and a separate gated publishing workflow. Framework adapters are verified offline; live model reports are optional compatibility observations. See the [candidate readiness record](docs/phase-7-readiness.md) for the remaining publication gates.
+**Status: `0.1.0-preview.1` candidate; experimental API, no published packages.** AiInput and AiOutput share validated documents, protected drafts, registered actions, and optional durable workspaces. Optional packages add bounded content imports, private artifacts, renderer extensions, an image-editor pack, and embeddable AI setup/inspection. Three standalone example apps demonstrate complete synthetic workflows. Phase 7 adds package-only runtime consumers, package/symbol audits, renderer budgets and production hosting checks. Framework adapters are verified offline; live model reports are optional compatibility observations. See the [candidate readiness record](docs/phase-7-readiness.md) for the remaining publication gates.
 
 [Public docs and quickstart](https://intentblazor.runasp.net/docs/quickstart) · [Interactive document explorer](https://intentblazor.runasp.net/explorer) · [Demo hub](https://intentblazor.runasp.net/demos). The hosted site uses deterministic fixture mode; see the [hosting verification record](docs/phase-7-hosting.md).
 
@@ -37,6 +37,8 @@ The verification script restores locked dependencies, builds, checks formatting,
 
 ## Repository
 
+Tory develops and verifies this project in Codex, then commits and pushes directly to `main`. GitHub holds the source and history, with one upstream branch. Dependabot and GitHub Actions are disabled for this repository; dependency updates are handled deliberately during local development. Do not introduce bots, workflows or additional upstream branches without Tory's instruction. [Decision 0014](docs/architecture/0014-main-only-repository.md) records this workflow. Package publication and site deployment are separate, explicit tasks.
+
 | Path | Purpose |
 | --- | --- |
 | src/IntentBlazor.Core | Output contracts, strict JSON parsing, and semantic validation. |
@@ -54,7 +56,7 @@ The verification script restores locked dependencies, builds, checks formatting,
 
 ## Contribute
 
-Start with [CONTRIBUTING.md](CONTRIBUTING.md), the [roadmap](ROADMAP.md), and [architecture decisions](docs/architecture/README.md). Discuss contract changes before implementing them. Small, focused pull requests are welcome, including documentation and reproducible output examples.
+Start with [CONTRIBUTING.md](CONTRIBUTING.md), the [roadmap](ROADMAP.md), and [architecture decisions](docs/architecture/README.md). Coordinate with Tory before substantial external work or public contract changes. Requested external contributions use contributor-owned forks, keeping the upstream repository on `main` only.
 
 Use [Discussions](https://github.com/Kita72/IntentBlazor/discussions) for questions and proposals, and [issues](https://github.com/Kita72/IntentBlazor/issues) for defects and accepted work.
 

@@ -1,23 +1,12 @@
 # Release and deployment
 
-The current `0.1.0-preview.1` is a candidate. Follow the [readiness record](../phase-7-readiness.md); the public release remains gated. Maintainers commit verified development work to main. Package publication is a separate tag-triggered workflow, not a consequence of merging or pushing code.
+The current `0.1.0-preview.1` is an unpublished candidate. Follow the [readiness record](../phase-7-readiness.md). Maintainers develop and verify locally in Codex, then commit and push directly to `main`. GitHub Actions, Dependabot and the former publishing workflow are disabled/removed under [decision 0014](../architecture/0014-main-only-repository.md). Pushing code or creating a tag does not publish packages or deploy the site.
 
-## First NuGet profile and trusted policy
+## Package publication remains separate
 
-Create a free [NuGet.org account](https://www.nuget.org/users/account/LogOn), choose a public username and confirm its email. Do not paste credentials or API keys into chat, issues or source. Tell the maintainer the public profile name and whether an organization should own the packages before the first publication; package IDs and ownership must be deliberate.
+No NuGet publication is authorized by ordinary development or this repository cleanup. Before a future release, Tory must choose the package owner and an explicit publishing method that fits the local workflow. A [NuGet.org account](https://www.nuget.org/users/account/LogOn) is not yet configured for this project. Do not accept account terms, create credentials or configure trusted publishing as part of routine contributions. Never paste credentials or API keys into chat, issues or source.
 
-Create a [trusted publishing policy](https://www.nuget.org/account/trustedpublishing) with these exact values:
-
-| Field | Value |
-| --- | --- |
-| Repository owner | `Kita72` |
-| Repository | `IntentBlazor` |
-| Workflow file | `publish.yml` (filename only, not its display name or path) |
-| Environment | `release` |
-
-Configure the GitHub `release` environment and set its `NUGET_USER` secret to the NuGet profile username, not an email. Configure allowed release tags and any maintainer protections before use. Confirm the policy exists before enabling publication. Set repository variable `INTENT_NUGET_POLICY_CONFIRMED=true` only after that confirmation. Do not create a long-lived NuGet API key. The publishing job uses `NuGet/login@v1` with `id-token: write` to obtain a short-lived credential.
-
-Before the first publication, pack locally and inspect the `.nupkg` and `.snupkg`; `scripts/Verify.ps1` performs that pack, audits all eight packages and executes independent package consumers. Do not overwrite tags or replace published versions after a failed attempt. The workflow requires exact `v<Version>` tags on main, successful offline framework checks and current runtime/package/account/host evidence before NuGet login. Live model reports are optional compatibility observations and cannot block publication or certify an untested model; see [decision 0012](../architecture/0012-framework-verification-and-optional-model-reports.md). The maintainer must confirm the profile policy and all mandatory readiness gates before creating the release tag.
+Local `scripts/Verify.ps1` packs and audits all eight `.nupkg`/`.snupkg` pairs and runs independent package consumers. Retain those checks and current runtime/package/hosting evidence before any later publication. The existing account/policy readiness gate remains unsatisfied; disabling Actions does not establish a tested alternative publisher. Do not recreate the old `publish.yml`/`release` OIDC setup without Tory's explicit instruction. Once a publishing method is chosen, document and verify its credential handling and exact source/version checks before publishing. Never overwrite a release tag or replace a published package version to hide a failed attempt. Live model reports remain optional under [decision 0012](../architecture/0012-framework-verification-and-optional-model-reports.md).
 
 ## Prepare the IIS docs bundle
 
@@ -39,4 +28,4 @@ pwsh -File scripts/Deploy-Docs.ps1 -PublishSettingsPath 'C:\private\site.publish
 
 Review the expected site and repeat without `-WhatIf` to deploy. The helper reads the profile in memory, uses its matching MonsterASP publishing endpoint over HTTPS with certificate validation, preserves destination files, takes the app offline during replacement and suppresses raw native output. It never prints native credentials or copies the profile into the repository. Follow the host's [Web Deploy instructions](https://help.monsterasp.net/websites/deploy/command-line) for server-side setup; the helper keeps TLS validation enabled.
 
-After deployment, request HTTPS `/health/ready` and verify the expected source revision, `mode=fixture` and version. Open `/docs/quickstart`, `/docs/profiles`, `/demos` and `/explorer` in a real browser. Submit a fixture, select a record and edit a field to prove the Interactive Server connection beyond an HTTP 200 response. Check missing routes and Development-only controls. Keep a prior bundle for rollback and never commit the publish settings. Mark `INTENT_PUBLIC_HOST_VERIFIED=true` only after public HTTPS and circuit checks pass for the candidate being released.
+After an explicitly requested deployment, request HTTPS `/health/ready` and verify the expected source revision, `mode=fixture` and version. Open `/docs/quickstart`, `/docs/profiles`, `/demos` and `/explorer` in a real browser. Submit a fixture, select a record and edit a field to prove the Interactive Server connection beyond an HTTP 200 response. Check missing routes and Development-only controls. Keep a prior bundle for rollback and never commit the publish settings. Record host verification for the exact candidate only after public HTTPS and circuit checks pass; the former GitHub workflow variables are not an active deployment or release mechanism.

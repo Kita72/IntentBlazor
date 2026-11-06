@@ -4,6 +4,8 @@ Status: **approved by Tory on October 31, 2026; framework scope revised November
 
 The outcome is a framework another developer can install, configure with their chosen model, expose an authorized C# service, and use to build an interactive application with recoverable state. We verify connection primitives, tool routing, document handling, state and rendering offline. Developers evaluate their model's behavior, hardware suitability, latency, costs and application workflows. [Decision 0012](architecture/0012-framework-verification-and-optional-model-reports.md) replaces the earlier mandatory live-provider requirements.
 
+November 6 revision: [decision 0014](architecture/0014-main-only-repository.md) makes GitHub a main-only source/history backup. Develop, verify and update dependencies here in Codex. Dependabot and GitHub Actions are disabled and the publishing workflow is removed. CI references in completed-step evidence below are historical; future verification is local. Step 6 needs an explicitly selected publishing method, not a recreated GitHub pipeline.
+
 ## Current position
 
 The Phase 7 baseline at `b88fc592dcb0e770f6aa0b5142f1edc353301a65` recorded 316 passing tests, independent package-only execution of the quickstart and three examples, eight package/symbol audits, and nine renderer workloads within their budgets. [Windows and Ubuntu CI passed](https://github.com/Kita72/IntentBlazor/actions/runs/41172546182). The [public MonsterASP site](https://intentblazor.runasp.net/) has verified HTTPS and interactive fixture behavior. These are completed foundations to preserve.
@@ -59,7 +61,7 @@ Acceptance: offline tests verify actual request/process shapes, native/preloaded
 
 ## 3 Automate the important regressions
 
-Implemented: the [offline browser suite](foundation-step3-browser-regressions.md) exercises the default pair, real example apps, failure recovery, actual circuit reconnect and process restoration, lost action replies, private files, keyboard behavior and a packed public renderer. Repository/CI verification installs Chromium headless, runs serially without GPU/model services, validates TRX and retains failure diagnostics. The guide records the manual assistive-technology review owner/procedure separately; no complete screen-reader audit is claimed.
+Implemented: the [offline browser suite](foundation-step3-browser-regressions.md) exercises the default pair, real example apps, failure recovery, actual circuit reconnect and process restoration, lost action replies, private files, keyboard behavior and a packed public renderer. Local verification installs Chromium headless, runs serially without GPU/model services, validates TRX and retains failure diagnostics. The guide records the manual assistive-technology review owner/procedure separately; no complete screen-reader audit is claimed.
 
 Map each required behavior to existing tests, then add missing checks where they protect an observable outcome. Preserve the existing suite and add a focused browser test project for fixture mode, using Playwright for .NET or an equivalent supported runner. Start with Chromium on CI; keep Windows/Linux repository checks and make broader browser coverage a deliberate matrix choice. [Playwright's CI guidance](https://playwright.dev/dotnet/docs/ci) describes the browser/dependency installation requirements.
 
@@ -101,9 +103,9 @@ Acceptance: current evidence passes only for the intended candidate, modified so
 
 ## 6 Publish and prove the developer preview
 
-Tory creates/selects the NuGet profile or organization and confirms the trusted publishing policy. Use repository owner `Kita72`, repository `IntentBlazor`, exact workflow filename `publish.yml` and environment `release`, as detailed in the [release guide](site/releasing.md). Confirm the environment protections and profile/policy before enabling a publishing run. No account terms are accepted and no package is published merely by approving a draft plan.
+Tory creates/selects the NuGet profile or organization and chooses an explicit publishing method compatible with the local maintainer workflow. The former `publish.yml`/`release` OIDC setup is removed; do not recreate it as a prerequisite. Confirm the owner, credential handling and publishing checks before a run, as described in the [release guide](site/releasing.md). The existing account/policy readiness gate remains unsatisfied until this decision and verification are complete. No account terms are accepted and no package is published merely by approving a draft plan.
 
-After the code/evidence is frozen, run complete verification, create the exact source/version tag and publish all eight packages with their symbols through the OIDC workflow. Never replace a published version or move a tag to hide a failed attempt. Restore the quickstart and three examples from NuGet.org using a fresh isolated package cache with no local framework feed or framework project references, then exercise their representative workflows.
+After the code/evidence is frozen and publication is explicitly requested, run complete local verification, identify the exact source/version and publish all eight packages with their symbols using the chosen verified method. Never replace a published version or move a tag to hide a failed attempt. Restore the quickstart and three examples from NuGet.org using a fresh isolated package cache with no local framework feed or framework project references, then exercise their representative workflows.
 
 Update the hosted guides and release notes with the actual package version, source tag, implemented adapter capabilities, optional observed profiles, known limits and upgrade policy. Create the release discussion/announcement only for the audience and channel Tory selects. Keep ordinary public demos in deterministic mode.
 

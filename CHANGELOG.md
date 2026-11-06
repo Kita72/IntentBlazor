@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Solo maintainer repository workflow: develop and verify locally in Codex, then commit and push directly to `main`. Removed Dependabot configuration and GitHub CI/publishing workflows; dependency maintenance is deliberate. Repository-scoped bots/Actions and old branches are cleaned up under decision 0014. Package publication remains deferred until a separate method is selected.
 - Foundation Step 3 serial Chromium browser regressions for default components, offline failure modes, actual circuit/process recovery, lost action replies, all three private example workflows, content/download bounds, keyboard/narrow output, AI setup and a package-only public renderer. Verification parses TRX and CI retains failure diagnostics; no local model or paid inference is used.
 - List/table selection buttons now expose explicit `aria-pressed="true"`/`"false"` values in the interactive DOM. Public component parameters and document contracts are unchanged.
 - Framework release scope revised: live provider/native-tool reports are optional compatibility observations, with missing, failed, stale or unreadable reports left unverified. Offline framework, runtime, package, account and hosting checks remain required; no live local/paid inference is needed for publication. Tory's local model installations are reserved for Tory's own testing.
