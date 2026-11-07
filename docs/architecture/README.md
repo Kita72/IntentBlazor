@@ -14,5 +14,6 @@
 - [0012 Framework verification and optional model reports](0012-framework-verification-and-optional-model-reports.md)
 - [0013 Offline browser regression verification](0013-offline-browser-regressions.md)
 - [0014 Main-only source repository and local verification](0014-main-only-repository.md)
+- [0015 Application-owned production host integration](0015-production-host-integration.md)
 
 Propose substantial changes in an issue or Discussion, then add a numbered decision describing context, choice, consequences, and acceptance evidence. Mark unimplemented specifications as drafts. Do not infer implemented APIs from design examples.

@@ -1,0 +1,19 @@
+{
+  "formatVersion": "1",
+  "content": {
+    "document": {
+      "schemaVersion": "0.1", "id": "saved-private-note", "rootId": "root", "requires": { "builtin": "0.1" }, "dataSets": ["notes"],
+      "state": { "selected": { "kind": "recordReference", "dataSetId": "notes", "initialValue": "note-1" }, "draft": { "kind": "text", "initialValue": "Original" } },
+      "nodes": [
+        { "id": "root", "kind": "layout", "children": ["draft"] },
+        { "id": "draft", "kind": "input", "title": "Private note draft", "stateKey": "draft" }
+      ],
+      "interactions": []
+    },
+    "data": [ { "id": "notes", "keyField": "id", "fields": { "id": { "kind": "text" }, "body": { "kind": "text" }, "version": { "kind": "text" } }, "rows": [ { "id": "note-1", "body": "Original", "version": "0" } ] } ]
+  },
+  "values": { "selected": "note-1", "draft": "Saved private draft" },
+  "baseline": { "selected": "note-1", "draft": "Original" },
+  "sorting": {}, "dirtyStates": ["draft"], "artifacts": [],
+  "archive": [ { "sequence": 1, "input": "Show my notes", "outcome": "completed", "outputJson": null } ]
+}

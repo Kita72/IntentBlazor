@@ -1,0 +1,38 @@
+@page "/workspace/{Key}"
+@attribute [Authorize(Policy = HostClaims.SessionPolicy)]
+@rendermode InteractiveServer
+@inject HostWorkspaceController WorkspaceHost
+
+<PageTitle>Private workspace</PageTitle>
+<h1>Private workspace</h1>
+<p><a href="/workspaces" data-enhance-nav="false">Choose a workspace</a> · <a href="/ai-settings" data-enhance-nav="false">AI settings</a></p>
+@if (_error is not null)
+{
+    <p role="alert">@_error</p>
+}
+else if (!_ready)
+{
+    <p>Opening your workspace…</p>
+}
+else
+{
+    <AiInput />
+    <AiOutput />
+}
+
+@code {
+    [Parameter] public string Key { get; set; } = "";
+    private bool _ready;
+    private string? _error;
+    protected override async Task OnParametersSetAsync()
+    {
+        _ready = false; _error = null;
+        try
+        {
+            var result = await WorkspaceHost.OpenAsync(Key);
+            _ready = result.Success;
+            if (!result.Success) _error = result.Errors[0].Message;
+        }
+        catch (InputRejectedException) { _error = "Your current host account cannot open this workspace."; }
+    }
+}

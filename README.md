@@ -11,6 +11,7 @@ An open-source AI-centric Blazor framework being developed around two living com
 Developers will connect a model, expose C# capabilities through attributes or explicit registration, and place the two interaction components in their app. The runtime will coordinate data, UI composition, direct interaction, and session continuity.
 
 The initial hosting target is a Blazor Web App with Interactive Server. Adapter availability and verified model compatibility are tracked separately.
+Foundation Steps 1–4 are implemented. The [production hosting guide and compiled recipe](docs/foundation-step4-production-hosting.md) add trusted identity, private durable workspaces, authorized services/actions, per-user admissions and recovery procedures around the same two default components. Two foundation steps remain: compatibility/release operations, then explicitly requested package publication. The candidate is still unpublished.
 Developers supply their model, connection/credential configuration and application services through public registrations. They evaluate their chosen model and workload; a framework release does not require local or paid inference. [Decision 0012](docs/architecture/0012-framework-verification-and-optional-model-reports.md) defines the offline verification boundary.
 The [model connection guide](docs/phase-2-model-connections.md) covers current registrations, C# data tools, limits, and the Codex adapter. The [provider matrix](docs/provider-evaluation.md) separates implemented adapters from live-model evidence.
 
@@ -51,6 +52,7 @@ Tory develops and verifies this project in Codex, then commits and pushes direct
 | src/IntentBlazor.Blazor.AI | Optional embeddable AiSetup and AiInspector tools. |
 | apps/IntentBlazor.Docs | Documentation and an interactive document playground. |
 | examples | Shared fixture catalog and three application directions. |
+| examples/ProductionHost | Application-owned production integration recipe with offline output and no sign-in shortcut. |
 | specs | Versioned contract reference and authored fixture documents. |
 | tests | Contract, session, and real Blazor HTML renderer tests. |
 

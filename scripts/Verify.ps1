@@ -41,6 +41,7 @@ try {
     & (Join-Path $PSScriptRoot 'Verify-Quickstart.ps1')
     & (Join-Path $PSScriptRoot 'Verify-Packages.ps1')
     & (Join-Path $PSScriptRoot 'Verify-Examples.ps1')
+    & (Join-Path $PSScriptRoot 'Verify-ProductionHost.ps1')
     & (Join-Path $PSScriptRoot 'Verify-Browser.ps1') -NoBuild -InstallDependencies:$InstallBrowserDependencies
     & (Join-Path $PSScriptRoot 'Verify-Readiness.ps1')
     Write-Host 'Repository verification completed.'

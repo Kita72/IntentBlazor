@@ -13,6 +13,9 @@
   <Folder Name="/examples/GamingNews/">
     <Project Path="examples/GamingNews/IntentBlazor.GamingNews.csproj" />
   </Folder>
+  <Folder Name="/examples/ProductionHost/">
+    <Project Path="examples/ProductionHost/IntentBlazor.ProductionHost.csproj" />
+  </Folder>
   <Folder Name="/examples/StaffBusiness/">
     <Project Path="examples/StaffBusiness/IntentBlazor.StaffBusiness.csproj" />
   </Folder>

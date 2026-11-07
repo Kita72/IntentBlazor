@@ -1,6 +1,15 @@
 # IntentBlazor foundation completion plan
 
-Status: **approved by Tory on October 31, 2026; framework scope revised November 4**. Steps 1–3 are implemented with offline verification; Steps 4–6 remain. Step 3 adds automated browser checks and a repeatable manual accessibility-review procedure; no complete screen-reader audit is claimed. Live model evaluation is optional developer compatibility work, not a deferred release requirement. Originally recorded October 30, 2026, America/Edmonton. AiInput and AiOutput remain the two default interaction components; setup, storage, content and specialist renderers stay optional.
+Status: **approved by Tory on October 31, 2026; updated November 7**. Steps 1–4 are implemented with offline verification; **Steps 5–6 remain**. Step 3 adds automated browser checks and a repeatable manual accessibility-review procedure; no complete screen-reader audit is claimed. Live model evaluation is optional developer compatibility work, not a deferred release requirement. Originally recorded October 30, 2026, America/Edmonton. AiInput and AiOutput remain the two default interaction components; setup, storage, content and specialist renderers stay optional.
+
+| Foundation step | Status |
+| --- | --- |
+| 1 Backlog, keyboard/focus and provider-report guides | Complete |
+| 2 Provider connection primitives and offline checks | Complete |
+| 3 Offline browser regressions | Complete |
+| 4 Compiled production host and operational guide | Complete |
+| 5 Compatibility and release operations | Next |
+| 6 Explicit package publication and public-feed verification | Remaining; owner and publishing method still to be chosen |
 
 The outcome is a framework another developer can install, configure with their chosen model, expose an authorized C# service, and use to build an interactive application with recoverable state. We verify connection primitives, tool routing, document handling, state and rendering offline. Developers evaluate their model's behavior, hardware suitability, latency, costs and application workflows. [Decision 0012](architecture/0012-framework-verification-and-optional-model-reports.md) replaces the earlier mandatory live-provider requirements.
 
@@ -10,9 +19,9 @@ November 6 revision: [decision 0014](architecture/0014-main-only-repository.md) 
 
 The Phase 7 baseline at `b88fc592dcb0e770f6aa0b5142f1edc353301a65` recorded 316 passing tests, independent package-only execution of the quickstart and three examples, eight package/symbol audits, and nine renderer workloads within their budgets. [Windows and Ubuntu CI passed](https://github.com/Kita72/IntentBlazor/actions/runs/41172546182). The [public MonsterASP site](https://intentblazor.runasp.net/) has verified HTTPS and interactive fixture behavior. These are completed foundations to preserve.
 
-Repository maintenance has addressed the two open Dependabot pull requests: [#1 setup-dotnet 6.0.0](https://github.com/Kita72/IntentBlazor/pull/1) and [#2 checkout 7.0.1](https://github.com/Kita72/IntentBlazor/pull/2). Both passed Windows/Ubuntu PR checks and were merged sequentially. [Main CI also passed with the combined versions](https://github.com/Kita72/IntentBlazor/actions/runs/41174077728). Their changes retain full commit pins, read-only ordinary CI permissions and disabled checkout credential persistence.
+Historical October 31 maintenance merged the two earlier Dependabot action updates and [verified the combined versions](https://github.com/Kita72/IntentBlazor/actions/runs/41174077728). On November 6 Tory replaced that workflow with a main-only source/history backup: Dependabot alerts/security updates and Actions were disabled, scheduled-update and workflow files removed, all five later bot PRs closed, and old branches removed after a verified local Git backup. These historical CI results do not imply ongoing GitHub automation.
 
-The remaining gaps are a complete host integration guide, compatibility/operations checks and publication setup. Step 2 added offline-verified adapters and opt-in evaluation paths for Ollama, LM Studio, OpenAI and Codex. Historical local evaluations remain unverified observations; no paid inference has been performed. They do not need to be completed before framework publication.
+Steps 1–4 are implemented as of November 7. The [compiled production host guide](foundation-step4-production-hosting.md) completes the developer-host integration. **Two steps remain:** compatibility/operations checks (Step 5) and explicitly requested publication/public-feed verification (Step 6). Step 2 added offline-verified adapters and opt-in evaluation paths for Ollama, LM Studio, OpenAI and Codex. Historical local evaluations remain unverified observations; no paid inference has been performed. They do not need to be completed before framework publication.
 
 ## Scope decisions
 
@@ -25,7 +34,7 @@ The remaining gaps are a complete host integration guide, compatibility/operatio
 | Identity, ownership and durable state | Complete a compiled host integration recipe and verify isolation/recovery; the host continues to own accounts and business rules. |
 | Memory and workspace organization | Prove durable conversation/context within a workspace and document its limits. Workspace naming/listing belongs to host application chrome; semantic recall and folder hierarchies remain expansion items. |
 | .NET 11 | Perform isolated compatibility verification and record the exact SDK/runtime result. Keep .NET 10 as the published baseline unless a separate migration is approved. |
-| NuGet and public preview | Finish owner/policy setup, verify the release workflow, publish exact tagged artifacts, and test consumption from the public feed. |
+| NuGet and public preview | Choose an owner and explicitly approved publishing method, verify its checks, publish exact artifacts and test consumption from the public feed. No GitHub workflow is required or active. |
 | MonsterASP | Preserve the working fixture deployment; improve bundle size, repeatable smoke checks and rollback. |
 | WASM/MAUI Hybrid, distributed storage and advanced media | Keep explicit expansion work, outside this first supported Interactive Server foundation. |
 
@@ -83,6 +92,8 @@ Acceptance: the three app workflows and recovery paths run from a clean checkout
 
 ## 4 Complete the developer and production host journey
 
+Implemented: the [guide](foundation-step4-production-hosting.md), [standalone host recipe](../examples/ProductionHost/README.md) and [decision 0015](architecture/0015-production-host-integration.md). `FoundationHostTests` and `FoundationHostHttpTests` exercise current claims/grants, owner/circuit/artifact isolation, stable host catalog keys, authorized/versioned/idempotent saves, durable conversation/draft restoration, per-user request/concurrency limits, saved-format rejection and a stopped-host backup. `Verify-ProductionHost.ps1` builds/runs the copied sample against packed public libraries, including setup tools; the independent quickstart covers the renderer tutorial. Real login-provider, platform key-recovery and public-host acceptance remain deployment-specific and are not claimed from offline tests.
+
 Keep the minimal quickstart intact and add a compiled production integration recipe using trusted authenticated server claims. Demonstrate `IWorkspaceIdentity`, `IWorkspaceAccess`, an authorized C# service with attribute and explicit registration alternatives, a store, action authorization, and a stable logical workspace ID. Include host-owned per-user usage and concurrency controls at the AI request boundary, with no live inference enabled by default. The application supplies its login provider and business database; IntentBlazor does not gain a mandatory account system.
 
 Document how to reopen a workspace, restore its conversation archive and bounded context, provide host-owned workspace naming/selection, and handle retention/backups. Clarify the existing extractive history index and the absence of cross-workspace semantic retrieval. Keep any workspace chooser outside the required two-component page.
@@ -117,6 +128,6 @@ Retain named follow-on work for WASM and MAUI/Blazor Hybrid hosting; distributed
 
 ## Execution order and remaining decisions
 
-Steps 1–3 are implemented. Continue with the production-host recipe without model accounts, inference or local services; NuGet ownership setup can be prepared alongside them. Complete compatibility/operations checks and freeze required evidence after behavior-changing fixes, then publish and repeat public-feed consumption tests.
+Steps 1–4 are implemented. Continue with Step 5 compatibility/operations checks and freeze required evidence after behavior-changing fixes. Step 6 remains explicit owner/publishing-method setup, package publication and public-feed consumption tests. Neither step requires model accounts, inference, local model services or GitHub automation.
 
 The approved scope is an Interactive Server foundation on .NET 10, with separately recorded .NET 11 compatibility. Tory's November 4 decision replaces three-provider/native-model release criteria with optional compatibility reports while retaining offline framework checks. Remaining external decisions are NuGet ownership/policy and the eventual announcement audience. No step authorizes using Tory's local model installations or paid inference, and later publication/compatibility work remains incomplete.

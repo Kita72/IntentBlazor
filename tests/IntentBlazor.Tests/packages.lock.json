@@ -328,6 +328,15 @@
           "IntentBlazor.Content": "[0.1.0-preview.1, )"
         }
       },
+      "intentblazor.productionhost": {
+        "type": "Project",
+        "dependencies": {
+          "IntentBlazor.Blazor": "[0.1.0-preview.1, )",
+          "IntentBlazor.Blazor.AI": "[0.1.0-preview.1, )",
+          "IntentBlazor.Content": "[0.1.0-preview.1, )",
+          "IntentBlazor.Storage.Sqlite": "[0.1.0-preview.1, )"
+        }
+      },
       "intentblazor.quickstart": {
         "type": "Project",
         "dependencies": {

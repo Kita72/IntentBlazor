@@ -4,7 +4,7 @@ The target is a developer preview demonstrating the same input, output-document,
 
 [Decision 0014](docs/architecture/0014-main-only-repository.md), approved November 6, 2026, makes GitHub a source/history backup with only `main`. Development, verification and deliberate dependency maintenance happen locally in Codex. Dependabot and GitHub Actions are disabled. Earlier CI and automated-publishing descriptions are historical; publication remains a separately requested task with a publishing method still to be selected.
 
-The [foundation completion plan](docs/foundation-completion-plan.md) was approved by Tory on October 31, 2026 and revised on November 4. Steps 1–3 are implemented: offline browser regressions and contributor guides, provider generation fixes and offline-verified connection/evaluation paths. Live local/paid model evaluation is optional developer compatibility work, outside the framework release requirements. Do not start local inference on Tory's current machine or run paid inference. Steps 4–6 cover developer-host and release work, with later platform/media expansion kept separate.
+The [foundation completion plan](docs/foundation-completion-plan.md) was approved by Tory on October 31, 2026 and revised through November 7. **Steps 1–4 are implemented:** contributor guides, provider primitives, offline browser regressions and the [compiled production host recipe](docs/foundation-step4-production-hosting.md). **Two foundation steps remain:** Step 5 compatibility/release operations and Step 6 explicit NuGet publication/public-feed verification. Live local/paid model evaluation is optional developer compatibility work, outside framework release requirements. Do not start local inference on Tory's current machine or run paid inference. Later platform/media expansion is separate.
 
 | Phase | Milestone | Status |
 | --- | --- | --- |
@@ -21,7 +21,7 @@ See [the implementation plan](docs/implementation-plan.md) for phase deliverable
 
 Phase 1 evidence: [developer guide](docs/phase-1-developer-guide.md), [contract reference](specs/output-document/README.md), [authored fixtures](specs/fixtures/README.md), and [automated checks](tests/README.md). The three fixture workspaces share one renderer. Phase 2 adds the [connection guide](docs/phase-2-model-connections.md), [provider matrix](docs/provider-evaluation.md), and a runnable Gaming News starter. The complete standalone application workflows remain Phase 5 work.
 
-First contributor opportunities: review the experimental output contract, author representative documents, improve setup instructions, and expand keyboard interaction guidance. Coordinate through an issue before adding public types.
+First contributor opportunities: review the experimental output contract, author representative documents, improve setup instructions, and expand keyboard interaction guidance. Coordinate with Tory before adding public types; requested external contributions use their own forks.
 
 Phase 3 evidence: [workspace and action guide](docs/phase-3-workspaces.md), [schema 0.2 action contract](specs/output-document/v0.2-actions.md), and [durable workspace decision](docs/architecture/0006-durable-workspaces.md). The Development-only recovery demo uses real SQLite files and shared-record version checks. Four phases followed Phase 3: **4 content/extensions/setup**, **5 the complete three apps**, **6 the complete docs and demo site**, and **7 developer preview**.
 

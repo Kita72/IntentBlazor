@@ -1,0 +1,23 @@
+@page "/workspaces"
+@attribute [Authorize(Policy = HostClaims.SessionPolicy)]
+@inject HostNotes Notes
+
+<PageTitle>My workspaces</PageTitle>
+<h1>My workspaces</h1>
+<p>Names and navigation belong to the host application. Each link reopens a stable private workspace key.</p>
+@if (_workspaces is null)
+{
+    <p>Loading workspaces…</p>
+}
+else
+{
+    <ul>@foreach (HostWorkspace workspace in _workspaces)
+        {
+            <li @key="workspace.Key"><a href="@("/workspace/" + workspace.Key)" data-enhance-nav="false">@workspace.Name</a></li>
+        }</ul>
+}
+
+@code {
+    private IReadOnlyList<HostWorkspace>? _workspaces;
+    protected override async Task OnInitializedAsync() => _workspaces = await Notes.ListWorkspacesAsync();
+}

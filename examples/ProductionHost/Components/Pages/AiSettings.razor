@@ -1,0 +1,9 @@
+@page "/ai-settings"
+@attribute [Authorize(Policy = HostClaims.SessionPolicy)]
+@rendermode InteractiveServer
+
+<PageTitle>Host AI setup</PageTitle>
+<h1>Host AI setup</h1>
+<p>The host decides who can view or edit settings. Probes are disabled to keep inference behind the host request budget. Settings on this separate page apply only to this circuit; embed these optional tools alongside a workspace to configure that workspace's next request.</p>
+<AiSetup />
+<AiInspector />

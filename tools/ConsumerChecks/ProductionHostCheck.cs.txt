@@ -1,0 +1,84 @@
+using System.Security.Claims;
+using System.Text;
+using IntentBlazor.AI;
+using IntentBlazor.Blazor;
+using IntentBlazor.Blazor.AI;
+using IntentBlazor.ProductionHost;
+using IntentBlazor.Runtime;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.Extensions.Logging;
+
+public static class ProductionHostCheck
+{
+    public static async Task RunAsync()
+    {
+        string root = Path.Combine(Path.GetTempPath(), "IntentBlazor-HostCheck-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(root);
+        try
+        {
+            WebApplicationBuilder builder = WebApplication.CreateBuilder(new WebApplicationOptions { EnvironmentName = "Development", ContentRootPath = AppContext.BaseDirectory });
+            builder.Logging.ClearProviders();
+            IConfiguration config = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["Host:Accounts:0:Tenant"] = "package-tenant", ["Host:Accounts:0:Subject"] = "package-subject",
+                ["Host:Accounts:0:CanEdit"] = "true", ["Host:Accounts:0:CanConfigureAi"] = "true"
+            }).Build();
+            builder.Services.AddHostWorkspace(config, HostPaths.Create(root, AppContext.BaseDirectory));
+            builder.Services.AddScoped<AuthenticationStateProvider, PackageAuthentication>();
+            builder.Services.AddScoped<NavigationManager, PackageNavigation>();
+            await using WebApplication app = builder.Build();
+            Require(!app.Services.GetServices<Microsoft.Extensions.AI.IChatClient>().Any(), "A model client was enabled.");
+            await using (AsyncServiceScope scope = app.Services.CreateAsyncScope())
+            {
+                AiSession session = scope.ServiceProvider.GetRequiredService<AiSession>();
+                scope.ServiceProvider.GetRequiredService<WorkspaceServices>().AutoSave = false;
+                Require((await scope.ServiceProvider.GetRequiredService<HostWorkspaceController>().OpenAsync("notes")).Success, "Workspace did not connect.");
+                await using HtmlRenderer renderer = new(scope.ServiceProvider, app.Services.GetRequiredService<ILoggerFactory>());
+                await renderer.Dispatcher.InvokeAsync(async () =>
+                {
+                    var input = await renderer.RenderComponentAsync<AiInput>(); var output = await renderer.RenderComponentAsync<AiOutput>();
+                    Require((await session.SubmitAsync("Show my note")).Success, "Authorized C# data did not produce output.");
+                    Require(input.ToHtmlString().Contains("Request") && output.ToHtmlString().Contains("Private note draft"), "Default components did not render.");
+                    Require(session.Change("draft", "Package-only private draft", session.Revision).Success, "Draft edit failed.");
+                    Require((await session.SaveAsync()).Success, "Checkpoint save failed.");
+                    var setup = await renderer.RenderComponentAsync<AiSetup>();
+                    Require(!setup.ToHtmlString().Contains("@onclick"), "Setup emitted an unwired directive.");
+                    await renderer.RenderComponentAsync<AiInspector>();
+                });
+                AiSetupPolicy policy = await scope.ServiceProvider.GetRequiredService<IAiSetupAccess>().GetPolicyAsync(default);
+                Require(policy.CanEdit && !policy.CanProbe && policy.MaximumOutputTokens == 1024, "Host setup policy was not applied.");
+            }
+            await using (AsyncServiceScope reopened = app.Services.CreateAsyncScope())
+            {
+                AiSession session = reopened.ServiceProvider.GetRequiredService<AiSession>();
+                reopened.ServiceProvider.GetRequiredService<WorkspaceServices>().AutoSave = false;
+                Require((await reopened.ServiceProvider.GetRequiredService<HostWorkspaceController>().OpenAsync("notes")).Success, "Workspace did not reopen.");
+                Require(session.HasDraft && session.Snapshot.Values["draft"].GetString() == "Package-only private draft" && session.Archive.Length == 1, "Draft or conversation was not restored.");
+                ActionRequest request = session.PrepareAction("save", session.Revision) ?? throw new InvalidOperationException("Action unavailable.");
+                Require((await session.ExecuteActionAsync(request)).Status == ActionStatus.Succeeded, "Authorized business action failed.");
+                Require(!session.HasDraft && session.Data.Single().Rows[0]["body"].GetString() == "Package-only private draft", "Business save did not acknowledge the draft.");
+            }
+            Console.WriteLine("Package-only host: default components, authorized service/action, durable draft/history, and bounded setup passed without inference.");
+        }
+        finally
+        {
+            if (!Path.GetFullPath(root).StartsWith(Path.Combine(Path.GetTempPath(), "IntentBlazor-HostCheck-"), StringComparison.Ordinal)) throw new InvalidOperationException("Unexpected consumer test root.");
+            Directory.Delete(root, recursive: true);
+        }
+    }
+    private static void Require(bool condition, string message) { if (!condition) throw new InvalidOperationException(message); }
+    private sealed class PackageAuthentication : AuthenticationStateProvider
+    {
+        public PackageAuthentication() { }
+        public override Task<AuthenticationState> GetAuthenticationStateAsync() => Task.FromResult(new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity([
+            new(ClaimTypes.NameIdentifier, "package-subject"), new(HostClaims.TenantClaim, "package-tenant")
+        ], "PackageConsumerOnly"))));
+    }
+    private sealed class PackageNavigation : NavigationManager
+    {
+        public PackageNavigation() => Initialize("https://localhost/", "https://localhost/workspace/notes");
+        protected override void NavigateToCore(string uri, bool forceLoad) => throw new InvalidOperationException("Unexpected navigation in an offline renderer check.");
+    }
+}

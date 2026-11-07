@@ -1,5 +1,7 @@
 # Hosting, ownership, and migration
 
+The [compiled production host recipe](../foundation-step4-production-hosting.md) completes foundation Step 4. It demonstrates real host-claim integration, owner isolation, current data/artifact authorization, durable state, transactional actions and host-owned request limits with offline tests. The guide includes retention, consistent backups and saved-checkpoint compatibility. Its [standalone sample](../../examples/ProductionHost/README.md) keeps the default two-component page and has no synthetic sign-in or model connection. Actual identity-provider and deployment acceptance remain the consuming host's responsibility.
+
 The implemented hosting target is a .NET 10 Blazor Web App with **Interactive Server**. The docs are static SSR by default; only the explorer and interactive demos create circuits. Keep `AddRazorComponents().AddInteractiveServerComponents()`, static asset mapping, antiforgery, and `AddInteractiveServerRenderMode()` in your host.
 
 ## Isolate each user's workspace
