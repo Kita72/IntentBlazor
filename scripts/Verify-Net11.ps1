@@ -71,45 +71,48 @@ try {
         Push-Location $snapshot
         $stage = 'sdk-selection'
         $caseLog = Join-Path $runRoot ($framework + '.log')
-        Start-Transcript -Path $caseLog | Out-Null
+        [IO.File]::WriteAllText($caseLog, '')
         try {
-            $selected = (& $dotnet --version).Trim()
-            if ($LASTEXITCODE -ne 0 -or $selected -ne $SdkVersion) { throw 'The snapshot selected an unexpected SDK.' }
-            $restore = @('restore', 'IntentBlazor.slnx', '--verbosity', 'quiet')
-            # net11 is a disposable retarget experiment; only its copy gets regenerated lock files.
-            if ($framework -eq 'net10.0') { $restore += '--locked-mode' } else { $restore += '--force-evaluate' }
-            $stage = 'restore'; Invoke-IntentDotNet -Arguments $restore
-            $stage = 'build'
-            Invoke-IntentDotNet -Arguments @('build', 'IntentBlazor.slnx', '--no-restore', '-c', 'Release', '--verbosity', 'quiet')
-            $stage = 'tests'
-            $results = Join-Path $runRoot ($framework + '-tests')
-            Invoke-IntentDotNet -Arguments @('test', 'tests/IntentBlazor.Tests/IntentBlazor.Tests.csproj', '--no-build', '--no-restore', '-c', 'Release',
-                '--logger', 'trx;LogFileName=compatibility.trx', '--results-directory', $results, '--verbosity', 'quiet')
-            [xml] $trx = Get-Content -Raw -LiteralPath (Join-Path $results 'compatibility.trx')
-            $counts = $trx.SelectSingleNode('/*[local-name()="TestRun"]/*[local-name()="ResultSummary"]/*[local-name()="Counters"]')
-            if ($null -eq $counts -or [int] $counts.total -le 0 -or [int] $counts.passed -ne [int] $counts.total -or [int] $counts.executed -ne [int] $counts.total) { throw 'Compatibility tests are incomplete.' }
-            Invoke-IntentDotNet -Arguments @("tools/IntentBlazor.Verification/bin/Release/$framework/IntentBlazor.Verification.dll", 'environment', (Join-Path $results 'environment.json'))
-            $runtime = Get-Content -Raw -LiteralPath (Join-Path $results 'environment.json') | ConvertFrom-Json
-            if ($runtime.runtime -notlike $(if ($framework -eq 'net10.0') { '.NET 10.*' } else { '.NET 11.*' })) { throw 'The snapshot ran on an unexpected runtime.' }
-            $stage = 'package-consumers'
-            foreach ($library in Get-ChildItem -LiteralPath src -Recurse -Filter '*.csproj' -File) {
-                Invoke-IntentDotNet -Arguments @('pack', $library.FullName, '--no-build', '--no-restore', '-c', 'Release', '--output', 'artifacts/packages', '--verbosity', 'quiet')
-            }
-            & (Join-Path $snapshot 'scripts/Verify-Quickstart.ps1')
-            & (Join-Path $snapshot 'scripts/Verify-Examples.ps1')
-            & (Join-Path $snapshot 'scripts/Verify-ProductionHost.ps1')
-            $cases.Add([ordered]@{ status = 'passed'; sdk = $selected; targetFramework = $framework; runtime = $runtime.runtime; architecture = $runtime.architecture; os = $runtime.os;
-                build = 'passed'; tests = [int] $counts.total; passed = [int] $counts.passed; skipped = [int] $counts.notExecuted;
-                packageConsumers = @('Quickstart', 'GamingNews', 'StaffBusiness', 'AssetWorkbench', 'ProductionHost');
-                adjustments = $(if ($framework -eq 'net11.0') { @('Retarget project files; refresh scratch locks; remove Runtime DI abstractions PackageReference supplied by net11 (NU1510).') } else { @() }); snapshot = $snapshot })
+            . {
+                $selected = (& $dotnet --version).Trim()
+                if ($LASTEXITCODE -ne 0 -or $selected -ne $SdkVersion) { throw 'The snapshot selected an unexpected SDK.' }
+                $restore = @('restore', 'IntentBlazor.slnx', '--verbosity', 'quiet')
+                # net11 is a disposable retarget experiment; only its copy gets regenerated lock files.
+                if ($framework -eq 'net10.0') { $restore += '--locked-mode' } else { $restore += '--force-evaluate' }
+                $stage = 'restore'; Invoke-IntentDotNet -Arguments $restore
+                $stage = 'build'
+                Invoke-IntentDotNet -Arguments @('build', 'IntentBlazor.slnx', '--no-restore', '-c', 'Release', '--verbosity', 'quiet')
+                $stage = 'tests'
+                $results = Join-Path $runRoot ($framework + '-tests')
+                Invoke-IntentDotNet -Arguments @('test', 'tests/IntentBlazor.Tests/IntentBlazor.Tests.csproj', '--no-build', '--no-restore', '-c', 'Release',
+                    '--logger', 'trx;LogFileName=compatibility.trx', '--results-directory', $results, '--verbosity', 'quiet')
+                [xml] $trx = Get-Content -Raw -LiteralPath (Join-Path $results 'compatibility.trx')
+                $counts = $trx.SelectSingleNode('/*[local-name()="TestRun"]/*[local-name()="ResultSummary"]/*[local-name()="Counters"]')
+                if ($null -eq $counts -or [int] $counts.total -le 0 -or [int] $counts.passed -ne [int] $counts.total -or [int] $counts.executed -ne [int] $counts.total) { throw 'Compatibility tests are incomplete.' }
+                Invoke-IntentDotNet -Arguments @("tools/IntentBlazor.Verification/bin/Release/$framework/IntentBlazor.Verification.dll", 'environment', (Join-Path $results 'environment.json'))
+                $runtime = Get-Content -Raw -LiteralPath (Join-Path $results 'environment.json') | ConvertFrom-Json
+                if ($runtime.runtime -notlike $(if ($framework -eq 'net10.0') { '.NET 10.*' } else { '.NET 11.*' })) { throw 'The snapshot ran on an unexpected runtime.' }
+                $stage = 'package-consumers'
+                foreach ($library in Get-ChildItem -LiteralPath src -Recurse -Filter '*.csproj' -File) {
+                    Invoke-IntentDotNet -Arguments @('pack', $library.FullName, '--no-build', '--no-restore', '-c', 'Release', '--output', 'artifacts/packages', '--verbosity', 'quiet')
+                }
+                & (Join-Path $snapshot 'scripts/Verify-Quickstart.ps1')
+                & (Join-Path $snapshot 'scripts/Verify-Examples.ps1')
+                & (Join-Path $snapshot 'scripts/Verify-ProductionHost.ps1')
+                $cases.Add([ordered]@{ status = 'passed'; sdk = $selected; targetFramework = $framework; runtime = $runtime.runtime; architecture = $runtime.architecture; os = $runtime.os;
+                    build = 'passed'; tests = [int] $counts.total; passed = [int] $counts.passed; skipped = [int] $counts.notExecuted;
+                    packageConsumers = @('Quickstart', 'GamingNews', 'StaffBusiness', 'AssetWorkbench', 'ProductionHost');
+                    adjustments = $(if ($framework -eq 'net11.0') { @('Retarget project files; refresh scratch locks; remove Runtime DI abstractions PackageReference supplied by net11 (NU1510).') } else { @() }); snapshot = $snapshot })
+            } *>&1 | Tee-Object -FilePath $caseLog
         }
         catch {
             Write-Host ("Isolated $framework check failed at $stage; retaining the exact diagnostic and marking dependent checks unverified.")
             $cases.Add([ordered]@{ status = 'failed'; sdk = $SdkVersion; targetFramework = $framework; failedStage = $stage; runtime = $null;
                 tests = $null; packageConsumers = @(); log = $caseLog; snapshot = $snapshot;
+                diagnostics = @([regex]::Matches([IO.File]::ReadAllText($caseLog), '\b(?:BL|CS|NETSDK|NU)[0-9]{4,5}\b') | ForEach-Object Value | Sort-Object -Unique);
                 adjustments = $(if ($framework -eq 'net11.0') { @('Retarget project files; refresh scratch locks; remove Runtime DI abstractions PackageReference supplied by net11 (NU1510).') } else { @() }) })
         }
-        finally { Stop-Transcript | Out-Null; Pop-Location }
+        finally { Pop-Location }
     }
 }
 finally {
