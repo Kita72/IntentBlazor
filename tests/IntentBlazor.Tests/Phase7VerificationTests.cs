@@ -12,7 +12,7 @@ namespace IntentBlazor.Tests;
 public sealed class Phase7VerificationTests
 {
     private const string Version = "0.1.0-preview.1";
-    private const string Fingerprint = "current-source";
+    private static readonly string Fingerprint = new('B', 64);
     private static readonly DateTimeOffset CheckedAt = DateTimeOffset.UnixEpoch;
 
     [Fact]
@@ -24,11 +24,11 @@ public sealed class Phase7VerificationTests
         Assert.True(Evaluate(models[..2]).Ready);
         Assert.False(Evaluate(models, policy: false).Ready);
         Assert.False(Evaluate(models, host: false).Ready);
-        Assert.False(ReleaseReadiness.Evaluate(Version, Fingerprint, models, null, Packages(), true, true).Ready);
-        Assert.False(ReleaseReadiness.Evaluate(Version, Fingerprint, models, Runtime(), null, true, true).Ready);
-        ReadinessReport empty = ReleaseReadiness.Evaluate(Version, Fingerprint, [], null, null, false, false);
-        Assert.Equal(new[] { "runtime-budgets", "package-metadata", "nuget-policy", "public-host" }, empty.Gates.Select(gate => gate.Gate));
-        Assert.All(empty.Gates, gate => Assert.False(gate.Passed));
+        Assert.False(ReleaseReadiness.Evaluate(Candidate(), models, null, Packages(), true, Host(), CheckedAt, FoundationEvidenceTests.RepositoryFor(Candidate())).Ready);
+        Assert.False(ReleaseReadiness.Evaluate(Candidate(), models, Runtime(), null, true, Host(), CheckedAt, FoundationEvidenceTests.RepositoryFor(Candidate())).Ready);
+        ReadinessReport empty = ReleaseReadiness.Evaluate(Candidate(), [], null, null, false, null, CheckedAt);
+        Assert.Equal(new[] { "candidate-source", "repository-checks", "runtime-budgets", "package-metadata", "nuget-policy", "public-host" }, empty.Gates.Select(gate => gate.Gate));
+        Assert.True(empty.Gates[0].Passed); Assert.All(empty.Gates.Skip(1), gate => Assert.False(gate.Passed));
         Assert.Equal(4, empty.ProviderObservations.Length); Assert.All(empty.ProviderObservations, item => Assert.False(item.Passed));
     }
 
@@ -106,7 +106,7 @@ public sealed class Phase7VerificationTests
             sample with { Iterations = 201 }, sample with { OutputCharacters = 0 },
             sample with { InitialBudgetMilliseconds = 10000 }
         }) Assert.False(RuntimeWorkloads.MeetsBudgets(valid with { Samples = valid.Samples.SetItem(0, invalid) }));
-        Assert.False(ReleaseReadiness.Evaluate(Version, Fingerprint, Models(), valid with { SourceFingerprint = "old" }, Packages(), true, true).Ready);
+        Assert.False(ReleaseReadiness.Evaluate(Candidate(), Models(), valid with { SourceFingerprint = "old" }, Packages(), true, Host(), CheckedAt, FoundationEvidenceTests.RepositoryFor(Candidate())).Ready);
     }
 
     [Fact]
@@ -118,7 +118,7 @@ public sealed class Phase7VerificationTests
         Assert.False((valid with { Packages = valid.Packages.SetItem(0, valid.Packages[1]) }).Passed);
         Assert.False((valid with { Packages = valid.Packages.SetItem(0, valid.Packages[0] with { Errors = ["wrong commit"] }) }).Passed);
         Assert.False((valid with { Packages = valid.Packages.SetItem(0, valid.Packages[0] with { Errors = default }) }).Passed);
-        Assert.False(ReleaseReadiness.Evaluate(Version, Fingerprint, Models(), Runtime(), valid with { Version = "0.1.0-alpha.0" }, true, true).Ready);
+        Assert.False(ReleaseReadiness.Evaluate(Candidate(), Models(), Runtime(), valid with { Version = "0.1.0-alpha.0" }, true, Host(), CheckedAt, FoundationEvidenceTests.RepositoryFor(Candidate())).Ready);
     }
 
     [Fact]
@@ -274,11 +274,16 @@ public sealed class Phase7VerificationTests
     }
 
     private static ReadinessReport Evaluate(ModelEvaluation[] models, bool policy = true, bool host = true) =>
-        ReleaseReadiness.Evaluate(Version, Fingerprint, models, Runtime(), Packages(), policy, host);
+        ReleaseReadiness.Evaluate(Candidate(), models, Runtime(), Packages(), policy, host ? Host() : null, CheckedAt, FoundationEvidenceTests.RepositoryFor(Candidate()));
+    private static EvidenceStamp Candidate() => new(Version, new('a', 40), Fingerprint, true, CheckedAt);
+    private static HostObservation Host() => new(Candidate(), "https://intentblazor.runasp.net/", 200, Version, new('a', 40), Fingerprint,
+        "fixture", "InteractiveServer", "X64", ".NET 10.0.14", new('a', 40), CheckedAt, true, true, true);
     private static PackageReport Packages() => new(Version, new('a', 40), CheckedAt,
-        PackageAudit.PackageIds.Select(id => new PackageCheck(id, true, [])).ToImmutableArray());
-    private static RuntimeReport Runtime() => new(Fingerprint, ".NET 10", "X64", 4, CheckedAt,
-        RuntimeWorkloads.Budgets.Select(budget => new TimingSample(budget.Key, 30, 1, 2, 200, budget.Value)).ToImmutableArray());
+        PackageAudit.PackageIds.Select(id => new PackageCheck(id, true, []) { PackageSha256 = new('A', 64), SymbolsSha256 = new('B', 64) }).ToImmutableArray())
+    { Identity = Candidate() };
+    private static RuntimeReport Runtime() => new(Fingerprint, ".NET 10.0.14", "X64", 4, CheckedAt,
+        RuntimeWorkloads.Budgets.Select(budget => new TimingSample(budget.Key, 30, 1, 2, 200, budget.Value)).ToImmutableArray())
+    { Identity = Candidate() };
     private static ModelEvaluation[] Models() => new[] { "Ollama", "LM Studio", "OpenAI" }.Select(provider => new ModelEvaluation(
         Fingerprint, provider, "synthetic-report-only", "test-revision", "test-server", CheckedAt, new ModelOptions(),
         new[] { "news", "staff", "assets" }.Select(fixture =>

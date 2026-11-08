@@ -16,6 +16,8 @@ HTTP checks and screenshots are local ignored evidence under `artifacts/phase7/e
 
 ## Repeating deployment
 
+November 7 foundation Step 5 adds a sealed win-x64 bundle, real native dependency checks, an offline Production-mode browser upgrade/rollback rehearsal, and a separately invoked current-candidate host recorder. See the [release operations record](foundation-step5-release-operations.md). No public requests, Web Deploy execution or new deployment were performed for that offline task. The historical observations above cannot satisfy the new candidate's host gate.
+
 Use the [release/deployment guide](site/releasing.md). Keep the profile in its private local location; it is neither committed nor copied into the publish bundle. The helper invokes MSDeploy directly, uses its native option quoting, preserves destination files and suppresses credential-bearing native output. Check the public health source revision and a fresh interactive session after each deployment; a successful upload alone is insufficient.
 
 Docs hosting is verified independently of NuGet publication. The remaining public package release gates are documented in the [candidate readiness record](phase-7-readiness.md): framework/package/runtime verification, a confirmed NuGet owner/policy and candidate hosting evidence. Live local/frontier reports are optional under [decision 0012](architecture/0012-framework-verification-and-optional-model-reports.md).

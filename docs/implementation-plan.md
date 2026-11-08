@@ -391,8 +391,8 @@ Reconciled October 31, 2026 against the [test inventory](../tests/README.md), [c
 - [x] Keyboard/focus guidance and a reusable provider capability report template with a fictional example are available.
 - [x] Offline provider request, native/preload tool routing, validation and failure checks are implemented; live profile reports are optional under decision 0012.
 - [x] Offline browser regression automation, real circuit/process recovery and failure diagnostics meet foundation Step 3; manual screen-reader review remains a documented release procedure.
-- [ ] The compiled production-host integration recipe meets foundation Step 4.
-- [ ] Compatibility, source-bound release evidence and deployment/rollback acceptance meet foundation Step 5.
-- [ ] NuGet ownership/trusted publishing are confirmed, a tagged prerelease is published and fresh public-feed consumers are verified.
+- [x] The compiled production-host integration recipe meets foundation Step 4.
+- [x] Isolated compatibility outcomes, source-bound release evidence and offline native deployment/rollback acceptance meet foundation Step 5; net11 targeting remains unverified and current-candidate public hosting remains a separate gate.
+- [ ] NuGet ownership/publishing method and current candidate hosting are confirmed, a tagged prerelease is published and fresh public-feed consumers are verified.
 
 The first implementation milestone is Phase 0 followed by a deterministic renderer that demonstrates all three document shapes. That gives contributors a stable place to work while the live AI path develops.

@@ -5,6 +5,8 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="../../tools/HostSmoke/DocsHostSmoke.cs" Link="DocsHostSmoke.cs" />
+    <ProjectReference Include="../../tools/IntentBlazor.Verification/IntentBlazor.Verification.csproj" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="Microsoft.Playwright" />
     <PackageReference Include="xunit" />

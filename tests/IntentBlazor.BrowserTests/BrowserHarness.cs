@@ -71,6 +71,7 @@ public sealed class BrowserCase(IBrowser browser, string name, string app, strin
             _socket = route; _sockets.Writer.TryWrite(route);
         });
         if (app is "fixture" or "packed") await OpenAsync();
+        else if (app == "docs") await Page.GotoAsync(Server.Url);
         else
         {
             await Page.GotoAsync(Server.Url);
@@ -197,6 +198,7 @@ public sealed class OwnedServer(string app, string[] arguments) : IAsyncDisposab
             "staff" => "examples/StaffBusiness",
             "assets" => "examples/AssetWorkbench",
             "packed" => File.ReadAllText(Path.Combine(BrowserHarness.Root, "artifacts/phase7-quickstart-path.txt")).Trim(),
+            "docs" => arguments[0],
             _ => throw new ArgumentException("Unknown offline browser application.")
         };
         string projectDirectory = Path.GetFullPath(directory, BrowserHarness.Root);
@@ -206,17 +208,20 @@ public sealed class OwnedServer(string app, string[] arguments) : IAsyncDisposab
             "news" => "IntentBlazor.GamingNews",
             "staff" => "IntentBlazor.StaffBusiness",
             "assets" => "IntentBlazor.AssetWorkbench",
+            "docs" => "IntentBlazor.Docs",
             _ => "IntentBlazor.Quickstart"
         };
         Directory.CreateDirectory(DataDirectory);
         ProcessStartInfo start = new("dotnet") { WorkingDirectory = projectDirectory, UseShellExecute = false, RedirectStandardOutput = true, RedirectStandardError = true, CreateNoWindow = true };
-        foreach (string arg in new[] { Path.Combine(projectDirectory, "bin/Release/net10.0", assembly + ".dll"),
-            "--urls", _address ?? "http://127.0.0.1:0", "--environment", "Development", "--Ai:Provider", app == "packed" ? "" : "Fixture",
+        string environment = app == "docs" ? "Production" : "Development";
+        if (app == "docs" && !File.Exists(Path.Combine(projectDirectory, ".intentblazor-offline-fixture"))) throw new InvalidOperationException("Only a marked local docs mirror may be started by this fixture.");
+        foreach (string arg in new[] { Path.Combine(projectDirectory, app == "docs" ? "" : "bin/Release/net10.0", assembly + ".dll"),
+            "--urls", _address ?? "http://127.0.0.1:0", "--environment", environment, "--Ai:Provider", app is "packed" or "docs" ? "" : "Fixture",
             "--News:FeedUrl", "", "--Example:DataDirectory", DataDirectory, "--Browser:Enabled", "true", "--Browser:DataDirectory", DataDirectory })
             start.ArgumentList.Add(arg);
-        foreach (string arg in arguments) start.ArgumentList.Add(arg);
-        start.Environment["DOTNET_ENVIRONMENT"] = "Development";
-        start.Environment["ASPNETCORE_ENVIRONMENT"] = "Development";
+        foreach (string arg in app == "docs" ? arguments.Skip(1) : arguments) start.ArgumentList.Add(arg);
+        start.Environment["DOTNET_ENVIRONMENT"] = environment;
+        start.Environment["ASPNETCORE_ENVIRONMENT"] = environment;
         TaskCompletionSource<string> ready = new(TaskCreationOptions.RunContinuationsAsynchronously);
         _process = new() { StartInfo = start, EnableRaisingEvents = true };
         _process.OutputDataReceived += (_, e) =>
@@ -232,7 +237,7 @@ public sealed class OwnedServer(string app, string[] arguments) : IAsyncDisposab
         _address = await ready.Task.WaitAsync(TimeSpan.FromSeconds(45));
     }
     public async Task RestartAsync() { await StopAsync(); await StartAsync(); }
-    private async Task StopAsync()
+    public async Task StopAsync()
     {
         if (_process is null) return;
         if (!_process.HasExited) { _process.Kill(entireProcessTree: true); await _process.WaitForExitAsync(); }

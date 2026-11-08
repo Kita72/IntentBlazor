@@ -15,6 +15,16 @@ function Invoke-IntentDotNet {
     if ($LASTEXITCODE -ne 0) { throw "dotnet command failed with exit code $LASTEXITCODE." }
 }
 
+function Get-IntentTargetFramework {
+    param([Parameter(Mandatory)][string] $ProjectPath)
+    [xml] $project = Get-Content -Raw -LiteralPath $ProjectPath
+    $nodes = $project.SelectNodes('//TargetFramework')
+    if ($nodes.Count -ne 1) { throw 'Expected one explicit .NET target framework.' }
+    $framework = [string] $nodes[0].InnerText
+    if ($framework -notmatch '^net[0-9]+\.[0-9]+$') { throw 'Expected one explicit .NET target framework.' }
+    return $framework
+}
+
 function Write-IntentPackageSources {
     param([Parameter(Mandatory)][string] $Path, [Parameter(Mandatory)][string] $Feed)
     $escapedFeed = [Security.SecurityElement]::Escape([IO.Path]::GetFullPath($Feed))

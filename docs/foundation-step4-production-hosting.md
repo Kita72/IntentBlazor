@@ -2,7 +2,7 @@
 
 Foundation Step 4 adds a compiled .NET 10 Interactive Server recipe at [examples/ProductionHost](../examples/ProductionHost/README.md). It shows the application code around IntentBlazor while preserving the default `<AiInput />` / `<AiOutput />` page. The minimal [quickstart](site/quickstart.md) remains unchanged. This guide is verified with offline tests and local packages; it does not certify your login provider, model, production server or deployment.
 
-The original Phases 0–6 are implemented and Phase 7 has an unpublished `0.1.0-preview.1` candidate. Foundation Steps 1–4 complete the guides, provider primitives, browser regressions and this host integration. **Two steps remain:** Step 5 compatibility/release operations and Step 6 explicit NuGet publication/public-feed verification. [The foundation plan](foundation-completion-plan.md) tracks their separate acceptance criteria. GitHub remains a `main`-only source/history backup under [decision 0014](architecture/0014-main-only-repository.md).
+The original Phases 0–6 are implemented and Phase 7 has an unpublished `0.1.0-preview.1` candidate. At this Step 4 completion, two foundation steps remained. [Step 5 compatibility/release operations](foundation-step5-release-operations.md) is now implemented, leaving **Step 6** explicit NuGet publication/public-feed verification and current-candidate public hosting. [The foundation plan](foundation-completion-plan.md) tracks their separate acceptance criteria. GitHub remains a `main`-only source/history backup under [decision 0014](architecture/0014-main-only-repository.md).
 
 ## 1 Keep the application boundary explicit
 

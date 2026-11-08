@@ -39,6 +39,7 @@ Write-IntentPackageSources -Path $configPath -Feed $feed
 if ($LASTEXITCODE -ne 0) { throw 'The package-only quickstart restore failed.' }
 & dotnet build $projectPath --no-restore --configuration Release
 if ($LASTEXITCODE -ne 0) { throw 'The package-only quickstart build failed.' }
-Invoke-IntentDotNet -Arguments @((Join-Path $consumerRoot 'bin/Release/net10.0/IntentBlazor.Quickstart.dll'), '--verify-package-fixture')
+$framework = Get-IntentTargetFramework -ProjectPath $projectPath
+Invoke-IntentDotNet -Arguments @((Join-Path $consumerRoot "bin/Release/$framework/IntentBlazor.Quickstart.dll"), '--verify-package-fixture')
 [IO.File]::WriteAllText((Join-Path $repositoryRoot 'artifacts/phase7-quickstart-path.txt'), $consumerRoot)
 Write-Host "Verified independent package-only quickstart: $consumerRoot"

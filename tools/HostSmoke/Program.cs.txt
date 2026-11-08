@@ -1,0 +1,36 @@
+using IntentBlazor.HostSmoke;
+using IntentBlazor.Verification;
+using Microsoft.Playwright;
+
+if (args.Length != 3 || args[2] != "--allow-public-host") return 2;
+VerificationJson.Write(args[1], new { status = "incomplete", checkedAt = DateTimeOffset.UtcNow });
+try
+{
+    EvidenceStamp candidate = ReleaseReadiness.ReadOptional<EvidenceStamp>(args[0]) ?? throw new InvalidDataException("Missing candidate.");
+    if (!candidate.Valid || !candidate.Clean) throw new InvalidDataException("A clean exact candidate is required.");
+    using IPlaywright playwright = await Playwright.CreateAsync();
+    await using IBrowser browser = await playwright.Chromium.LaunchAsync(new() { Headless = true, Args = ["--disable-gpu", "--disable-webgl", "--disable-features=Vulkan"] });
+    await using IBrowserContext context = await browser.NewContextAsync(new() { ServiceWorkers = ServiceWorkerPolicy.Block });
+    List<string> errors = [];
+    context.Page += (_, page) => page.PageError += (_, error) => errors.Add(error);
+    await context.RouteAsync("**/*", async route =>
+    {
+        if (new Uri(route.Request.Url).GetLeftPart(UriPartial.Authority) == "https://intentblazor.runasp.net") await route.ContinueAsync();
+        else { errors.Add("Unexpected external destination."); await route.AbortAsync(); }
+    });
+    IPage page = await context.NewPageAsync();
+    await page.RouteWebSocketAsync("**/*", route =>
+    {
+        if (new Uri(route.Url).GetLeftPart(UriPartial.Authority) == "wss://intentblazor.runasp.net") route.ConnectToServer();
+        else errors.Add("Unexpected WebSocket destination.");
+    });
+    HostObservation observation = await DocsHostSmoke.CaptureAsync(page, "https://intentblazor.runasp.net/", candidate);
+    if (errors.Count != 0 || !observation.Matches(candidate, DateTimeOffset.UtcNow)) throw new InvalidDataException("Host verification did not complete.");
+    VerificationJson.Write(args[1], observation);
+    Console.WriteLine("Recorded matching HTTPS health and native circuit interactions for the exact candidate.");
+    return 0;
+}
+catch (Exception error)
+{
+    Console.Error.WriteLine("Host verification failed: " + error.GetType().Name + ". No verified observation was emitted."); return 1;
+}

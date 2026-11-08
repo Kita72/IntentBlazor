@@ -48,7 +48,8 @@ $config = Join-Path $consumerRoot 'NuGet.Config'; Write-IntentPackageSources -Pa
 Invoke-IntentDotNet -Arguments @('restore', $solutionPath, '--configfile', $config, '--packages', (Join-Path $consumerRoot '.packages'), '--no-cache')
 Invoke-IntentDotNet -Arguments @('build', $solutionPath, '--no-restore', '--configuration', 'Release')
 foreach ($check in $checks) {
-    $assembly = Join-Path $consumerRoot ('examples/' + $check.name + '/bin/Release/net10.0/' + $check.assembly + '.dll')
+    $framework = Get-IntentTargetFramework -ProjectPath (Join-Path $consumerRoot ('examples/' + $check.name + '/' + $check.assembly + '.csproj'))
+    $assembly = Join-Path $consumerRoot ('examples/' + $check.name + '/bin/Release/' + $framework + '/' + $check.assembly + '.dll')
     Invoke-IntentDotNet -Arguments @($assembly, '--verify-package-fixture', 'true', '--environment', 'Development', '--Ai:Provider', 'Fixture', '--Example:DataDirectory', (Join-Path $consumerRoot ('.fixture-data/' + $check.kind)))
 }
 Write-Host "Verified three independent package-backed examples: $consumerRoot"

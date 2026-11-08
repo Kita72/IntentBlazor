@@ -18,7 +18,10 @@ public sealed record TimingSample(string Workload, int Iterations, double Median
         P95Milliseconds >= MedianMilliseconds && P95Milliseconds <= InitialBudgetMilliseconds;
 }
 public sealed record RuntimeReport(string SourceFingerprint, string Runtime, string Architecture, int LogicalProcessors,
-    DateTimeOffset CheckedAt, ImmutableArray<TimingSample> Samples);
+    DateTimeOffset CheckedAt, ImmutableArray<TimingSample> Samples)
+{
+    public EvidenceStamp? Identity { get; init; }
+}
 
 public static class RuntimeWorkloads
 {
@@ -35,7 +38,7 @@ public static class RuntimeWorkloads
         ["staff:compatible-followup-and-render"] = 250
     }.ToImmutableDictionary(StringComparer.Ordinal);
 
-    public static bool MeetsBudgets(RuntimeReport report) => !report.Samples.IsDefault && report.Samples.Length == Budgets.Count &&
+    public static bool MeetsBudgets(RuntimeReport report) => !report.Samples.IsDefault && report.Samples.Length == Budgets.Count && report.Samples.All(sample => sample is not null) &&
         Budgets.All(budget => report.Samples.Count(sample => sample.Workload == budget.Key && sample.InitialBudgetMilliseconds == budget.Value && sample.WithinBudget) == 1);
 
     public static async Task<RuntimeReport> RunAsync(string fingerprint, int iterations = 30)

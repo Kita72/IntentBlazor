@@ -1,18 +1,26 @@
 using System.Collections.Immutable;
 using System.IO.Compression;
 using System.Reflection.Metadata;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Xml.Linq;
 
 namespace IntentBlazor.Verification;
 
-public sealed record PackageCheck(string Package, bool Passed, ImmutableArray<string> Errors);
+public sealed record PackageCheck(string Package, bool Passed, ImmutableArray<string> Errors)
+{
+    public string? PackageSha256 { get; init; }
+    public string? SymbolsSha256 { get; init; }
+}
 public sealed record PackageReport(string Version, string SourceRevision, DateTimeOffset CheckedAt, ImmutableArray<PackageCheck> Packages)
 {
-    public bool Passed => !Packages.IsDefault && Packages.Length == PackageAudit.PackageIds.Length &&
+    public EvidenceStamp? Identity { get; init; }
+    public bool Passed => !string.IsNullOrWhiteSpace(Version) && System.Text.RegularExpressions.Regex.IsMatch(Version, @"^\d+\.\d+\.\d+(?:-[A-Za-z0-9.-]+)?$", System.Text.RegularExpressions.RegexOptions.CultureInvariant) &&
+        EvidenceStamp.IsHash(SourceRevision, 40) && !Packages.IsDefault && Packages.Length == PackageAudit.PackageIds.Length && Packages.All(package => package is not null) &&
         PackageAudit.PackageIds.All(id => Packages.Count(package => package.Package == id) == 1) &&
-        Packages.All(package => package.Passed && !package.Errors.IsDefault && package.Errors.IsEmpty);
+        Packages.All(package => package.Passed && !package.Errors.IsDefault && package.Errors.IsEmpty &&
+            EvidenceStamp.IsHash(package.PackageSha256, 64) && EvidenceStamp.IsHash(package.SymbolsSha256, 64));
 }
 
 public static class PackageAudit
@@ -81,10 +89,20 @@ public static class PackageAudit
         }
         catch (Exception error) when (error is IOException or InvalidDataException or BadImageFormatException or JsonException or System.Xml.XmlException or InvalidOperationException or KeyNotFoundException)
         { errors.Add("Package or symbol metadata could not be read."); }
-        return new(id, errors.Count == 0, [.. errors]);
+        return new(id, errors.Count == 0, [.. errors])
+        {
+            PackageSha256 = File.Exists(packagePath) ? FileHash(packagePath) : null,
+            SymbolsSha256 = File.Exists(symbolPath) ? FileHash(symbolPath) : null
+        };
 
         void Require(bool condition, string message) { if (!condition) errors.Add(message); }
     }
+
+    public static bool MatchesArtifacts(PackageReport report, string directory) => report.Passed && report.Packages.All(package =>
+        Matches(Path.Combine(directory, $"{package.Package}.{report.Version}.nupkg"), package.PackageSha256) &&
+        Matches(Path.Combine(directory, $"{package.Package}.{report.Version}.snupkg"), package.SymbolsSha256));
+    private static bool Matches(string path, string? expected) => File.Exists(path) && FileHash(path) == expected;
+    public static string FileHash(string path) { using FileStream stream = File.OpenRead(path); return Convert.ToHexString(SHA256.HashData(stream)); }
 
     public static bool HasSourceLink(Stream portablePdb, string revision)
     {

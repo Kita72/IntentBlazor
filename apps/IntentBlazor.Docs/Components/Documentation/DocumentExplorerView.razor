@@ -5,7 +5,10 @@
 @using IntentBlazor.Blazor
 @inject ExampleCatalog Catalog
 
-<fieldset class="explorer-controls" disabled="@(!_interactiveReady)">
+<fieldset class="explorer-controls" disabled="@(!_interactiveReady)"
+          data-host-source-revision="@IntentBlazor.Docs.DocsHost.SourceRevision"
+          data-host-source-fingerprint="@IntentBlazor.Docs.DocsHost.SourceFingerprint"
+          data-host-interactive="@(_interactiveReady ? "true" : "false")">
 <legend class="visually-hidden">Document explorer workspace</legend>
 <div class="actions" aria-label="Fixture selection">
     @foreach (string name in new[] { "news", "staff", "assets" })

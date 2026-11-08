@@ -25,7 +25,8 @@ if (-not $program.Contains($anchor)) { throw 'The host bootstrap changed; update
 $configPath = Join-Path $consumerRoot 'NuGet.Config'; Write-IntentPackageSources -Path $configPath -Feed $feed
 Invoke-IntentDotNet -Arguments @('restore', $projectPath, '--configfile', $configPath, '--packages', (Join-Path $consumerRoot '.packages'), '--no-cache')
 Invoke-IntentDotNet -Arguments @('build', $projectPath, '--no-restore', '-c', 'Release')
-Invoke-IntentDotNet -Arguments @((Join-Path $consumerRoot 'bin/Release/net10.0/IntentBlazor.ProductionHost.dll'), '--verify-host-package')
+$framework = Get-IntentTargetFramework -ProjectPath $projectPath
+Invoke-IntentDotNet -Arguments @((Join-Path $consumerRoot "bin/Release/$framework/IntentBlazor.ProductionHost.dll"), '--verify-host-package')
 $results = Join-Path $repositoryRoot 'artifacts/step4'; New-Item -ItemType Directory -Path $results -Force | Out-Null
 [ordered]@{ mode='offline-package-consumer'; version=$version; sourceCommit=(& git -C $repositoryRoot rev-parse HEAD); consumerRoot=$consumerRoot; sourceProjectReferences=0; passed=$true } |
     ConvertTo-Json | Set-Content -LiteralPath (Join-Path $results 'production-host-consumer.json') -Encoding utf8

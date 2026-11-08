@@ -16,6 +16,8 @@ public static class VerificationJson
     {
         string fullPath = Path.GetFullPath(path);
         Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!);
-        File.WriteAllText(fullPath, JsonSerializer.Serialize(value, Options) + "\n");
+        string temporary = fullPath + "." + Guid.NewGuid().ToString("N") + ".tmp";
+        try { File.WriteAllText(temporary, JsonSerializer.Serialize(value, Options) + "\n"); File.Move(temporary, fullPath, overwrite: true); }
+        finally { if (File.Exists(temporary)) File.Delete(temporary); }
     }
 }

@@ -18,14 +18,19 @@ if (-not $NoBuild) {
     }
     & (Join-Path $PSScriptRoot 'Verify-Quickstart.ps1')
 }
+# IIS native acceptance is a Windows x64 check; portable browser regressions still run elsewhere.
+$iisSupported = $IsWindows -and [Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture -eq [Runtime.InteropServices.Architecture]::X64
+if ($iisSupported) { & (Join-Path $PSScriptRoot 'Publish-Docs.ps1') -SkipArchive }
 $installer = Join-Path $output 'playwright.ps1'
 if (-not (Test-Path -LiteralPath $installer)) { throw 'Build the browser project before using -NoBuild.' }
 $installArguments = @('install', '--only-shell', 'chromium')
 if ($InstallDependencies -and $IsLinux) { $installArguments += '--with-deps' }
 & $installer @installArguments
 if ($LASTEXITCODE -ne 0) { throw 'Playwright browser/dependency installation failed.' }
-Invoke-IntentDotNet -Arguments @('test', $project, '--no-build', '--no-restore', '--configuration', 'Release',
+$testArguments = @('test', $project, '--no-build', '--no-restore', '--configuration', 'Release',
     '--logger', 'trx;LogFileName=browser.trx', '--results-directory', $results)
+if (-not $iisSupported) { $testArguments += @('--filter', 'FullyQualifiedName!~PublishedDocsBrowserTests') }
+Invoke-IntentDotNet -Arguments $testArguments
 [xml] $trx = Get-Content -Raw -LiteralPath (Join-Path $results 'browser.trx')
 $counters = $trx.SelectSingleNode('/*[local-name()="TestRun"]/*[local-name()="ResultSummary"]/*[local-name()="Counters"]')
 if ($null -eq $counters -or [int] $counters.total -le 0 -or [int] $counters.passed -ne [int] $counters.total -or
@@ -46,6 +51,7 @@ $summary = [ordered]@{
     skipped = [int] $counters.notExecuted
     mode = 'offline-fixtures'
     browser = 'Chromium headless; GPU and WebGL disabled'
+    iisBundleChecked = $iisSupported
 }
 $summary | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $results 'summary.json') -Encoding utf8
 Write-Host "Browser regression verification completed: $($counters.passed) passed, 0 failed, 0 skipped."

@@ -2,16 +2,19 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <IsPackable>false</IsPackable>
+    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
     <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
   </PropertyGroup>
   <ItemGroup>
     <Content Update="appsettings.Local.json;appsettings.*.Local.json;**/*.publishsettings;**/*.pubxml.user" CopyToPublishDirectory="Never" />
+    <Content Update="appsettings.Development.json" CopyToPublishDirectory="Never" />
+    <AssemblyMetadata Include="IntentBlazorSourceFingerprint" Value="$(IntentSourceFingerprint)" Condition="'$(IntentSourceFingerprint)' != ''" />
     <None Update=".env;.env.*;**/*.publishsettings;**/*.pubxml.user" CopyToPublishDirectory="Never" />
     <PackageReference Include="Markdig" />
-    <ProjectReference Include="../../src/IntentBlazor.Blazor.AI/IntentBlazor.Blazor.AI.csproj" />
-    <ProjectReference Include="../../src/IntentBlazor.Packs.ImageEditor/IntentBlazor.Packs.ImageEditor.csproj" />
-    <ProjectReference Include="../../examples/IntentBlazor.Examples/IntentBlazor.Examples.csproj" />
-    <ProjectReference Include="../../src/IntentBlazor.Blazor/IntentBlazor.Blazor.csproj" />
+    <ProjectReference Include="../../src/IntentBlazor.Blazor.AI/IntentBlazor.Blazor.AI.csproj" GlobalPropertiesToRemove="RuntimeIdentifier;SelfContained" />
+    <ProjectReference Include="../../src/IntentBlazor.Packs.ImageEditor/IntentBlazor.Packs.ImageEditor.csproj" GlobalPropertiesToRemove="RuntimeIdentifier;SelfContained" />
+    <ProjectReference Include="../../examples/IntentBlazor.Examples/IntentBlazor.Examples.csproj" GlobalPropertiesToRemove="RuntimeIdentifier;SelfContained" />
+    <ProjectReference Include="../../src/IntentBlazor.Blazor/IntentBlazor.Blazor.csproj" GlobalPropertiesToRemove="RuntimeIdentifier;SelfContained" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="../../docs/**/*.md" LogicalName="docs/%(RecursiveDir)%(Filename)%(Extension)" />

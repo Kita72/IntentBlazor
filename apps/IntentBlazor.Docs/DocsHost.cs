@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Runtime.InteropServices;
 using IntentBlazor.Docs.Components;
 using IntentBlazor.Docs.Documentation;
 using IntentBlazor.Examples;
@@ -7,6 +8,9 @@ namespace IntentBlazor.Docs;
 
 public static class DocsHost
 {
+    private static string[] BuildIdentity => (typeof(DocsHost).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "unknown").Split('+', 2);
+    public static string SourceRevision => BuildIdentity.Length == 2 ? BuildIdentity[1] : "unknown";
+    public static string SourceFingerprint => typeof(DocsHost).Assembly.GetCustomAttributes<AssemblyMetadataAttribute>().SingleOrDefault(item => item.Key == "IntentBlazorSourceFingerprint")?.Value ?? "unrecorded";
     public static WebApplication Build(WebApplicationOptions options, Action<WebApplicationBuilder>? configure = null)
     {
         var builder = WebApplication.CreateBuilder(options);
@@ -37,7 +41,10 @@ public static class DocsHost
             {
                 status = "ready",
                 version = parts[0],
-                sourceRevision = parts.Length == 2 ? parts[1] : "unknown",
+                sourceRevision = SourceRevision,
+                sourceFingerprint = SourceFingerprint,
+                runtime = RuntimeInformation.FrameworkDescription,
+                architecture = RuntimeInformation.ProcessArchitecture.ToString(),
                 mode = model.Enabled ? "configured-model" : "fixture",
                 hosting = "InteractiveServer"
             });
