@@ -2,7 +2,7 @@
 
 This guide records the historical deterministic Phase 1 surface. New consumers should start with the [current compiled quickstart](site/quickstart.md), [service guide](site/services.md), and [node reference](site/nodes.md). Persistence/actions and content/renderer registration were added in later phases; live verification remains deferred.
 
-Phase 1 introduced the common output document and deterministic renderer. Its public API is experimental and packages have not been published. The tested host is a .NET 10 Blazor Web App using Interactive Server. The examples and capability descriptions below preserve that phase's original scope; they are not the current feature inventory.
+Phase 1 introduced the common output document and deterministic renderer. Packages were unpublished at that phase; the [first developer preview](foundation-step6-developer-preview.md) is now available. The public API remains experimental. The tested host is a .NET 10 Blazor Web App using Interactive Server. The examples and capability descriptions below preserve that phase's original scope; they are not the current feature inventory.
 
 ## Try the three workspaces
 

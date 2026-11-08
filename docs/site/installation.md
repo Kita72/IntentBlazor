@@ -1,6 +1,6 @@
 # Install the experimental framework
 
-The framework can be built from source or consumed through packages. The first public preview version is `0.1.0-preview.1`; check its [publication record](../foundation-step6-developer-preview.md) for confirmed availability. All eight library projects target `net10.0`; use the SDK in [global.json](../../global.json). The docs and examples are applications, not framework packages.
+The first public preview, `0.1.0-preview.1`, is available on NuGet.org under [Wilson72](https://www.nuget.org/profiles/Wilson72). All eight packages and symbols were verified against the [immutable release source](https://github.com/Kita72/IntentBlazor/commit/9c204d0f712e4cf355948f6405219db717e2fe73); fresh public-only consumers passed. See the [publication record](../foundation-step6-developer-preview.md). All eight library projects target `net10.0`; use the SDK in [global.json](../../global.json). The docs and examples are runnable applications.
 
 ## Clone and verify
 
@@ -30,16 +30,16 @@ Verification restores locked dependencies, builds the solution, checks formattin
 
 ## Use a fresh Blazor app
 
-The smallest runnable consumer is [Quickstart](../../examples/Quickstart/README.md). To start from an empty app instead, create one with `dotnet new blazor -n MyIntentApp -int Server --empty`. Add project references to `src/IntentBlazor.Blazor` and, for models, `src/IntentBlazor.AI`. Copy the [quickstart registrations and page](quickstart.md), adapting the namespace and service to your app. Keep the template's static assets, antiforgery middleware, and Interactive Server registrations.
+The smallest runnable consumer is [Quickstart](../../examples/Quickstart/README.md). To start from an empty app instead, create one with `dotnet new blazor -n MyIntentApp -int Server --empty`, change into its directory, and add the packages below. Copy the [quickstart registrations and page](quickstart.md), adapting the namespace and service to your app. Keep the template's static assets, antiforgery middleware, and Interactive Server registrations. Add `IntentBlazor.AI` when connecting a model.
 
-After public availability is confirmed, install into the Blazor app with:
+Install into the Blazor app with:
 
 ~~~powershell
 dotnet add package IntentBlazor.Blazor --version 0.1.0-preview.1
 dotnet add package IntentBlazor.AI --version 0.1.0-preview.1
 ~~~
 
-For local source changes, first run verification to produce `artifacts/packages/*.nupkg`. Add that **absolute local directory** as a package source alongside nuget.org in your consumer's `NuGet.Config`. Add `IntentBlazor.Blazor` and optionally `IntentBlazor.AI` at the same candidate version; the public feed supplies third-party dependencies. Never remove normal package sources to install local artifacts. Verification restores, builds and executes the quickstart and all three examples outside the source tree using the packed framework libraries. `Verify-PublicFeed.ps1` instead checks a published version through NuGet.org only, with fresh caches and no local framework feed.
+For local source changes, first run verification to produce `artifacts/packages/*.nupkg`. Add that **absolute local directory** as a package source alongside nuget.org in your consumer's `NuGet.Config`, mapping `IntentBlazor.*` to the local source. Add `IntentBlazor.Blazor` and optionally `IntentBlazor.AI` at the same candidate version; the public feed supplies third-party dependencies. Verification restores, builds and executes the quickstart and all three examples outside the source tree using the packed framework libraries. `Verify-PublicFeed.ps1` checks the published version through NuGet.org only, with fresh caches and no local framework feed. Any subsequent package publication requires a new version; the public preview's artifacts and source identity stay immutable.
 
 The reproducible version of that process is [Verify-Quickstart.ps1](../../scripts/Verify-Quickstart.ps1). It copies the runnable sample to a new OS-temporary directory, substitutes package references, creates an isolated package-source configuration, and restores/builds it outside the repository. It never publishes a package or edits your user-level NuGet configuration.
 

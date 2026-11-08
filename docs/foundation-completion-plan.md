@@ -1,6 +1,6 @@
 # IntentBlazor foundation completion plan
 
-Status: **approved by Tory on October 31, 2026; updated November 7**. Steps 1–5 are implemented with offline verification; **Step 6 remains**. Step 5 records isolated SDK compatibility outcomes and local deployment/rollback evidence; current public-host acceptance stays a separate release gate under Tory's offline-only instruction. Step 3 adds automated browser checks and a repeatable manual accessibility-review procedure; no complete screen-reader audit is claimed. Live model evaluation is optional developer compatibility work. Originally recorded October 30, 2026, America/Edmonton. AiInput and AiOutput remain the two default interaction components; setup, storage, content and specialist renderers stay optional.
+Status: **approved by Tory on October 31, 2026; all six steps completed November 7**. [Step 6](foundation-step6-developer-preview.md) records the eight published NuGet packages/symbols, five fresh public-feed apps and separately authorized MonsterASP HTTPS/circuit verification. Framework/model tests remain offline. Step 5 records isolated SDK compatibility and deployment/rollback evidence. Step 3 adds automated browser checks and a repeatable manual accessibility-review procedure; no complete screen-reader audit is claimed. Live model evaluation is optional developer compatibility work. Originally recorded October 30, 2026, America/Edmonton. AiInput and AiOutput remain the two default interaction components; setup, storage, content and specialist renderers stay optional.
 
 | Foundation step | Status |
 | --- | --- |
@@ -8,12 +8,12 @@ Status: **approved by Tory on October 31, 2026; updated November 7**. Steps 1–
 | 2 Provider connection primitives and offline checks | Complete |
 | 3 Offline browser regressions | Complete |
 | 4 Compiled production host and operational guide | Complete |
-| 5 Compatibility and release operations | Next |
-| 6 Explicit package publication and public-feed verification | Remaining; owner and publishing method still to be chosen |
+| 5 Compatibility and release operations | Complete |
+| 6 Explicit package publication and public-feed verification | Complete; `0.1.0-preview.1` published under Wilson72 and verified |
 
 The outcome is a framework another developer can install, configure with their chosen model, expose an authorized C# service, and use to build an interactive application with recoverable state. We verify connection primitives, tool routing, document handling, state and rendering offline. Developers evaluate their model's behavior, hardware suitability, latency, costs and application workflows. [Decision 0012](architecture/0012-framework-verification-and-optional-model-reports.md) replaces the earlier mandatory live-provider requirements.
 
-November 6 revision: [decision 0014](architecture/0014-main-only-repository.md) makes GitHub a main-only source/history backup. Develop, verify and update dependencies here in Codex. Dependabot and GitHub Actions are disabled and the publishing workflow is removed. CI references in completed-step evidence below are historical; future verification is local. Step 6 needs an explicitly selected publishing method, not a recreated GitHub pipeline.
+November 6 revision: [decision 0014](architecture/0014-main-only-repository.md) makes GitHub a main-only source/history backup. Develop, verify and update dependencies here in Codex. Dependabot and GitHub Actions are disabled and the publishing workflow is removed. CI references in completed-step evidence below are historical; future verification is local. Step 6 used the explicitly selected local publishing method.
 
 ## Current position
 
@@ -21,7 +21,7 @@ The Phase 7 baseline at `b88fc592dcb0e770f6aa0b5142f1edc353301a65` recorded 316 
 
 Historical October 31 maintenance merged the two earlier Dependabot action updates and [verified the combined versions](https://github.com/Kita72/IntentBlazor/actions/runs/41174077728). On November 6 Tory replaced that workflow with a main-only source/history backup: Dependabot alerts/security updates and Actions were disabled, scheduled-update and workflow files removed, all five later bot PRs closed, and old branches removed after a verified local Git backup. These historical CI results do not imply ongoing GitHub automation.
 
-Steps 1–5 are implemented as of November 7. The [production host guide](foundation-step4-production-hosting.md) completes host integration; the [Step 5 record](foundation-step5-release-operations.md) covers exact-candidate evidence, isolated SDK outcomes and offline IIS artifact/rollback checks. **One step remains:** explicitly requested publication/public-feed verification (Step 6), including NuGet owner/method and current public hosting. Step 2 added offline-verified adapters and opt-in evaluation paths for Ollama, LM Studio, OpenAI and Codex. Historical local evaluations remain unverified observations; no paid inference has been performed. They do not need to be completed before framework publication.
+All six steps are complete as of November 7. The [production host guide](foundation-step4-production-hosting.md) completes host integration; the [Step 5 record](foundation-step5-release-operations.md) covers exact-candidate evidence, isolated SDK outcomes and offline IIS artifact/rollback checks. The [Step 6 record](foundation-step6-developer-preview.md) records publication, fresh public-only consumers and exact-source MonsterASP verification. Step 2 added offline-verified adapters and opt-in evaluation paths for Ollama, LM Studio, OpenAI and Codex. Historical local evaluations remain unverified observations; no paid inference has been performed. They are optional compatibility work.
 
 ## Scope decisions
 
@@ -116,11 +116,13 @@ Acceptance for this offline step: current evidence passes only for the intended 
 
 ## 6 Publish and prove the developer preview
 
-Tory creates/selects the NuGet profile or organization and chooses an explicit publishing method compatible with the local maintainer workflow. The former `publish.yml`/`release` OIDC setup is removed; do not recreate it as a prerequisite. Confirm the owner, credential handling and publishing checks before a run, as described in the [release guide](site/releasing.md). The existing account/policy readiness gate remains unsatisfied until this decision and verification are complete. No account terms are accepted and no package is published merely by approving a draft plan.
+Completed November 7: Tory selected Wilson72 and a local, one-day, push-only `IntentBlazor.*` key. All six release gates passed for immutable source `9c204d0f712e4cf355948f6405219db717e2fe73`; all eight package/symbol pairs were published and checked against their frozen originals. Public-only quickstart, three-example and production-host consumers passed. MonsterASP's 64-bit Production fixture deployment passed matching HTTPS health and actual request/selection/draft checks. The [completion record](foundation-step6-developer-preview.md) preserves the details.
+
+Future publication still requires Tory's explicit instruction and a selected owner/method compatible with the local workflow. The former `publish.yml`/`release` OIDC setup remains removed. Confirm credential handling and exact-candidate checks using the [release guide](site/releasing.md). Approval of a plan alone does not accept account terms or publish a package.
 
 After the code/evidence is frozen and publication is explicitly requested, run complete local verification, identify the exact source/version and publish all eight packages with their symbols using the chosen verified method. Never replace a published version or move a tag to hide a failed attempt. Restore the quickstart and three examples from NuGet.org using a fresh isolated package cache with no local framework feed or framework project references, then exercise their representative workflows.
 
-Update the hosted guides and release notes with the actual package version, source tag, implemented adapter capabilities, optional observed profiles, known limits and upgrade policy. Create the release discussion/announcement only for the audience and channel Tory selects. Keep ordinary public demos in deterministic mode.
+Update the hosted guides and release notes with the actual package version, immutable source revision, implemented adapter capabilities, optional observed profiles, known limits and upgrade policy. Exact repository commit metadata and SourceLink identify the preview's package source while GitHub stays a main-only source/history backup. Create a release discussion/announcement only for the audience and channel Tory selects. Keep ordinary public demos in deterministic mode.
 
 Acceptance: another developer can install the public packages, run all three fixture apps, configure a model through documented connection primitives, add a C# capability/renderer through public contracts and follow the contribution process. Required framework/package/account/host readiness gates are green for the intended candidate; optional live reports remain clearly separate and may be absent.
 
@@ -130,6 +132,6 @@ Retain named follow-on work for WASM and MAUI/Blazor Hybrid hosting; distributed
 
 ## Execution order and remaining decisions
 
-Steps 1–5 are implemented. Step 6 remains explicit owner/publishing-method setup, current-candidate public hosting, package publication and public-feed consumption tests. Freeze the clean source and rerun required evidence before publishing. This does not require model accounts, inference, local model services or GitHub automation.
+All six foundation steps are complete. The first developer preview is installable, its public consumers and host are checked, and release source/artifacts are retained. Further library changes need a new package version and fresh candidate checks before another explicitly authorized publication. This does not require model accounts, inference, local model services or GitHub automation.
 
-The approved scope is an Interactive Server foundation on .NET 10, with separately recorded SDK 11 success and native net11 limitations. Tory's November 4 decision replaces three-provider/native-model release criteria with optional reports while retaining offline framework checks. Remaining external decisions are NuGet ownership/policy and the eventual announcement audience. No step authorizes using Tory's local model installations or paid inference; public publication/hosting and any net11 migration remain separate work.
+The completed scope is an Interactive Server foundation on .NET 10, with separately recorded SDK 11 success and native net11 limitations. Tory's November 4 decision replaces three-provider/native-model release criteria with optional reports while retaining offline framework checks. Announcement audience/channel remains optional future work. No step authorizes using Tory's local model installations or paid inference. Future publication, hosting changes and any net11 migration remain separately requested work.

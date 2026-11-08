@@ -22,7 +22,7 @@ public sealed partial class DocumentationCatalog
     public static ImmutableArray<Guide> Guides { get; } =
     [
         new("start", "Developer journey", "Start", "How the two components fit your application.", "docs/site/start.md"),
-        new("installation", "Installation", "Start", "Build from source or install locally packed artifacts.", "docs/site/installation.md"),
+        new("installation", "Installation", "Start", "Install the public preview from NuGet or build from source.", "docs/site/installation.md"),
         new("quickstart", "Two-component quickstart", "Start", "Run a standalone app with compiled sample code.", "docs/site/quickstart.md"),
         new("services", "Expose a C# service", "Build", "Attribute and explicit registration, authorized read tools, and model connections.", "docs/site/services.md"),
         new("models", "Model connections", "Build", "Ollama, LM Studio, OpenAI, and the experimental Codex CLI adapter.", "docs/phase-2-model-connections.md"),
@@ -44,10 +44,10 @@ public sealed partial class DocumentationCatalog
         new("hosting", "Hosting and migration", "Operate", "Session isolation, deployment boundaries, schema versions, and preview limitations.", "docs/site/hosting.md"),
         new("production-hosting", "Production host recipe", "Operate", "Compiled authentication, private workspaces, admission limits, backups and upgrade recovery.", "docs/foundation-step4-production-hosting.md"),
         new("release-operations", "Compatibility and release operations", "Operate", "Isolated SDK checks, exact candidate evidence, sealed IIS bundles and offline rollback.", "docs/foundation-step5-release-operations.md"),
-        new("developer-preview", "Developer preview release", "Operate", "Local NuGet publishing, immutable package provenance and public-feed verification.", "docs/foundation-step6-developer-preview.md"),
+        new("developer-preview", "Developer preview release", "Operate", "Published packages, immutable source provenance and verified public-feed apps.", "docs/foundation-step6-developer-preview.md"),
         new("readiness", "Preview readiness", "Operate", "Candidate verification, package consumers, performance budgets and release gates.", "docs/phase-7-readiness.md"),
         new("publishing", "Release and deployment", "Operate", "Explicit package publication and the MonsterASP IIS deployment journey.", "docs/site/releasing.md"),
-        new("limitations", "Preview boundaries", "Operate", "Current support, open release gates, and deferred capabilities.", "docs/site/limitations.md"),
+        new("limitations", "Preview boundaries", "Operate", "Current support, experimental APIs and future expansion.", "docs/site/limitations.md"),
         new("architecture", "Architecture decisions", "Project", "Accepted design and extension boundaries.", "docs/architecture/README.md"),
         new("contributing", "Contribute", "Project", "Local checks, contract proposals, MIT terms, and maintainer workflow.", "CONTRIBUTING.md"),
         new("provider-report", "Provider capability report", "Project", "Copyable profile, task, tool, usage and recovery evidence template.", "docs/contributing/provider-capability-report.md"),

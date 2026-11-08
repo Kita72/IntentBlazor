@@ -2,7 +2,7 @@
 
 Step 5 implements offline release/deployment checks while preserving default `<AiInput />` and `<AiOutput />`, the .NET 10 package baseline and the main-only source repository. The [decision](architecture/0016-candidate-evidence-and-isolated-compatibility.md) records the evidence and deployment boundaries. No provider inference, local model service, public-host request, deployment or publication is part of these checks.
 
-The original Phases 0–6 are implemented and Phase 7 remains an unpublished `0.1.0-preview.1` candidate. **Foundation Steps 1–5 are implemented; one step remains:** Step 6 explicitly prepares/publishes the preview and verifies public-feed consumers. That step also needs a NuGet owner/publishing method and refreshed public hosting evidence for the intended source. Existing hosted docs are historical; a source push does not deploy this guide.
+At Step 5 completion, Phases 0–6 were implemented and Phase 7 was an unpublished `0.1.0-preview.1` candidate. Step 6 subsequently selected the NuGet owner/local publishing method, refreshed exact-source hosting evidence and published/verified all eight package/symbol pairs plus fresh public consumers. **All six foundation steps are now complete**; see the [Step 6 record](foundation-step6-developer-preview.md). The offline checks recorded below retain their original scope; a source push alone does not deploy a guide.
 
 ## Isolated .NET 11 observations
 

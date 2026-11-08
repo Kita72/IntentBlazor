@@ -1,5 +1,17 @@
 # Public docs hosting verification
 
+## November 7 developer preview
+
+Foundation Step 6 separately authorized live hosting operations while keeping model tests offline. The frozen package-source deployment, [9c204d0f712e4cf355948f6405219db717e2fe73](https://github.com/Kita72/IntentBlazor/commit/9c204d0f712e4cf355948f6405219db717e2fe73), passed public HTTPS health and native browser circuit checks on MonsterASP. Health reported `0.1.0-preview.1`, fingerprint `F34607D371D0D539CD4318616D6ACD41AEE07076123A546708999D0E885C2C41`, `.NET 10.0.14`, `X64`, `fixture` and `InteractiveServer`.
+
+The control panel initially showed a 32-bit app pool. The first x64 deployment failed its health gate and the retained prior bundle was restored. The site was then configured for 64-bit execution, the same frozen bundle was redeployed, and matching source/fingerprint plus real request, selection and draft retention passed. Web Deploy preserved destination files and kept TLS validation enabled. The prior payload and a local no-delete overlay/rollback rehearsal were retained.
+
+Public `/`, `/docs/quickstart`, `/docs/developer-preview`, `/docs/publishing`, `/demos` and `/models` returned 200. An unknown guide and `/workspaces/demo-signin` returned 404; the Development-only sign-in route issued no cookie. No model credential or inference was enabled. The [publication record](foundation-step6-developer-preview.md) records the independently verified public packages and five package-only apps.
+
+Release artifacts/evidence remain under `artifacts/releases/0.1.0-preview.1/9c204d0f712e4cf355948f6405219db717e2fe73/`. Documentation and maintainer-tool follow-ups on `main` have separate deployment identities; `/health/ready` always reports the running docs source. Check each later deployment with fresh health/circuit evidence rather than relabelling the package-source observation.
+
+## Initial October deployment
+
 On 2026-10-30 (America/Edmonton), the candidate docs app was deployed to [intentblazor.runasp.net](https://intentblazor.runasp.net/) using the maintainer-provided MonsterASP Web Deploy profile. The initial verified application source was commit `32223315bef41b507e64ac2ae90aa86c5e467f78`; Windows and Ubuntu [CI both passed](https://github.com/Kita72/IntentBlazor/actions/runs/41171809321). `/health/ready` reports the currently deployed source revision, version, fixture mode and Interactive Server hosting.
 
 ## Observed public behavior
@@ -20,4 +32,4 @@ November 7 foundation Step 5 adds a sealed win-x64 bundle, real native dependenc
 
 Use the [release/deployment guide](site/releasing.md). Keep the profile in its private local location; it is neither committed nor copied into the publish bundle. The helper invokes MSDeploy directly, uses its native option quoting, preserves destination files and suppresses credential-bearing native output. Check the public health source revision and a fresh interactive session after each deployment; a successful upload alone is insufficient.
 
-Docs hosting is verified independently of NuGet publication. The remaining public package release gates are documented in the [candidate readiness record](phase-7-readiness.md): framework/package/runtime verification, a confirmed NuGet owner/policy and candidate hosting evidence. Live local/frontier reports are optional under [decision 0012](architecture/0012-framework-verification-and-optional-model-reports.md).
+Docs hosting is verified independently of NuGet publication. Future package releases retain the gates documented in the [readiness record](phase-7-readiness.md): framework/package/runtime verification, a confirmed NuGet owner/policy and candidate hosting evidence. The November 7 release outcomes are recorded above. Live local/frontier reports are optional under [decision 0012](architecture/0012-framework-verification-and-optional-model-reports.md).

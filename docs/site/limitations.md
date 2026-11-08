@@ -28,4 +28,4 @@ Supported imports are UTF-8 text/Markdown, bounded JSON/CSV, PNG/JPEG, and text-
 
 Fixture browser checks prove deterministic UI behavior. Scripted tests prove adapter contracts and failure handling. Package-only consumers prove current compiled API consumption and deterministic fixture execution. None alone proves a production model, deployment, authentication integration, security audit, complete assistive-technology compatibility, or a performance guarantee.
 
-The [provider matrix](../provider-evaluation.md) remains the record for live results. The [roadmap](../../ROADMAP.md) and [implementation plan](../implementation-plan.md) describe the remaining acceptance work without committing release dates.
+The [provider matrix](../provider-evaluation.md) remains the record for live results. The [roadmap](../../ROADMAP.md) and [foundation plan](../foundation-completion-plan.md) distinguish the completed developer preview from future platform/media/memory expansion. No expansion release dates are committed.

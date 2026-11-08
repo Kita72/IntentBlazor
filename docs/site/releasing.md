@@ -1,6 +1,6 @@
 # Release and deployment
 
-The current `0.1.0-preview.1` is an unpublished candidate. Follow the [readiness record](../phase-7-readiness.md). Maintainers develop and verify locally in Codex, then commit and push directly to `main`. GitHub Actions, Dependabot and the former publishing workflow are disabled/removed under [decision 0014](../architecture/0014-main-only-repository.md). Pushing code or creating a tag does not publish packages or deploy the site.
+The first developer preview, `0.1.0-preview.1`, is published under Wilson72. The [publication record](../foundation-step6-developer-preview.md) identifies its immutable source and completed public checks. Follow the [readiness record](../phase-7-readiness.md) for future candidates. Maintainers develop and verify locally in Codex, then commit and push directly to `main`. GitHub Actions, Dependabot and the former publishing workflow are disabled/removed under [decision 0014](../architecture/0014-main-only-repository.md). Pushing code or creating a tag does not publish packages or deploy the site.
 
 ## Package publication remains separate
 
@@ -20,7 +20,7 @@ pwsh -File scripts/Publish-Preview.ps1
 pwsh -File scripts/Verify-PublicFeed.ps1
 ~~~
 
-The publisher retains the exact candidate, original packages/symbols and reports under ignored `artifacts/releases/<version>/<revision>/`. NuGet 7.6+ receives the short-lived key only in the child process environment; command arguments and logs contain no credential. The eight package/symbol pushes run through the official CLI without silently skipping duplicate versions. A failure preserves partial acceptance results for inspection before any retry. A successful push is followed by registry indexing/owner/payload/symbol checks and public-only consumers; acceptance is not inferred from the CLI alone.
+The publisher retains the exact candidate, original packages/symbols and reports under ignored `artifacts/releases/<version>/<revision>/`. NuGet 7.6+ receives the short-lived key only in the child process environment; command arguments and logs contain no credential. The eight package/symbol pushes run through the official CLI without silently skipping duplicate versions. It requires a successful exit and an acknowledgement for each expected artifact; NuGet 7.9 uses the generic `Your package was pushed.` message for both uploads. A failure preserves partial acceptance results for inspection before any retry. A successful push is followed by registry indexing/owner/payload/symbol checks and public-only consumers; acceptance is not inferred from the CLI alone.
 
 NuGet repository signing changes the container bytes. `package-payload` compares every original ZIP payload entry while permitting only the added root repository signature; changed, missing, extra or ambiguous entries fail. Keep package source/tag/artifact provenance immutable. A later docs-only status commit is distinct from the published package source and must not move the release tag or replace the same package version. The [Step 6 record](../foundation-step6-developer-preview.md) records actual publication/hosting outcomes when complete.
 
@@ -35,7 +35,7 @@ The second command creates a versioned publish folder and ZIP under ignored `art
 
 ## Deploy to MonsterASP
 
-Enable Web Deploy in the hosting control panel and download its publish settings to a local private directory. Use the generated folder path from `artifacts/phase7-docs-path.txt`:
+Enable Web Deploy in the hosting control panel and download its publish settings to a local private directory. In the site's **Scripting** settings, select the modern .NET runtime, Integrated pipeline, **64-bit (x64)** app pool and **InProcess** hosting. The sealed `win-x64` bundle requires a matching process architecture; MonsterASP's default x86 setting must be changed for this bundle. Each setting is saved separately and can recycle the app pool. See the host's [Scripting guide](https://help.monsterasp.net/websites/configuration/scripting). Use the generated folder path from `artifacts/phase7-docs-path.txt`:
 
 ~~~powershell
 $bundle = Get-Content artifacts/phase7-docs-path.txt

@@ -2,11 +2,11 @@
 
 IntentBlazor turns user intent into a validated interactive workspace. Your app supplies the model connection, authorized data, business services, and identity. The framework coordinates input, a versioned output document, local state, and registered actions.
 
-**Experimental, unreleased API.** The initial target is a .NET 10 Blazor Web App with Interactive Server. Packages have not been published. Local provider acceptance remains incomplete; live OpenAI/Codex verification is deferred. See [preview boundaries](limitations.md) and the [provider matrix](../provider-evaluation.md) before choosing a deployment target.
+**Experimental developer preview: `0.1.0-preview.1` is published on NuGet.org.** The initial target is a .NET 10 Blazor Web App with Interactive Server. The [publication record](../foundation-step6-developer-preview.md) covers all eight public packages and their independent consumers. Model adapters are checked offline; live compatibility reports remain optional and unverified. See [preview boundaries](limitations.md) and the [provider matrix](../provider-evaluation.md) before choosing a deployment target.
 
 ## The developer journey
 
-1. [Install from source or local packages](installation.md), then run the [two-component quickstart](quickstart.md) without credentials.
+1. [Install from NuGet or source](installation.md), then run the [two-component quickstart](quickstart.md) without credentials.
 2. Place `<AiInput />` and `<AiOutput />` in one interactive circuit. They resolve the same scoped `AiSession`; you do not connect them with page events.
 3. [Connect a model and expose a C# service](services.md). Attributes are the easy path; explicit registration supports services you cannot annotate. Keep model SDK calls outside domain services.
 4. Supply authorized datasets. The model proposes a document referencing their IDs and fields; it does not supply authoritative business rows.

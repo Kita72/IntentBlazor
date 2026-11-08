@@ -63,7 +63,7 @@ try {
                 $stdout = $process.StandardOutput.ReadToEndAsync(); $stderr = $process.StandardError.ReadToEndAsync()
                 if (-not $process.WaitForExit(180000)) { $process.Kill($true); throw 'Publishing timed out; inspect registry state before retrying.' }
                 $output = $stdout.GetAwaiter().GetResult() + $stderr.GetAwaiter().GetResult()
-                $accepted = $process.ExitCode -eq 0 -and $output -match '(?i)symbols package was pushed'
+                $accepted = Test-IntentNuGetPushAcknowledgement -Output $output -ExitCode $process.ExitCode -PackageId $package.package -Version $version
                 $results.Add(@{ package=$package.package; version=$version; accepted=$accepted; checkedAt=[DateTimeOffset]::UtcNow.ToString('O') })
                 [ordered]@{ identity=$ready.identity; owner='Wilson72'; results=@($results.ToArray()) } | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $releaseRoot 'publication.json') -Encoding utf8
                 if (-not $accepted) { throw ('Publishing failed for ' + $package.package + '; raw output was suppressed. Inspect the account/registry before retrying; no duplicate is silently skipped.') }

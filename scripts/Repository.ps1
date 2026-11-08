@@ -15,6 +15,22 @@ function Invoke-IntentDotNet {
     if ($LASTEXITCODE -ne 0) { throw "dotnet command failed with exit code $LASTEXITCODE." }
 }
 
+function Test-IntentNuGetPushAcknowledgement {
+    param([AllowEmptyString()][string] $Output, [int] $ExitCode, [string] $PackageId, [string] $Version)
+    if ($ExitCode -ne 0 -or [string]::IsNullOrWhiteSpace($Output)) { return $false }
+    $name = [regex]::Escape($PackageId + '.' + $Version)
+    $packagePush = [regex]::Match($Output, ('(?m)^Pushing ' + $name + '\.nupkg to '))
+    $symbolsPush = [regex]::Match($Output, ('(?m)^Pushing ' + $name + '\.snupkg to '))
+    if (-not $packagePush.Success -or -not $symbolsPush.Success -or $symbolsPush.Index -le $packagePush.Index) { return $false }
+    $packageSegment = $Output.Substring($packagePush.Index, $symbolsPush.Index - $packagePush.Index)
+    $symbolsSegment = $Output.Substring($symbolsPush.Index)
+    # NuGet 7.9 uses the generic acknowledgement for both uploads. Older clients
+    # can name symbols explicitly; each artifact still needs its own success.
+    $acknowledgement = '(?m)^Your (?:symbols )?package was pushed\.\s*$'
+    return [regex]::Matches($packageSegment, $acknowledgement).Count -eq 1 -and
+        [regex]::Matches($symbolsSegment, $acknowledgement).Count -eq 1
+}
+
 function Get-IntentTargetFramework {
     param([Parameter(Mandatory)][string] $ProjectPath)
     [xml] $project = Get-Content -Raw -LiteralPath $ProjectPath
