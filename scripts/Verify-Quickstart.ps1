@@ -1,6 +1,6 @@
 #requires -Version 7.0
 [CmdletBinding()]
-param()
+param([switch] $PublicFeed)
 
 $ErrorActionPreference = 'Stop'
 . (Join-Path $PSScriptRoot 'Repository.ps1')
@@ -8,7 +8,7 @@ $repositoryRoot = [IO.Path]::GetFullPath((Split-Path -Parent $PSScriptRoot))
 $version = Get-IntentVersion -RepositoryRoot $repositoryRoot
 $sampleRoot = Join-Path $repositoryRoot 'examples/Quickstart'
 $feed = Join-Path $repositoryRoot 'artifacts/packages'
-if (-not (Test-Path -LiteralPath (Join-Path $feed "IntentBlazor.Blazor.$version.nupkg"))) {
+if (-not $PublicFeed -and -not (Test-Path -LiteralPath (Join-Path $feed "IntentBlazor.Blazor.$version.nupkg"))) {
     throw 'Pack the framework first, or run scripts/Verify.ps1.'
 }
 $consumerRoot = Join-Path ([IO.Path]::GetTempPath()) ('IntentBlazor-Quickstart-' + [Guid]::NewGuid().ToString('N'))
@@ -34,7 +34,7 @@ $program = Get-Content -Raw -LiteralPath $programPath
 $program = $program.Replace('var builder = WebApplication.CreateBuilder(args);', 'if (args.Contains("--verify-package-fixture")) { await IntentBlazor.Quickstart.QuickstartCheck.RunAsync(); return; }' + "`n" + 'var builder = WebApplication.CreateBuilder(args);')
 [IO.File]::WriteAllText($programPath, $program)
 $configPath = Join-Path $consumerRoot 'NuGet.Config'
-Write-IntentPackageSources -Path $configPath -Feed $feed
+Write-IntentPackageSources -Path $configPath -Feed $feed -PublicFeed:$PublicFeed
 & dotnet restore $projectPath --configfile $configPath --packages (Join-Path $consumerRoot '.packages') --force --no-cache
 if ($LASTEXITCODE -ne 0) { throw 'The package-only quickstart restore failed.' }
 & dotnet build $projectPath --no-restore --configuration Release
@@ -42,4 +42,4 @@ if ($LASTEXITCODE -ne 0) { throw 'The package-only quickstart build failed.' }
 $framework = Get-IntentTargetFramework -ProjectPath $projectPath
 Invoke-IntentDotNet -Arguments @((Join-Path $consumerRoot "bin/Release/$framework/IntentBlazor.Quickstart.dll"), '--verify-package-fixture')
 [IO.File]::WriteAllText((Join-Path $repositoryRoot 'artifacts/phase7-quickstart-path.txt'), $consumerRoot)
-Write-Host "Verified independent package-only quickstart: $consumerRoot"
+Write-Host "Verified independent package-only quickstart (public feed: $PublicFeed): $consumerRoot"

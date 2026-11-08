@@ -2,7 +2,7 @@
 
 Optional owner-scoped SQLite workspaces for IntentBlazor's two-component framework.
 
-**Developer preview candidate.** Package/API version `0.1.0-preview.1`; target `net10.0`. The initial hosting target is a Blazor Web App with Interactive Server. Public publication and live-provider results are tracked separately in the [release status](https://github.com/Kita72/IntentBlazor/blob/main/docs/phase-7-readiness.md).
+**Experimental developer preview.** Package/API version `0.1.0-preview.1`; target `net10.0`. The initial hosting target is a Blazor Web App with Interactive Server. Release availability and optional provider observations are tracked separately in the [release status](https://github.com/Kita72/IntentBlazor/blob/main/docs/phase-7-readiness.md).
 
 Register the SQLite workspace adapter alongside your trusted `IWorkspaceIdentity` and `IWorkspaceAccess` implementations. Framework checkpoints are private session state; keep shared business schemas, record versions and transactions in your application.
 

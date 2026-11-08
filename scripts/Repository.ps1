@@ -26,7 +26,19 @@ function Get-IntentTargetFramework {
 }
 
 function Write-IntentPackageSources {
-    param([Parameter(Mandatory)][string] $Path, [Parameter(Mandatory)][string] $Feed)
+    param([Parameter(Mandatory)][string] $Path, [string] $Feed, [switch] $PublicFeed)
+    if ($PublicFeed) {
+        [IO.File]::WriteAllText($Path, @'
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <packageSources><clear /><add key="nuget.org" value="https://api.nuget.org/v3/index.json" /></packageSources>
+  <fallbackPackageFolders><clear /></fallbackPackageFolders>
+  <packageSourceMapping><packageSource key="nuget.org"><package pattern="*" /></packageSource></packageSourceMapping>
+</configuration>
+'@)
+        return
+    }
+    if ([string]::IsNullOrWhiteSpace($Feed)) { throw 'A local feed is required unless -PublicFeed is selected.' }
     $escapedFeed = [Security.SecurityElement]::Escape([IO.Path]::GetFullPath($Feed))
     [IO.File]::WriteAllText($Path, @"
 <?xml version="1.0" encoding="utf-8"?>

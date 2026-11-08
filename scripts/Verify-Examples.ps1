@@ -1,6 +1,6 @@
 #requires -Version 7.0
 [CmdletBinding()]
-param()
+param([switch] $PublicFeed)
 
 $ErrorActionPreference = 'Stop'
 . (Join-Path $PSScriptRoot 'Repository.ps1')
@@ -44,7 +44,7 @@ foreach ($check in $checks) {
 $solution = '<Solution>' + ((Get-ChildItem -LiteralPath (Join-Path $consumerRoot 'examples') -Filter '*.csproj' -Recurse -File |
     ForEach-Object { '<Project Path="' + [IO.Path]::GetRelativePath($consumerRoot, $_.FullName).Replace('\', '/') + '" />' }) -join '') + '</Solution>'
 $solutionPath = Join-Path $consumerRoot 'Examples.slnx'; [IO.File]::WriteAllText($solutionPath, $solution)
-$config = Join-Path $consumerRoot 'NuGet.Config'; Write-IntentPackageSources -Path $config -Feed (Join-Path $repositoryRoot 'artifacts/packages')
+$config = Join-Path $consumerRoot 'NuGet.Config'; Write-IntentPackageSources -Path $config -Feed (Join-Path $repositoryRoot 'artifacts/packages') -PublicFeed:$PublicFeed
 Invoke-IntentDotNet -Arguments @('restore', $solutionPath, '--configfile', $config, '--packages', (Join-Path $consumerRoot '.packages'), '--no-cache')
 Invoke-IntentDotNet -Arguments @('build', $solutionPath, '--no-restore', '--configuration', 'Release')
 foreach ($check in $checks) {
@@ -52,4 +52,4 @@ foreach ($check in $checks) {
     $assembly = Join-Path $consumerRoot ('examples/' + $check.name + '/bin/Release/' + $framework + '/' + $check.assembly + '.dll')
     Invoke-IntentDotNet -Arguments @($assembly, '--verify-package-fixture', 'true', '--environment', 'Development', '--Ai:Provider', 'Fixture', '--Example:DataDirectory', (Join-Path $consumerRoot ('.fixture-data/' + $check.kind)))
 }
-Write-Host "Verified three independent package-backed examples: $consumerRoot"
+Write-Host "Verified three independent package-backed examples (public feed: $PublicFeed): $consumerRoot"

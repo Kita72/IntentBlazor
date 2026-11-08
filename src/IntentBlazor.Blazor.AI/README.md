@@ -2,7 +2,7 @@
 
 Optional embeddable AI setup and inspection for IntentBlazor's two-component framework.
 
-**Developer preview candidate.** Package/API version `0.1.0-preview.1`; target `net10.0`. The initial hosting target is a Blazor Web App with Interactive Server. Public publication and live-provider results are tracked separately in the [release status](https://github.com/Kita72/IntentBlazor/blob/main/docs/phase-7-readiness.md).
+**Experimental developer preview.** Package/API version `0.1.0-preview.1`; target `net10.0`. The initial hosting target is a Blazor Web App with Interactive Server. Release availability and optional provider observations are tracked separately in the [release status](https://github.com/Kita72/IntentBlazor/blob/main/docs/phase-7-readiness.md).
 
 Register the AI setup services with a host-owned `IAiSetupAccess` policy. Embed `AiSetup` and `AiInspector` when your app needs approved presets, bounded tuning or safe usage/progress observations. Credentials and endpoints remain host-controlled.
 

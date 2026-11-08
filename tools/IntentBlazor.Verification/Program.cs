@@ -18,6 +18,10 @@ try
     if (reportTarget is not null) VerificationJson.Write(reportTarget, new { status = "incomplete", checkedAt = DateTimeOffset.UtcNow });
     switch (args[0])
     {
+        case "package-payload" when args.Length == 4:
+            string originalPayload = PackagePayload.Hash(args[1]), publicPayload = PackagePayload.Hash(args[2]);
+            VerificationJson.Write(args[3], new { originalPayload, publicPayload, samePayload = originalPayload == publicPayload });
+            return originalPayload == publicPayload ? 0 : 1;
         case "environment" when args.Length == 2:
             VerificationJson.Write(args[1], new
             {
