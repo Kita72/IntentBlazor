@@ -15,6 +15,8 @@ All six [foundation steps](docs/foundation-completion-plan.md) are complete. The
 Developers supply their model, connection/credential configuration and application services through public registrations. They evaluate their chosen model and workload; a framework release does not require local or paid inference. [Decision 0012](docs/architecture/0012-framework-verification-and-optional-model-reports.md) defines the offline verification boundary.
 The [model connection guide](docs/phase-2-model-connections.md) covers current registrations, C# data tools, limits, and the Codex adapter. The [provider matrix](docs/provider-evaluation.md) separates implemented adapters from live-model evidence.
 
+The [.NET 11 migration plan](docs/net11-migration-plan.md), reviewed against the November 10 RTM release, proposes the next platform upgrade and its acceptance gates. The published preview currently targets .NET 10.
+
 ## Run the learning site and playground
 
 Install the .NET SDK selected by [global.json](global.json), Git, and PowerShell 7. No API key, model server, or database is needed.

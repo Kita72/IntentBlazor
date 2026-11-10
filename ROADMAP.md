@@ -29,6 +29,8 @@ Phase 4 evidence: [completion record](docs/phase-4-completion.md), [content/setu
 
 Later directions include additional renderers, content formats, providers, storage adapters, and supported hosting models. Arbitrary generated scripts and real-time collaborative editing require separate designs.
 
+The November 10 [.NET 11 migration plan](docs/net11-migration-plan.md) is proposed for review after the RTM release. It recommends a single net11 baseline across the 20 projects, a separately versioned developer preview, offline regression/package acceptance and exact MonsterASP runtime/rollback checks. The current supported release remains net10 until that work is implemented and verified; the completed foundation milestone is unchanged.
+
 Phase 5 evidence: [completion record](docs/phase-5-completion.md), [standalone app guide](docs/phase-5-example-apps.md), [decision 0008](docs/architecture/0008-standalone-example-apps.md), and the [workflow test matrix](tests/README.md). Two phases followed Phase 5: **6 complete docs/demos** and **7 developer preview**. The examples' synthetic authentication is Development-only.
 
 Phase 6 evidence: [completion record](docs/phase-6-completion.md), [learning guides](docs/site/start.md), [compiled quickstart](examples/Quickstart/README.md), [decision 0009](docs/architecture/0009-documentation-and-samples.md), and [test evidence](tests/README.md).
